@@ -1,0 +1,9 @@
+package Controller;
+
+/**
+ * Created by tenyoku on 2015/12/24.
+ */
+public class RoundRobinStrategy implements ScheduleStrategy {
+    public RoundRobinStrategy() {
+    }
+}
