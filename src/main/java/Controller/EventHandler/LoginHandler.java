@@ -10,6 +10,7 @@ public class LoginHandler extends EventHandler<Guest> {
     public LoginHandler(EventHandler<? super Guest> nextHandler) {
         super(nextHandler);
     }
+
     public void handle(Guest guest, JSONObject msg) {
         //TODO: Login
     }

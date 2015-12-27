@@ -20,8 +20,8 @@ public class Core {
     public Core(ScheduleStrategy scheduler, int port) {
         this.scheduler = scheduler;
         this.port = port;
-        this.teams = new HashMap<>();
-        this.judges = new HashMap<>();
+        this.teams = new HashMap<Integer, Team>();
+        this.judges = new HashMap<Integer, Judge>();
     }
 
     public void start() {

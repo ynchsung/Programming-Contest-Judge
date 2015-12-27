@@ -1,6 +1,6 @@
 package Controller;
 
-import Controller.EventHandler.EventHandler;
+import Controller.EventHandler.*;
 import org.json.JSONObject;
 
 /**
@@ -11,6 +11,7 @@ public class Team extends Client {
 
     public Team(Connection connection) {
         super(connection);
+        this.eventHandler = new SubmissionHandler(new QuestionHandler(new ClarificationHandler(new SyncHandler(null))));
     }
 
     @Override

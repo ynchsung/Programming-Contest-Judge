@@ -1,7 +1,5 @@
 package Controller.EventHandler;
 
-
-import Controller.Client;
 import org.json.JSONObject;
 
 /**
