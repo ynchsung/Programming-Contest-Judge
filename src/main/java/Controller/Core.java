@@ -24,6 +24,14 @@ public class Core {
         this.judges = new HashMap<Integer, Judge>();
     }
 
+    public Team getTeamByID(Integer id) {
+        return this.teams.get(id);
+    }
+
+    public Judge getJudgeByID(Integer id) {
+        return this.judges.get(id);
+    }
+
     public void start() {
         // TODO: read config, build teams, judges(Map)
         Thread listenThread = new Thread(new Runnable() {
