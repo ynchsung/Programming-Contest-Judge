@@ -12,27 +12,29 @@ import java.util.concurrent.Executors;
  * Created by tenyoku on 2015/12/24.
  */
 public class Core {
+    static private Core sharedInstance = null;
+
     private Map<Integer, Team> teams;
     private Map<Integer, Judge> judges;
     private ScheduleStrategy scheduler;
     private final int port;
 
-    public Core(ScheduleStrategy scheduler, int port) {
-        this.scheduler = scheduler;
-        this.port = port;
+    private Core(ScheduleStrategy scheduler, int port) {
         this.teams = new HashMap<Integer, Team>();
         this.judges = new HashMap<Integer, Judge>();
+        this.scheduler = scheduler;
+        this.port = port;
     }
 
-    public Team getTeamByID(Integer id) {
-        return this.teams.get(id);
+    static public Core getInstance() {
+        return sharedInstance;
     }
 
-    public Judge getJudgeByID(Integer id) {
-        return this.judges.get(id);
-    }
+    static public void start(ScheduleStrategy scheduler, int port) {
+        if (sharedInstance != null)
+            return;
+        sharedInstance = new Core(scheduler, port);
 
-    public void start() {
         // TODO: read config, build teams, judges(Map)
         Thread listenThread = new Thread(new Runnable() {
             private int port;
@@ -73,5 +75,13 @@ public class Core {
             }
         }.setPort(port));
         listenThread.start();
+    }
+
+    public Team getTeamByID(Integer id) {
+        return this.teams.get(id);
+    }
+
+    public Judge getJudgeByID(Integer id) {
+        return this.judges.get(id);
     }
 }

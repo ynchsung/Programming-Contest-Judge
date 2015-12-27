@@ -5,7 +5,6 @@ package Controller;
  */
 public class Controller {
     static public void main(String [] argv) {
-        Core core = new Core(new RoundRobinStrategy(), 7122);
-        core.start();
+        Core.start(new RoundRobinStrategy(), 7122);
     }
 }
