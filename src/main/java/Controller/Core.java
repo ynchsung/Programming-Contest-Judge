@@ -14,15 +14,17 @@ import java.util.concurrent.Executors;
 public class Core {
     static private Core sharedInstance = null;
 
-    private Map<Integer, Team> teams;
-    private Map<Integer, Judge> judges;
-    private ScheduleStrategy scheduler;
+    private Map<String, Team> teams;
+    private Map<String, Judge> judges;
+    private Map<String, Problem> problems;
+    private Scheduler scheduler;
     private final int port;
 
-    private Core(ScheduleStrategy scheduler, int port) {
-        this.teams = new HashMap<Integer, Team>();
-        this.judges = new HashMap<Integer, Judge>();
-        this.scheduler = scheduler;
+    private Core(int port) {
+        this.teams = new HashMap<String, Team>();
+        this.judges = new HashMap<String, Judge>();
+        this.problems = new HashMap<String, Problem>();
+        this.scheduler = new Scheduler();
         this.port = port;
     }
 
@@ -30,12 +32,18 @@ public class Core {
         return sharedInstance;
     }
 
-    static public void start(ScheduleStrategy scheduler, int port) {
+    static public void start(int port) {
         if (sharedInstance != null)
             return;
-        sharedInstance = new Core(scheduler, port);
+        sharedInstance = new Core(port);
+        sharedInstance.start();
+    }
 
+    private void start() {
         // TODO: read config, build teams, judges(Map)
+
+        this.scheduler.setStrategy(new RoundRobinStrategy(this.judges));
+        this.scheduler.start();
         Thread listenThread = new Thread(new Runnable() {
             private int port;
             public Runnable setPort(int port) {
@@ -77,11 +85,19 @@ public class Core {
         listenThread.start();
     }
 
-    public Team getTeamByID(Integer id) {
+    public Team getTeamByID(String id) {
         return this.teams.get(id);
     }
 
-    public Judge getJudgeByID(Integer id) {
+    public Judge getJudgeByID(String id) {
         return this.judges.get(id);
+    }
+
+    public Problem getProblemByID(String id) {
+        return this.problems.get(id);
+    }
+
+    public Scheduler getScheduler() {
+        return this.scheduler;
     }
 }

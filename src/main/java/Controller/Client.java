@@ -24,6 +24,10 @@ public abstract class Client {
         }
     }
 
+    public boolean isAlive() {
+        return (connection == null);
+    }
+
     public void logout() {
         this.connection = null;
     }
