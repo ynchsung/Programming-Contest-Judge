@@ -11,7 +11,7 @@ public class Guest extends Client {
     EventHandler<Guest> eventHandler;
 
     public Guest(Connection connection) {
-        super(connection);
+        super("guest", connection);
         eventHandler = new LoginHandler(null);
     }
 

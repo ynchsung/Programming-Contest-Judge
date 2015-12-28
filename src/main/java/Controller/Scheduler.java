@@ -21,8 +21,15 @@ public class Scheduler extends Thread {
         this.strategy = strategy;
     }
 
-    public void add(JSONObject submit) throws InterruptedException {
-        this.submissionQueue.put(submit);
+    public void add(JSONObject submit) {
+        while(true) {
+            try {
+                this.submissionQueue.put(submit);
+                break;
+            } catch (InterruptedException e) {
+                continue;
+            }
+        }
     }
 
     public void run() {

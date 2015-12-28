@@ -20,6 +20,7 @@ public class Connection extends Thread {
     private DataOutputStream output;
     private Client client;
     private BlockingQueue<JSONObject> sendQueue;
+    private Thread sendThread;
 
     class ProcessSendQueueThread extends Thread {
         public ProcessSendQueueThread() {
@@ -63,21 +64,30 @@ public class Connection extends Thread {
         this.sendQueue.put(msg);
     }
 
-    public void flushSendQueue() throws InterruptedException {
+    public void flushSendQueue() {
         while (this.sendQueue.size() != 0) {
-            JSONObject msg = this.sendQueue.take();
             try {
-                String t = (String)msg.get("msg_type");
-                if (t.equals("submit"))
-                    Core.getInstance().getScheduler().add(msg);
-            }
-            catch (JSONException e) {
+                JSONObject msg = this.sendQueue.take();
+                try {
+                    String t = (String)msg.get("msg_type");
+                    if (t.equals("submit"))
+                        Core.getInstance().getScheduler().add(msg);
+                }
+                catch (JSONException e) {
+                }
+            } catch (InterruptedException e) {
             }
         }
     }
 
+    @Override
+    public void interrupt() {
+        sendThread.interrupt();
+        super.interrupt();
+    }
+
     public void run() {
-        Thread sendThread = new ProcessSendQueueThread();
+        sendThread = new ProcessSendQueueThread();
         sendThread.start();
         try {
             while (true) {
@@ -90,10 +100,8 @@ public class Connection extends Thread {
             }
         }
         catch (IOException e) {
-            sendThread.interrupt();
             try {
                 this.client.logout();
-                this.client = null;
             }
             catch (InterruptedException e2) {
             }

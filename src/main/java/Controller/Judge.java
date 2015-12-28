@@ -9,8 +9,8 @@ import org.json.JSONObject;
 public class Judge extends Client {
     EventHandler<Judge> eventHandler;
 
-    public Judge(Connection connection) {
-        super(connection);
+    public Judge(String id, Connection connection) {
+        super(id, connection);
         this.eventHandler = new ResultHandler(new AnswerHandler(new SyncJudgeDataHandler(new ClarificationHandler(new SyncHandler(null)))));
     }
 
