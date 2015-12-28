@@ -1,6 +1,5 @@
 package Controller;
 
-import Controller.Judge;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -22,12 +21,12 @@ public class RoundRobinStrategy implements ScheduleStrategy {
         }
     }
 
-    public Judge schedule(JSONObject submit) {
+    public void schedule(JSONObject submit) {
         while (true) {
-            Judge judge = Core.getInstance().getJudgeByID(this.judgeIDs.get(this.current));
+            String next_id = this.judgeIDs.get(this.current);
             this.current = (this.current + 1) % this.judgeIDs.size();
-            if (judge.isAlive())
-                return judge;
+            if (Core.getInstance().getJudgeByID(next_id).send(submit))
+                break;
         }
     }
 }

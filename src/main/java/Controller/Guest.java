@@ -19,4 +19,10 @@ public class Guest extends Client {
     public void handle(JSONObject msg) {
         this.eventHandler.handle(this, msg);
     }
+
+    @Override
+    public void logout() {
+        this.connection = null;
+        return;
+    }
 }

@@ -4,10 +4,12 @@ package Controller;
  * Created by tenyoku on 2015/12/24.
  */
 public class Problem {
+    private final String id;
     private int memory_limit;
     private int time_limit;
 
-    public Problem() {
+    public Problem(String id) {
+        this.id = id;
     }
 
     public int getMemoryLimit() {

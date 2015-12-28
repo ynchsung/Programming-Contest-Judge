@@ -37,24 +37,23 @@ public class LeastTimeStrategy implements ScheduleStrategy {
         }
     }
 
-    public Judge schedule(JSONObject submit) {
+    public void schedule(JSONObject submit) {
         int t;
         List<JudgeInfo> tmp = new ArrayList<JudgeInfo>();
         try {
             t = Core.getInstance().getProblemByID((String)submit.get("problem_id")).getTimeLimit();
         }
         catch (JSONException e) {
-            return null;
+            return;
         }
         while (true) {
             JudgeInfo ret = this.judgeinfos.poll();
-            Judge judge = Core.getInstance().getJudgeByID(ret.id);
-            if (judge.isAlive()) {
+            if (Core.getInstance().getJudgeByID(ret.id).send(submit)) {
                 ret.tot_time += t;
                 for (Iterator it = tmp.iterator(); it.hasNext(); )
                     this.judgeinfos.offer((JudgeInfo)it.next());
                 this.judgeinfos.offer(ret);
-                return judge;
+                return;
             }
             else {
                 tmp.add(ret);

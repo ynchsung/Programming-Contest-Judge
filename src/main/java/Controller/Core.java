@@ -40,7 +40,7 @@ public class Core {
     }
 
     private void start() {
-        // TODO: read config, build teams, judges(Map)
+        // TODO: read config, build teams, judges, problems(Map)
 
         this.scheduler.setStrategy(new RoundRobinStrategy(this.judges));
         this.scheduler.start();

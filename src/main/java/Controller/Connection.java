@@ -34,11 +34,11 @@ public class Connection extends Thread {
                         output.writeUTF(msg.toString());
                     }
                     catch (IOException e) {
+                        sendQueue.put(msg);
                     }
                 }
             }
             catch (InterruptedException e) {
-                sendQueue.clear();
             }
         }
     }
@@ -63,6 +63,19 @@ public class Connection extends Thread {
         this.sendQueue.put(msg);
     }
 
+    public void flushSendQueue() throws InterruptedException {
+        while (this.sendQueue.size() != 0) {
+            JSONObject msg = this.sendQueue.take();
+            try {
+                String t = (String)msg.get("msg_type");
+                if (t.equals("submit"))
+                    Core.getInstance().getScheduler().add(msg);
+            }
+            catch (JSONException e) {
+            }
+        }
+    }
+
     public void run() {
         Thread sendThread = new ProcessSendQueueThread();
         sendThread.start();
@@ -77,9 +90,13 @@ public class Connection extends Thread {
             }
         }
         catch (IOException e) {
-            this.client.logout();
-            this.client = null;
             sendThread.interrupt();
+            try {
+                this.client.logout();
+                this.client = null;
+            }
+            catch (InterruptedException e2) {
+            }
         }
     }
 }

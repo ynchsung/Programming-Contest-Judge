@@ -31,9 +31,7 @@ public class Scheduler extends Thread {
         this.submissionQueue.clear();
         try {
             while (true) {
-                JSONObject submit = this.submissionQueue.take();
-                Judge judge = this.strategy.schedule(submit);
-                judge.send(submit);
+                this.strategy.schedule(this.submissionQueue.take());
             }
         }
         catch (InterruptedException e) {
