@@ -10,13 +10,22 @@ public class AccountManager {
         Statement stmt = null;
         try {
             Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:account.db");
+            c = DriverManager.getConnection("jdbc:sqlite:teamAccount.db");
 
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS Account " +
                 "(Account STRING PRIMARY KEY    NOT NULL," +
-                " Password  STRING  NOT NULL," +
-                " Type      STRING  NOT NULL)";
+                " Password  STRING  NOT NULL)";
+            stmt.executeUpdate(sql);
+            stmt.close();
+            c.close();
+
+            c = DriverManager.getConnection("jdbc:sqlite:judgeAccount.db");
+
+            stmt = c.createStatement();
+            sql = "CREATE TABLE IF NOT EXISTS Account " +
+                "(Account STRING PRIMARY KEY    NOT NULL," +
+                " Password  STRING  NOT NULL)";
             stmt.executeUpdate(sql);
             stmt.close();
             c.close();
@@ -29,15 +38,14 @@ public class AccountManager {
     public void addEntry(Map<String, String> entry) {
         Connection c = null;
         Statement stmt = null;
-        String common = "INSERT INTO Account (Account,Password,Type) ";
+        String common = "INSERT INTO Account (Account,Password) ";
         String sql = common + "VALUES ('" + entry.get("account") + "', '" +
-            entry.get("password") + "', '" +
-            entry.get("type") + "');";
+            entry.get("password") + "');";
 
         while (true) {
             try {
                 Class.forName("org.sqlite.JDBC");
-                c = DriverManager.getConnection("jdbc:sqlite:account.db");
+                c = DriverManager.getConnection("jdbc:sqlite:" + entry.get("type") + "Account.db");
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
@@ -64,7 +72,7 @@ public class AccountManager {
         while (true) {
             try {
                 Class.forName("org.sqlite.JDBC");
-                c = DriverManager.getConnection("jdbc:sqlite:account.db");
+                c = DriverManager.getConnection("jdbc:sqlite:teamAccount.db");
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
@@ -74,10 +82,28 @@ public class AccountManager {
 
                     String id = rs.getString("Account");
                     String pw = rs.getString("Password");
-                    String type = rs.getString("Type");
                     entry.put("account", id);
                     entry.put("password", pw);
-                    entry.put("type", type);
+                    entry.put("type", "team");
+                    response.add(entry);
+                }
+                rs.close();
+                stmt.close();
+                c.close();
+                
+                c = DriverManager.getConnection("jdbc:sqlite:judgeAccount.db");
+                c.setAutoCommit(false);
+
+                stmt = c.createStatement();
+                rs = stmt.executeQuery( "SELECT * FROM Account;" );
+                while (rs.next()) {
+                    Map<String, String> entry = new HashMap<String, String>();
+
+                    String id = rs.getString("Account");
+                    String pw = rs.getString("Password");
+                    entry.put("account", id);
+                    entry.put("password", pw);
+                    entry.put("type", "judge");
                     response.add(entry);
                 }
                 rs.close();
@@ -96,22 +122,21 @@ public class AccountManager {
         return response;
     }
 
-    public boolean authenticateJudge(Map<String, String> login) {
+    public boolean authenticateJudge(String account, String password) {
         Connection c = null;
         Statement stmt = null;
         boolean response = false;
         while (true) {
             try {
                 Class.forName("org.sqlite.JDBC");
-                c = DriverManager.getConnection("jdbc:sqlite:account.db");
+                c = DriverManager.getConnection("jdbc:sqlite:judgeAccount.db");
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
-                String sql = "SELECT Account FROM Account WHERE Account = '" + login.get("account") +
-                    "' AND Password = '" + login.get("password") +
-                    "' AND Type = 'judge';";
+                String sql = "SELECT Account FROM Account WHERE Account = '" + account +
+                    "' AND Password = '" + password + "';";
                 ResultSet rs = stmt.executeQuery(sql);
-                while (rs.next()) {
+                if (rs.next()) {
                     response = true;
                 }
                 rs.close();
@@ -130,22 +155,21 @@ public class AccountManager {
         return response;
     }
 
-    public boolean authenticateTeam(Map<String, String> login) {
+    public boolean authenticateTeam(String account, String password) {
         Connection c = null;
         Statement stmt = null;
         boolean response = false;
         while (true) {
             try {
                 Class.forName("org.sqlite.JDBC");
-                c = DriverManager.getConnection("jdbc:sqlite:account.db");
+                c = DriverManager.getConnection("jdbc:sqlite:teamAccount.db");
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
-                String sql = "SELECT Account FROM Account WHERE Account = '" + login.get("account") +
-                    "' AND Password = '" + login.get("password") +
-                    "' AND Type != 'judge';";
+                String sql = "SELECT Account FROM Account WHERE Account = '" + account +
+                    "' AND Password = '" + password + "';";
                 ResultSet rs = stmt.executeQuery(sql);
-                while (rs.next()) {
+                if (rs.next()) {
                     response = true;
                 }
                 rs.close();
