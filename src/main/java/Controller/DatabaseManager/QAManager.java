@@ -34,7 +34,6 @@ public class QAManager {
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
         }
     }
 
@@ -77,7 +76,6 @@ public class QAManager {
             }
             catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
     }
@@ -136,7 +134,6 @@ public class QAManager {
             }
             catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
         return response;
@@ -201,7 +198,6 @@ public class QAManager {
             }
             catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
         return response;
@@ -261,7 +257,6 @@ public class QAManager {
             }
             catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
         return response;
@@ -274,12 +269,10 @@ public class QAManager {
             }
             else {
                 System.err.println("SQLException: " + message);
-                //System.exit(0);
             }
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            //System.exit(0);
         }
     }
 }

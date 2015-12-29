@@ -24,7 +24,6 @@ public class ClarificationManager {
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
         }
     }
 
@@ -56,7 +55,6 @@ public class ClarificationManager {
             }
             catch (Exception e) {
                 System.err.println( e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
     }
@@ -97,7 +95,6 @@ public class ClarificationManager {
             }
             catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
         return response;
@@ -140,7 +137,6 @@ public class ClarificationManager {
             }
             catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
         return response;
@@ -153,12 +149,10 @@ public class ClarificationManager {
             }
             else {
                 System.err.println("SQLException: " + message);
-                //System.exit(0);
             }
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            //System.exit(0);
         }
     }
 }

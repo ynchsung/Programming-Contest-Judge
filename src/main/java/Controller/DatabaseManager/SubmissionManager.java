@@ -27,7 +27,6 @@ public class SubmissionManager {
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
         }
     }
 
@@ -62,7 +61,6 @@ public class SubmissionManager {
             }
             catch (Exception e) {
                 System.err.println( e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
     }
@@ -108,7 +106,6 @@ public class SubmissionManager {
             }
             catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
     }
@@ -154,7 +151,6 @@ public class SubmissionManager {
             }
             catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
         return response;
@@ -185,7 +181,6 @@ public class SubmissionManager {
             }
             catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
         return response;
@@ -215,7 +210,7 @@ public class SubmissionManager {
                     entry.put("submission_id", Integer.toString(sid));
                     entry.put("problem_id", Integer.toString(pid));
                     entry.put("submission_time_stamp", Integer.toString(stime));
-                    if(rs.getString("SourceCode") != null) {
+                    if (rs.getString("SourceCode") != null) {
                         entry.put("source_code", "1");
                     }
                     response.add(entry);
@@ -250,7 +245,6 @@ public class SubmissionManager {
             }
             catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
         return response;
@@ -263,12 +257,10 @@ public class SubmissionManager {
             }
             else {
                 System.err.println("SQLException: " + message);
-                //System.exit(0);
             }
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            //System.exit(0);
         }
     }
 }

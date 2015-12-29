@@ -27,7 +27,6 @@ public class ProblemManager {
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
         }
     }
 
@@ -62,7 +61,6 @@ public class ProblemManager {
             }
             catch (Exception e) {
                 System.err.println( e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
     }
@@ -115,7 +113,7 @@ public class ProblemManager {
                 }
 
                 sql = "UPDATE Problem SET ";
-                for(int i = 0; i < setType.size(); i++) {
+                for (int i = 0; i < setType.size(); i++) {
                     sql += setType.get(i) + " = " + setValue.get(i) + ",";
                 }
                 sql +=  "Timestamp = " + entry.get("time_stamp") + " WHERE ProblemID = '" + entry.get("problem_id") + "';";
@@ -133,7 +131,6 @@ public class ProblemManager {
             }
             catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
     }
@@ -180,7 +177,6 @@ public class ProblemManager {
             }
             catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
         return response;
@@ -229,7 +225,6 @@ public class ProblemManager {
             }
             catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
             }
         }
         return response;
@@ -242,12 +237,10 @@ public class ProblemManager {
             }
             else {
                 System.err.println("SQLException: " + message);
-                //System.exit(0);
             }
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            //System.exit(0);
         }
     }
 }
