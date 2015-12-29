@@ -100,11 +100,7 @@ public class Connection extends Thread {
             }
         }
         catch (IOException e) {
-            try {
-                this.client.logout();
-            }
-            catch (InterruptedException e2) {
-            }
+            this.client.logout();
         }
     }
 }
