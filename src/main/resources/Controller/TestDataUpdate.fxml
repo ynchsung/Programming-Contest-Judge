@@ -1,0 +1,56 @@
+<?import CustomNode.MyChoiceBox?>
+<?import CustomNode.MyFileChooser?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import CustomNode.MyConfirmationButton?>
+<GridPane xmlns:fx="http://javafx.com/javafx"
+          fx:controller="Controller.TestDataUpdateController"
+          hgap="10"
+          vgap="20" >
+    <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+    <Label text="Problem ID"
+           GridPane.rowIndex="0"
+           GridPane.columnIndex="0" />
+    <Label text="Data"
+           GridPane.rowIndex="0"
+           GridPane.columnIndex="1"
+           GridPane.columnSpan="2" />
+    <MyChoiceBox fx:id="problemID"
+                 GridPane.rowIndex="1"
+                 GridPane.columnIndex="0" />
+    <Label text="Input Data"
+           GridPane.rowIndex="1"
+           GridPane.columnIndex="1" />
+    <MyFileChooser fx:id="inputData"
+                   spacing="10"
+                   text="choose"
+                   GridPane.rowIndex="1"
+                   GridPane.columnIndex="2" />
+    <Label text="Output Data"
+           GridPane.rowIndex="2"
+           GridPane.columnIndex="1" />
+    <MyFileChooser fx:id="outputData"
+                   spacing="10"
+                   text="choose"
+                   GridPane.rowIndex="2"
+                   GridPane.columnIndex="2" />
+    <Label text="Special Judge Code"
+           GridPane.rowIndex="3"
+           GridPane.columnIndex="1" />
+    <MyFileChooser fx:id="specialJudgeCode"
+                   spacing="10"
+                   text="choose"
+                   GridPane.rowIndex="3"
+                   GridPane.columnIndex="2" />
+    <CheckBox fx:id="specialJudgeCheckbox"
+              GridPane.rowIndex="3"
+              GridPane.columnIndex="3" />
+    <MyConfirmationButton fx:id="confirm"
+                          text="Confirm"
+                          title="Confirmation"
+                          headerText="Confirmation"
+                          contentText="Confirm to change test data."
+                          GridPane.rowIndex="4"
+                          GridPane.columnIndex="2" />
+</GridPane>

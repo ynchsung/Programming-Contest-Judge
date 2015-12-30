@@ -1,0 +1,31 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import CustomNode.MyChoiceBox?>
+<?import CustomNode.MyConfirmationButton?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.ViewSubmissionController"
+      spacing="20"
+      alignment="CENTER" >
+    <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+    <GridPane hgap="10"
+              vgap="20" >
+        <Label text="Rejudge Problem"
+               GridPane.rowIndex="0"
+               GridPane.columnIndex="0" />
+        <MyChoiceBox fx:id="rejudgeProblemChoiceBox"
+                     GridPane.rowIndex="0"
+                     GridPane.columnIndex="1" />
+        <MyConfirmationButton fx:id="rejudgeButton"
+                              text="confirm"
+                              title="Confirmation"
+                              headerText="Confirmation"
+                              contentText="Confirm to rejudge the selected problem."
+                              GridPane.rowIndex="0"
+                              GridPane.columnIndex="2" />
+    </GridPane>
+    <fx:include fx:id="submissionTable"
+                source="SubmissionTable.fxml"
+                VBox.vgrow="ALWAYS" />
+</VBox>

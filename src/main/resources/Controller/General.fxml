@@ -1,0 +1,36 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<GridPane fx:controller="Controller.GeneralController" xmlns:fx="http://javafx.com/fxml"
+          hgap="10"
+          vgap="20" >
+    <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+    <Label text="IP"
+           GridPane.rowIndex="0"
+           GridPane.columnIndex="0" />
+    <Label text=":"
+           GridPane.rowIndex="0"
+           GridPane.columnIndex="1" />
+    <Text  fx:id="ip"
+           GridPane.rowIndex="0"
+           GridPane.columnIndex="2" />
+    <Label text="Port"
+           GridPane.rowIndex="1"
+           GridPane.columnIndex="0" />
+    <Label text=":"
+           GridPane.rowIndex="1"
+           GridPane.columnIndex="1" />
+    <Text  fx:id="port"
+           GridPane.rowIndex="1"
+           GridPane.columnIndex="2" />
+    <Label text="Score Board Port"
+           GridPane.rowIndex="2"
+           GridPane.columnIndex="0" />
+    <Label text=":"
+           GridPane.rowIndex="2"
+           GridPane.columnIndex="1" />
+    <Text  fx:id="scoreBoardPort"
+           GridPane.rowIndex="2"
+           GridPane.columnIndex="2" />
+</GridPane>
