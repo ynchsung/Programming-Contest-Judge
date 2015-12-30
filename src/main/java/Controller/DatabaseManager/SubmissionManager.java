@@ -15,11 +15,12 @@ public class SubmissionManager {
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS Submission " +
                 "(SubmissionID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " ProblemID STRING NOT NULL, " +
-                " TeamID    STRING NOT NULL, " +
-                " SubmissionTimestamp   INT NOT NULL, " +
-                " SourceCode    STRING, " +
-                " Result    STRING, " +
+                " ProblemID STRING NOT NULL," +
+                " TeamID    STRING NOT NULL," +
+                " SubmissionTimestamp   INT NOT NULL," +
+                " Language      STRING  NOT NULL," +
+                " SourceCode    STRING," +
+                " Result    STRING," +
                 " ResultTimestamp   INT)";
             stmt.executeUpdate(sql);
             stmt.close();
@@ -42,12 +43,14 @@ public class SubmissionManager {
                 c = DriverManager.getConnection("jdbc:sqlite:submission.db");
                 c.setAutoCommit(false);
 
-                stmt = c.prepareStatement("INSERT INTO Submission (ProblemID,TeamID,SubmissionTimestamp,SourceCode,Result,ResultTimestamp)" +
-                                "VALUES (?, ?, ?, ?, 'Pending', -1);", Statement.RETURN_GENERATED_KEYS);
+                stmt = c.prepareStatement("INSERT INTO Submission " +
+                                "(ProblemID,TeamID,SubmissionTimestamp,Language,SourceCode,Result,ResultTimestamp)" +
+                                "VALUES (?, ?, ?, ?, ?, 'Pending', -1);", Statement.RETURN_GENERATED_KEYS);
                 stmt.setString(1, entry.get("problem_id"));
                 stmt.setString(2, entry.get("team_id"));
                 stmt.setString(3, entry.get("time_stamp"));
-                stmt.setString(4, entry.get("source_code"));
+                stmt.setString(4, entry.get("language"));
+                stmt.setString(5, entry.get("source_code"));
                 stmt.executeUpdate();
 
                 ResultSet rs = stmt.getGeneratedKeys();
@@ -140,12 +143,14 @@ public class SubmissionManager {
                     int stime = rs.getInt("SubmissionTimestamp");
                     String result = rs.getString("Result");
                     int rtime = rs.getInt("ResultTimestamp");
+                    String lang = rs.getString("Language");
                     entry.put("submission_id", Integer.toString(sid));
                     entry.put("problem_id", pid);
                     entry.put("team_id", tid);
                     entry.put("submission_time_stamp", Integer.toString(stime));
                     entry.put("result", result);
                     entry.put("result_time_stamp", Integer.toString(rtime));
+                    entry.put("language", lang);
                     if (rs.getString("SourceCode") != null) {
                         entry.put("source_code", "1");
                     }
@@ -207,7 +212,7 @@ public class SubmissionManager {
                 c = DriverManager.getConnection("jdbc:sqlite:submission.db");
                 c.setAutoCommit(false);
 
-                stmt = c.prepareStatement("SELECT SubmissionID, ProblemID, SubmissionTimestamp, SourceCode FROM Submission" +
+                stmt = c.prepareStatement("SELECT SubmissionID, ProblemID, SubmissionTimestamp, Language, SourceCode FROM Submission" +
                     " WHERE TeamID = ? AND SubmissionTimestamp >= ?;");
                 stmt.setString(1, team_id);
                 stmt.setString(2, Integer.toString(time_stamp));
@@ -218,9 +223,11 @@ public class SubmissionManager {
                     int sid = rs.getInt("SubmissionID");
                     String pid = rs.getString("ProblemID");
                     int stime = rs.getInt("SubmissionTimestamp");
+                    String lang = rs.getString("Language");
                     entry.put("submission_id", Integer.toString(sid));
                     entry.put("problem_id", pid);
                     entry.put("submission_time_stamp", Integer.toString(stime));
+                    entry.put("language", lang);
                     if (rs.getString("SourceCode") != null) {
                         entry.put("source_code", "1");
                     }
@@ -278,9 +285,11 @@ public class SubmissionManager {
                         int sid = rs.getInt("SubmissionID");
                         String pid = rs.getString("ProblemID");
                         int stime = rs.getInt("SubmissionTimestamp");
+                        String lang = rs.getString("Language");
                         response.put("submission_id", Integer.toString(sid));
                         response.put("problem_id", pid);
                         response.put("submission_time_stamp", Integer.toString(stime));
+                        response.put("language", lang);
                         if (rs.getString("SourceCode") != null) {
                             response.put("source_code", "1");
                         }
