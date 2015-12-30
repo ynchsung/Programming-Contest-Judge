@@ -108,7 +108,7 @@ public class SubmissionManager {
 
                 stmt.setString(1, entry.get("result"));
                 stmt.setString(2, entry.get("time_stamp"));
-                stmt.setString(3, entry.get("data_time_stamp"));
+                stmt.setString(3, entry.get("testdata_timestamp"));
                 stmt.setString(4, entry.get("submission_id"));
                 stmt.executeUpdate();
                 stmt.close();
@@ -156,7 +156,7 @@ public class SubmissionManager {
                     entry.put("result", result);
                     entry.put("result_time_stamp", Integer.toString(rtime));
                     entry.put("language", lang);
-                    entry.put("data_time_stamp", Integer.toString(dtime));
+                    entry.put("testdata_timestamp", Integer.toString(dtime));
                     if (rs.getString("SourceCode") != null) {
                         entry.put("source_code", "1");
                     }
@@ -257,7 +257,7 @@ public class SubmissionManager {
                     entry.put("submission_id", Integer.toString(sid));
                     entry.put("result", result);
                     entry.put("result_time_stamp", Integer.toString(rtime));
-                    entry.put("data_time_stamp", Integer.toString(dtime));
+                    entry.put("testdata_timestamp", Integer.toString(dtime));
                     response.add(entry);
                 }
                 rs.close();
@@ -305,7 +305,7 @@ public class SubmissionManager {
                         response.put("language", lang);
                         response.put("result", result);
                         response.put("result_time_stamp", Integer.toString(rtime));
-                        response.put("data_time_stamp", Integer.toString(dtime));
+                        response.put("testdata_timestamp", Integer.toString(dtime));
                         if (rs.getString("SourceCode") != null) {
                             response.put("source_code", "1");
                         }

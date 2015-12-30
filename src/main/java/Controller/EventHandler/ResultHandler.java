@@ -3,6 +3,10 @@ package Controller.EventHandler;
 import Controller.Core;
 import Controller.Judge;
 import Controller.Team;
+import Controller.DatabaseManager.SubmissionManager;
+
+import java.util.Map;
+import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,16 +62,25 @@ public class ResultHandler extends EventHandler<Judge> {
     public void handle(Judge judge, JSONObject msg) {
         try {
             if (msg.getString("msg_type").equals("result")) {
+                SubmissionManager submissionManager = new SubmissionManager();
                 String submissionID = msg.getString("submission_id");
                 String result = msg.getString("result");
                 String runTime = msg.getString("run_time");
                 String memory = msg.getString("memory");
+                String testdata_timestamp = msg.getString("testdata_timestamp");
                 long timeStamp = System.currentTimeMillis() / 1000;
                 if (true /*not appeared*/) {
-                    //store to db
+                    Map<String, String> store = new HashMap<String, String>();
+                    store.put("submission_id", submissionID);
+                    store.put("result", result);
+                    store.put("time_stamp", Long.toString(timeStamp));
+                    store.put("testdata_timestamp", testdata_timestamp);
+                    submissionManager.updateEntry(store);
+
                     sendAck(judge, submissionID, timeStamp);
-                    //query this submission info
-                    String teamID = ""/*teamID*/;
+
+                    Map<String, String> getSub = submissionManager.getSubmissionById(Integer.valueOf(submissionID));
+                    String teamID = getSub.get("team_id");
                     Team team = Core.getInstance().getTeamByID(teamID);
                     forward(team, submissionID, result, runTime, memory, timeStamp);
                 }

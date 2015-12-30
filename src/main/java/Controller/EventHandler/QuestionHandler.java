@@ -3,6 +3,10 @@ package Controller.EventHandler;
 import Controller.Core;
 import Controller.Judge;
 import Controller.Team;
+import Controller.DatabaseManager.QAManager;
+
+import java.util.Map;
+import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,14 +50,22 @@ public class QuestionHandler extends EventHandler<Team> {
     public void handle(Team team, JSONObject msg) {
         try {
             if (msg.getString("msg_type").equals("question")) {
+                QAManager qaManager = new QAManager();
                 String problemID = msg.getString("problem_id");
-                String content = msg.getString("content");
                 String teamID = team.getID();
+                String content = msg.getString("content");
                 long timeStamp = System.currentTimeMillis() / 1000;
-                //store to DB
-                sendAck(team, /*ID*/"", timeStamp);
+                Map<String, String> store = new HashMap<String, String>();
+
+                store.put("problem_id", problemID);
+                store.put("team_id", teamID);
+                store.put("content", content);
+                store.put("time_stamp", Long.toString(timeStamp));
+                String qid = Integer.toString(qaManager.addEntry(store));
+
+                sendAck(team, qid, timeStamp);
                 for (Judge judge: Core.getInstance().getAllJudge()) {
-                    forward(judge, teamID,  /*ID*/"", problemID, content, timeStamp);
+                    forward(judge, teamID, qid, problemID, content, timeStamp);
                 }
             }
             else doNext(team, msg);

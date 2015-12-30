@@ -4,6 +4,10 @@ import Controller.Client;
 import Controller.Core;
 import Controller.Judge;
 import Controller.Team;
+import Controller.DatabaseManager.ClarificationManager;
+
+import java.util.Map;
+import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,13 +50,21 @@ public class ClarificationHandler extends EventHandler<Judge> {
     public void handle(Judge judge, JSONObject msg) {
         try {
             if (msg.getString("msg_type").equals("clarification")) {
+                ClarificationManager clarificationManager = new ClarificationManager();
                 String problemID = msg.getString("problem_id");
                 String content = msg.getString("content");
                 long timeStamp = System.currentTimeMillis() / 1000;
-                //store to DB
+                Map<String, String> store = new HashMap<String, String>();
+
+                store.put("problem_id", problemID);
+                store.put("content", content);
+                store.put("time_stamp", Long.toString(timeStamp));
+
+                String cid = Integer.toString(clarificationManager.addEntry(store));
+
                 sendAck(judge, problemID, timeStamp);
                 for(Team team: Core.getInstance().getAllTeam()) {
-                    forward(team, /*ID*/"", problemID, content, timeStamp);
+                    forward(team, cid, problemID, content, timeStamp);
                 }
             }
             else doNext(judge, msg);

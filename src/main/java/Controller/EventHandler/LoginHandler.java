@@ -1,6 +1,8 @@
 package Controller.EventHandler;
 
 import Controller.*;
+import Controller.DatabaseManager.AccountManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,12 +28,12 @@ public class LoginHandler extends EventHandler<Guest> {
     public void handle(Guest guest, JSONObject msg) {
         try {
             if (msg.getString("msg_type").equals("login")) {
-                //AccountManager accountManager = new AccountManager();
+                AccountManager accountManager = new AccountManager();
                 String userType = msg.getString("user_type");
                 String username = msg.getString("username");
                 String password = msg.getString("password");
                 if (userType.equals("judge")) {
-                    if (true/*accountManager.authenticateJudge(username, password)*/) {
+                    if (accountManager.authenticateJudge(username, password)) {
                         Judge judge = Core.getInstance().getJudgeByID(username);
                         judge.login(guest);
                         sendResponse(judge, "success");
@@ -41,7 +43,7 @@ public class LoginHandler extends EventHandler<Guest> {
                     }
                 }
                 else if (userType.equals("participant")) {
-                    if (true/*accountManager.authenticateJudge(username, password)*/) {
+                    if (accountManager.authenticateJudge(username, password)) {
                         Team team = Core.getInstance().getTeamByID(username);
                         team.login(guest);
                         sendResponse(team, "success");

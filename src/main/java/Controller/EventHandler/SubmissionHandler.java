@@ -2,6 +2,10 @@ package Controller.EventHandler;
 
 import Controller.Core;
 import Controller.Team;
+import Controller.DatabaseManager.SubmissionManager;
+
+import java.util.Map;
+import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -59,14 +63,22 @@ public class SubmissionHandler extends EventHandler<Team> {
     public void handle(Team team, JSONObject msg) {
         try {
             if (msg.getString("msg_type").equals("submit")) {
+                SubmissionManager submissionManager = new SubmissionManager();
                 String problemID = msg.getString("problem_id");
                 String language = msg.getString("language");
                 String sourceCode = msg.getString("source_code");
                 long timeStamp = System.currentTimeMillis() / 1000;
                 if (true /*not appeared*/) {
-                    //store to DB
-                    forward(/*ID*/"", problemID, language, sourceCode, timeStamp, /*TEST_TIME*/0);
-                    sendAck(team, /*ID*/"", timeStamp);
+                    Map<String, String> store = new HashMap<String, String>();
+                    store.put("problem_id", problemID);
+                    store.put("language", language);
+                    store.put("team_id", team.getID());
+                    store.put("time_stamp", Long.toString(timeStamp));
+                    store.put("source_code", sourceCode);
+                    String sid = Integer.toString(submissionManager.addEntry(store));
+
+                    forward(sid, problemID, language, sourceCode, timeStamp, Core.getInstance().getProblemByID(problemID).getTimestamp());
+                    sendAck(team, sid, timeStamp);
                 }
                 else {
                     sendNak(team, timeStamp);
@@ -76,7 +88,5 @@ public class SubmissionHandler extends EventHandler<Team> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
-
 }
