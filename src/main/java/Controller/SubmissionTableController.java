@@ -57,8 +57,6 @@ public class SubmissionTableController implements Initializable {
             SubmissionItem item = new SubmissionItem(m.get("submission_id"), m.get("problem_id"), m.get("team_id"),
                     m.get("source_code"), m.get("submission_time_stamp"), m.get("result"), m.get("result_time_stamp"));
             this.submissions.add(item);
-            System.out.println(item.getSubmissionId() + " " + item.getProblemId() + " " + item.getTeamId() + " " +
-                    item.getSourceCode() + " " + item.getSubmissionTimeStamp() + " " + item.getResult() + " " + item.getResultTimeStamp());
         }
         submissionTable.setItems(this.submissions);
     }
