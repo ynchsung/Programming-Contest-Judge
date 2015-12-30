@@ -20,6 +20,7 @@ public class MainController implements Initializable {
     @FXML private TimeUpdateController timeUpdateController;
     @FXML private TestDataUpdateController testDataUpdateController;
     @FXML private ViewSubmissionController viewSubmissionController;
+    @FXML private ViewClarificationController viewClarificationController;
 
     // getter for each tab's controller
     public ViewSubmissionController getViewSubmissionController() {
@@ -110,5 +111,17 @@ public class MainController implements Initializable {
         lll.add(ma);
         lll.add(mb);
         viewSubmissionController.setSubmissions(lll);
+        // view Clarification
+        List<Map<String, String>> cl = new ArrayList<>();
+        Map<String, String> cma = new HashMap<>();
+        cma.put("clarification_id", "1");
+        cma.put("problem_id", "0");
+        cma.put("content", "This is a test.");
+        cma.put("time_stamp", "712222");
+        cl.add(cma);
+        if (viewClarificationController == null)
+            System.out.println("WTF");
+        else
+            viewClarificationController.setClarification(cl);
     }
 }
