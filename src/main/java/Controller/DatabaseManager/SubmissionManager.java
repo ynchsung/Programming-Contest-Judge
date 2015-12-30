@@ -14,9 +14,9 @@ public class SubmissionManager {
 
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS Submission " +
-                "(SubmissionID INT PRIMARY KEY  NOT NULL," +
-                " ProblemID INT NOT NULL, " +
-                " TeamID    INT NOT NULL, " +
+                "(SubmissionID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                " ProblemID STRING NOT NULL, " +
+                " TeamID    STRING NOT NULL, " +
                 " SubmissionTimestamp   INT NOT NULL, " +
                 " SourceCode    STRING, " +
                 " Result    STRING, " +
@@ -30,17 +30,11 @@ public class SubmissionManager {
         }
     }
 
-    public void addEntry(Map<String, String> entry) {
+    public int addEntry(Map<String, String> entry) {
         Connection c = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
 
-        String common = "INSERT INTO Submission (SubmissionID,ProblemID,TeamID,SubmissionTimestamp,SourceCode,Result,ResultTimestamp)";
-        String sql = common + "VALUES (" + entry.get("submission_id") + ", " +
-            entry.get("problem_id") + ", " +
-            entry.get("team_id") + ", " +
-            entry.get("time_stamp") + ", '" +
-            entry.get("source_code") + "', " +
-            "'Pending', -1);";
+        int id = -1;
 
         while (true) {
             try {
@@ -48,8 +42,19 @@ public class SubmissionManager {
                 c = DriverManager.getConnection("jdbc:sqlite:submission.db");
                 c.setAutoCommit(false);
 
-                stmt = c.createStatement();
-                stmt.executeUpdate(sql);
+                stmt = c.prepareStatement("INSERT INTO Submission (ProblemID,TeamID,SubmissionTimestamp,SourceCode,Result,ResultTimestamp)" +
+                                "VALUES (?, ?, ?, ?, 'Pending', -1);", Statement.RETURN_GENERATED_KEYS);
+                stmt.setString(1, entry.get("problem_id"));
+                stmt.setString(2, entry.get("team_id"));
+                stmt.setString(3, entry.get("time_stamp"));
+                stmt.setString(4, entry.get("source_code"));
+                stmt.executeUpdate();
+
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                        id = rs.getInt(1);
+                }
+                rs.close();
                 stmt.close();
                 c.commit();
                 c.close();
@@ -63,11 +68,12 @@ public class SubmissionManager {
                 System.err.println( e.getClass().getName() + ": " + e.getMessage());
             }
         }
+        return id;
     }
 
     public void updateEntry(Map<String, String> entry) {
         Connection c = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         while (true) {
             try {
                 Class.forName("org.sqlite.JDBC");
@@ -76,11 +82,11 @@ public class SubmissionManager {
 
                 int nRTS = Integer.parseInt(entry.get("time_stamp"));
 
-                stmt = c.createStatement();
-                String sql = "SELECT ResultTimestamp FROM Submission WHERE SubmissionID = " + entry.get("submission_id") + ";";
-                ResultSet rs = stmt.executeQuery(sql);
+                stmt = c.prepareStatement("SELECT ResultTimestamp FROM Submission WHERE SubmissionID = ?;");
+                stmt.setString(1, entry.get("submission_id"));
+                ResultSet rs = stmt.executeQuery();
 
-                if (rs.getInt("ResultTimestamp") > nRTS) {
+                if (!rs.next() || rs.getInt("ResultTimestamp") > nRTS) {
                     rs.close();
                     stmt.close();
                     c.close();
@@ -89,12 +95,12 @@ public class SubmissionManager {
                 rs.close();
                 stmt.close();
 
-                sql = "UPDATE Submission SET Result = '" + entry.get("result") +
-                    "',ResultTimestamp = " + entry.get("time_stamp") +
-                    " WHERE SubmissionID = '" + entry.get("submission_id") + "';";
+                stmt = c.prepareStatement("UPDATE Submission SET Result = ?, ResultTimestamp = ? WHERE SubmissionID = ?;");
 
-                stmt = c.createStatement();
-                stmt.executeUpdate(sql);
+                stmt.setString(1, entry.get("result"));
+                stmt.setString(2, entry.get("time_stamp"));
+                stmt.setString(3, entry.get("submission_id"));
+                stmt.executeUpdate();
                 stmt.close();
                 c.commit();
                 c.close();
@@ -126,12 +132,14 @@ public class SubmissionManager {
                     Map<String, String> entry = new HashMap<String, String>();
 
                     int sid = rs.getInt("SubmissionID");
-                    int pid = rs.getInt("ProblemID");
+                    String pid = rs.getString("ProblemID");
+                    String tid = rs.getString("TeamID");
                     int stime = rs.getInt("SubmissionTimestamp");
                     String result = rs.getString("Result");
                     int rtime = rs.getInt("ResultTimestamp");
                     entry.put("submission_id", Integer.toString(sid));
-                    entry.put("problem_id", Integer.toString(pid));
+                    entry.put("problem_id", pid);
+                    entry.put("team_id", tid);
                     entry.put("submission_time_stamp", Integer.toString(stime));
                     entry.put("result", result);
                     entry.put("result_time_stamp", Integer.toString(rtime));
@@ -186,9 +194,9 @@ public class SubmissionManager {
         return response;
     }
 
-    public List<Map<String, String>> sync(int team_id, int time_stamp) {
+    public List<Map<String, String>> sync(String team_id, int time_stamp) {
         Connection c = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         List<Map<String, String>> response = new ArrayList<Map<String, String>>();
         while (true) {
             try {
@@ -196,19 +204,19 @@ public class SubmissionManager {
                 c = DriverManager.getConnection("jdbc:sqlite:submission.db");
                 c.setAutoCommit(false);
 
-                stmt = c.createStatement();
-                String sql = "SELECT SubmissionID, ProblemID, SubmissionTimestamp, SourceCode FROM Submission" +
-                    " WHERE TeamID = " + Integer.toString(team_id) +
-                    " AND SubmissionTimestamp >= " + Integer.toString(time_stamp) + ";";
-                ResultSet rs = stmt.executeQuery(sql);
+                stmt = c.prepareStatement("SELECT SubmissionID, ProblemID, SubmissionTimestamp, SourceCode FROM Submission" +
+                    " WHERE TeamID = ? AND SubmissionTimestamp >= ?;");
+                stmt.setString(1, team_id);
+                stmt.setString(2, Integer.toString(time_stamp));
+                ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     Map<String, String> entry = new HashMap<String, String>();
 
                     int sid = rs.getInt("SubmissionID");
-                    int pid = rs.getInt("ProblemID");
+                    String pid = rs.getString("ProblemID");
                     int stime = rs.getInt("SubmissionTimestamp");
                     entry.put("submission_id", Integer.toString(sid));
-                    entry.put("problem_id", Integer.toString(pid));
+                    entry.put("problem_id", pid);
                     entry.put("submission_time_stamp", Integer.toString(stime));
                     if (rs.getString("SourceCode") != null) {
                         entry.put("source_code", "1");
@@ -218,11 +226,11 @@ public class SubmissionManager {
                 rs.close();
                 stmt.close();
 
-                stmt = c.createStatement();
-                sql = "SELECT SubmissionID, Result, ResultTimestamp FROM Submission" +
-                    " WHERE TeamID = " + Integer.toString(team_id) +
-                    " AND ResultTimestamp >= " + Integer.toString(time_stamp) + ";";
-                rs = stmt.executeQuery(sql);
+                stmt = c.prepareStatement("SELECT SubmissionID, Result, ResultTimestamp FROM Submission" +
+                    " WHERE TeamID = ? AND ResultTimestamp >= ?;");
+                stmt.setString(1, team_id);
+                stmt.setString(2, Integer.toString(time_stamp));
+                rs = stmt.executeQuery();
                 while (rs.next()) {
                     Map<String, String> entry = new HashMap<String, String>();
 
@@ -248,6 +256,46 @@ public class SubmissionManager {
             }
         }
         return response;
+    }
+
+    public Map<String, String> getSubmissionById(int submission_id) {
+            Connection c = null;
+            Statement stmt = null;
+            Map<String, String> response = new HashMap<String, String>();
+            while (true) {
+                try {
+                    Class.forName("org.sqlite.JDBC");
+                    c = DriverManager.getConnection("jdbc:sqlite:submission.db");
+                    c.setAutoCommit(false);
+
+                    stmt = c.createStatement();
+                    String sql = "SELECT * FROM Submission WHERE SubmissionID = " + submission_id + ";";
+                    ResultSet rs = stmt.executeQuery(sql);
+                    if (rs.next()) {
+                        int sid = rs.getInt("SubmissionID");
+                        String pid = rs.getString("ProblemID");
+                        int stime = rs.getInt("SubmissionTimestamp");
+                        response.put("submission_id", Integer.toString(sid));
+                        response.put("problem_id", pid);
+                        response.put("submission_time_stamp", Integer.toString(stime));
+                        if (rs.getString("SourceCode") != null) {
+                            response.put("source_code", "1");
+                        }
+                    }
+                    rs.close();
+                    stmt.close();
+                    c.close();
+                    break;
+                }
+                catch (SQLException e) {
+                    checkLock(e.getMessage());
+                    continue;
+                }
+                catch (Exception e) {
+                    System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                }
+            }
+            return response;
     }
 
     private void checkLock(String message) {

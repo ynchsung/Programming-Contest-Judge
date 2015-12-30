@@ -37,10 +37,7 @@ public class AccountManager {
 
     public void addEntry(Map<String, String> entry) {
         Connection c = null;
-        Statement stmt = null;
-        String common = "INSERT INTO Account (Account,Password) ";
-        String sql = common + "VALUES ('" + entry.get("account") + "', '" +
-            entry.get("password") + "');";
+        PreparedStatement stmt = null;
 
         while (true) {
             try {
@@ -48,8 +45,10 @@ public class AccountManager {
                 c = DriverManager.getConnection("jdbc:sqlite:" + entry.get("type") + "Account.db");
                 c.setAutoCommit(false);
 
-                stmt = c.createStatement();
-                stmt.executeUpdate(sql);
+                stmt = c.prepareStatement("INSERT INTO Account (Account, Password) VALUES(?, ?);");
+                stmt.setString(1, entry.get("account"));
+                stmt.setString(2, entry.get("password"));
+                stmt.executeUpdate();
                 stmt.close();
                 c.commit();
                 c.close();
@@ -124,7 +123,7 @@ public class AccountManager {
 
     public boolean authenticateJudge(String account, String password) {
         Connection c = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         boolean response = false;
         while (true) {
             try {
@@ -132,10 +131,10 @@ public class AccountManager {
                 c = DriverManager.getConnection("jdbc:sqlite:judgeAccount.db");
                 c.setAutoCommit(false);
 
-                stmt = c.createStatement();
-                String sql = "SELECT Account FROM Account WHERE Account = '" + account +
-                    "' AND Password = '" + password + "';";
-                ResultSet rs = stmt.executeQuery(sql);
+                stmt = c.prepareStatement("SELECT Account FROM Account WHERE Account = ? AND Password = ?;");
+                stmt.setString(1, account);
+                stmt.setString(2, password);
+                ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     response = true;
                 }
@@ -157,7 +156,7 @@ public class AccountManager {
 
     public boolean authenticateTeam(String account, String password) {
         Connection c = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         boolean response = false;
         while (true) {
             try {
@@ -165,10 +164,10 @@ public class AccountManager {
                 c = DriverManager.getConnection("jdbc:sqlite:teamAccount.db");
                 c.setAutoCommit(false);
 
-                stmt = c.createStatement();
-                String sql = "SELECT Account FROM Account WHERE Account = '" + account +
-                    "' AND Password = '" + password + "';";
-                ResultSet rs = stmt.executeQuery(sql);
+                stmt = c.prepareStatement("SELECT Account FROM Account WHERE Account = ? AND Password = ?;");
+                stmt.setString(1, account);
+                stmt.setString(2, password);
+                ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     response = true;
                 }

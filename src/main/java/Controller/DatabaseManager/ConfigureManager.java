@@ -32,13 +32,7 @@ public class ConfigureManager {
 
     public void addEntry(Map<String, String> entry) {
         Connection c = null;
-        Statement stmt = null;
-        String common = "INSERT INTO Configure (IP,Port,ScoreboardPort,JudgePassword,StartTime,EndTime,Timestamp) ";
-        String sql = common + "VALUES ('" + entry.get("ip") + "', " +
-            entry.get("port") + ", " + entry.get("scoreboard_port") + ", '" +
-            entry.get("judge_password") + "', " +
-            entry.get("start_time") + ", " + entry.get("end_time") + ", " +
-            entry.get("time_stamp") + ");";
+        PreparedStatement stmt = null;
 
         while (true) {
             try {
@@ -46,8 +40,17 @@ public class ConfigureManager {
                 c = DriverManager.getConnection("jdbc:sqlite:configure.db");
                 c.setAutoCommit(false);
 
-                stmt = c.createStatement();
-                stmt.executeUpdate(sql);
+                stmt = c.prepareStatement("INSERT INTO Configure (IP,Port,ScoreboardPort,JudgePassword,StartTime,EndTime,Timestamp) " +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?);");
+                stmt.setString(1, entry.get("ip"));
+                stmt.setString(2, entry.get("port"));
+                stmt.setString(3, entry.get("scoreboard_port"));
+                stmt.setString(4, entry.get("judge_password"));
+                stmt.setString(5, entry.get("start_time"));
+                stmt.setString(6, entry.get("end_time"));
+                stmt.setString(7, entry.get("time_stamp"));
+
+                stmt.executeUpdate();
                 stmt.close();
                 c.commit();
                 c.close();
