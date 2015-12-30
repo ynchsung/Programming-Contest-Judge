@@ -25,6 +25,11 @@
                     <fx:include fx:id="viewSubmission" source="ViewSubmission.fxml" />
                 </content>
             </Tab>
+            <Tab text="View Clarification" closable="false">
+                <content>
+                    <fx:include fx:id="viewClarification" source="ViewClarification.fxml" />
+                </content>
+            </Tab>
         </tabs>
     </TabPane>
 </VBox>
