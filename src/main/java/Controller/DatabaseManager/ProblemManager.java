@@ -16,7 +16,7 @@ public class ProblemManager {
 
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS Problem " +
-                "(ProblemID INT PRIMARY KEY NOT NULL," +
+                "(ProblemID STRING PRIMARY KEY NOT NULL," +
                 " TimeLimit DOUBLE  NOT NULL," +
                 " MemoryLimit   INT NOT NULL," +
                 " Input     STRING  NOT NULL," +
@@ -36,7 +36,7 @@ public class ProblemManager {
         Connection c = null;
         Statement stmt = null;
         String common = "INSERT INTO Problem (ProblemID,TimeLimit,MemoryLimit,Input,Output,SpecialJudge,Timestamp) ";
-        String sql = common + "VALUES (" + entry.get("problem_id") + ", " +
+        String sql = common + "VALUES ('" + entry.get("problem_id") + "', " +
             entry.get("time_limit") + ", " +
             entry.get("memory_limit") + ", '" +
             entry.get("input") + "', '" +
@@ -79,10 +79,10 @@ public class ProblemManager {
                 int nTS = Integer.parseInt(entry.get("time_stamp"));
 
                 stmt = c.createStatement();
-                String sql = "SELECT Timestamp FROM Problem WHERE ProblemID = " + entry.get("problem_id") + ";";
+                String sql = "SELECT Timestamp FROM Problem WHERE ProblemID = '" + entry.get("problem_id") + "';";
                 ResultSet rs = stmt.executeQuery(sql);
 
-                if (rs.getInt("Timestamp") > nTS) {
+                if (!rs.next() || rs.getInt("Timestamp") > nTS) {
                     rs.close();
                     stmt.close();
                     c.close();
@@ -152,14 +152,14 @@ public class ProblemManager {
                 while (rs.next()) {
                     Map<String, String> entry = new HashMap<String, String>();
 
-                    int pid = rs.getInt("ProblemID");
+                    String pid = rs.getString("ProblemID");
                     int time = rs.getInt("Timestamp");
                     int me = rs.getInt("MemoryLimit");
                     double te = rs.getDouble("TimeLimit");
                     String input = rs.getString("Input");
                     String output = rs.getString("Output");
                     String sj = rs.getString("SpecialJudge");
-                    entry.put("problem_id", Integer.toString(pid));
+                    entry.put("problem_id", pid);
                     entry.put("time_stamp", Integer.toString(time));
                     entry.put("memory_limit", Integer.toString(me));
                     entry.put("time_limit", Double.toString(te));
@@ -200,14 +200,14 @@ public class ProblemManager {
                 while (rs.next()) {
                     Map<String, String> entry = new HashMap<String, String>();
 
-                    int pid = rs.getInt("ProblemID");
+                    String pid = rs.getString("ProblemID");
                     int time = rs.getInt("Timestamp");
                     int me = rs.getInt("MemoryLimit");
                     double te = rs.getDouble("TimeLimit");
                     String input = rs.getString("Input");
                     String output = rs.getString("Output");
                     String sj = rs.getString("SpecialJudge");
-                    entry.put("problem_id", Integer.toString(pid));
+                    entry.put("problem_id", pid);
                     entry.put("time_stamp", Integer.toString(time));
                     entry.put("memory_limit", Integer.toString(me));
                     entry.put("time_limit", Double.toString(te));

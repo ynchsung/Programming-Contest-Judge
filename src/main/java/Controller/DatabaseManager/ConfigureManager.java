@@ -21,7 +21,7 @@ public class ConfigureManager {
                 " ScoreboardPort INT    NOT NULL," +
                 " JudgePassword  STRING NOT NULL," +
                 " StartTime INT NOT NULL," +
-                " EndTime   INT NOT NULL," +
+                " Duration   INT NOT NULL," +
                 " Timestamp INT NOT NULL" + ")";
             stmt.executeUpdate(sql);
             stmt.close();
@@ -34,13 +34,7 @@ public class ConfigureManager {
 
     public void addEntry(Map<String, String> entry) {
         Connection c = null;
-        Statement stmt = null;
-        String common = "INSERT INTO Configure (IP,Port,ScoreboardPort,JudgePassword,StartTime,EndTime,Timestamp) ";
-        String sql = common + "VALUES ('" + entry.get("ip") + "', " +
-            entry.get("port") + ", " + entry.get("scoreboard_port") + ", '" +
-            entry.get("judge_password") + "', " +
-            entry.get("start_time") + ", " + entry.get("end_time") + ", " +
-            entry.get("time_stamp") + ");";
+        PreparedStatement stmt = null;
 
         while (true) {
             try {
@@ -48,8 +42,17 @@ public class ConfigureManager {
                 c = DriverManager.getConnection("jdbc:sqlite:configure.db");
                 c.setAutoCommit(false);
 
-                stmt = c.createStatement();
-                stmt.executeUpdate(sql);
+                stmt = c.prepareStatement("INSERT INTO Configure (IP,Port,ScoreboardPort,JudgePassword,StartTime,Duration,Timestamp) " +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?);");
+                stmt.setString(1, entry.get("ip"));
+                stmt.setString(2, entry.get("port"));
+                stmt.setString(3, entry.get("scoreboard_port"));
+                stmt.setString(4, entry.get("judge_password"));
+                stmt.setString(5, entry.get("start_time"));
+                stmt.setString(6, entry.get("duration"));
+                stmt.setString(7, entry.get("time_stamp"));
+
+                stmt.executeUpdate();
                 stmt.close();
                 c.commit();
                 c.close();
@@ -89,7 +92,7 @@ public class ConfigureManager {
                 rs.close();
                 stmt.close();
 
-                sql = "UPDATE Configure SET EndTime = " + entry.get("end_time") +
+                sql = "UPDATE Configure SET Duration = " + entry.get("duration") +
                     ",Timestamp = " + entry.get("time_stamp") + ";";
 
                 stmt = c.createStatement();
@@ -129,14 +132,14 @@ public class ConfigureManager {
                     int sbport = rs.getInt("ScoreboardPort");
                     String jpw = rs.getString("JudgePassword");
                     int stime = rs.getInt("StartTime");
-                    int etime = rs.getInt("EndTime");
+                    int dur = rs.getInt("Duration");
                     int ts = rs.getInt("Timestamp");
                     entry.put("ip", ip);
                     entry.put("port", Integer.toString(port));
                     entry.put("scoreboard_port", Integer.toString(sbport));
                     entry.put("judge_password", jpw);
                     entry.put("start_time", Integer.toString(stime));
-                    entry.put("end_time", Integer.toString(etime));
+                    entry.put("duration", Integer.toString(dur));
                     entry.put("time_stamp", Integer.toString(ts));
                     response.add(entry);
                 }

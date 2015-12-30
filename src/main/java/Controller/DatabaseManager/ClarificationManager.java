@@ -16,8 +16,8 @@ public class ClarificationManager {
 
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS Clarification " +
-                "(ClarificationID INT PRIMARY KEY   NOT NULL," +
-                " ProblemID INT NOT NULL, " +
+                "(ClarificationID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                " ProblemID STRING  NOT NULL, " +
                 " Content   STRING  NOT NULL, " +
                 " Timestamp INT NOT NULL)";
             stmt.executeUpdate(sql);
@@ -29,14 +29,10 @@ public class ClarificationManager {
         }
     }
 
-    public void addEntry(Map<String, String> entry) {
+    public int addEntry(Map<String, String> entry) {
         Connection c = null;
-        Statement stmt = null;
-        String common = "INSERT INTO Clarification (ClarificationID,ProblemID,Content,Timestamp) ";
-        String sql = common + "VALUES (" + entry.get("clarification_id") + ", " +
-            entry.get("problem_id") + ", '" +
-            entry.get("content") + "', " +
-            entry.get("time_stamp") + ");";
+        PreparedStatement stmt = null;
+        int id = -1;
 
         while (true) {
             try {
@@ -44,8 +40,21 @@ public class ClarificationManager {
                 c = DriverManager.getConnection("jdbc:sqlite:clarification.db");
                 c.setAutoCommit(false);
 
-                stmt = c.createStatement();
-                stmt.executeUpdate(sql);
+                stmt = c.prepareStatement("INSERT INTO Clarification (ProblemID,Content,Timestamp) VALUES (?, ?, ?);", 
+                                Statement.RETURN_GENERATED_KEYS);
+                stmt.setString(1, entry.get("problem_id"));
+                stmt.setString(2, entry.get("content"));
+                stmt.setString(3, entry.get("time_stamp"));
+                stmt.executeUpdate();
+                
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    id = rs.getInt(1);
+                }
+                else {
+                    System.err.println("Fail to generate ID");
+                }
+                rs.close();
                 stmt.close();
                 c.commit();
                 c.close();
@@ -56,9 +65,11 @@ public class ClarificationManager {
                 continue;
             }
             catch (Exception e) {
-                System.err.println( e.getClass().getName() + ": " + e.getMessage());
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
             }
         }
+
+        return id;
     }
 
     public List<Map<String, String>> queryAll() {
@@ -77,11 +88,11 @@ public class ClarificationManager {
                     Map<String, String> entry = new HashMap<String, String>();
 
                     int cid = rs.getInt("ClarificationID");
-                    int pid = rs.getInt("ProblemID");
+                    String pid = rs.getString("ProblemID");
                     int time = rs.getInt("Timestamp");
                     String content = rs.getString("Content");
                     entry.put("clarification_id", Integer.toString(cid));
-                    entry.put("problem_id", Integer.toString(pid));
+                    entry.put("problem_id", pid);
                     entry.put("time_stamp", Integer.toString(time));
                     entry.put("content", content);
                     response.add(entry);
@@ -104,7 +115,7 @@ public class ClarificationManager {
 
     public List<Map<String, String>> sync(int time_stamp) {
         Connection c = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         List<Map<String, String>> response = new ArrayList<Map<String, String>>();
         while (true) {
             try {
@@ -112,18 +123,18 @@ public class ClarificationManager {
                 c = DriverManager.getConnection("jdbc:sqlite:clarification.db");
                 c.setAutoCommit(false);
 
-                stmt = c.createStatement();
-                String sql = "SELECT * FROM Clarification WHERE Timestamp >= " + Integer.toString(time_stamp) + ";";
-                ResultSet rs = stmt.executeQuery(sql);
+                stmt = c.prepareStatement("SELECT * FROM Clarification WHERE Timestamp >= ?;");
+                stmt.setString(1, Integer.toString(time_stamp));
+                ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     Map<String, String> entry = new HashMap<String, String>();
 
                     int cid = rs.getInt("ClarificationID");
-                    int pid = rs.getInt("ProblemID");
+                    String pid = rs.getString("ProblemID");
                     int time = rs.getInt("Timestamp");
                     String content = rs.getString("Content");
                     entry.put("clarification_id", Integer.toString(cid));
-                    entry.put("problem_id", Integer.toString(pid));
+                    entry.put("problem_id", pid);
                     entry.put("time_stamp", Integer.toString(time));
                     entry.put("content", content);
                     response.add(entry);
