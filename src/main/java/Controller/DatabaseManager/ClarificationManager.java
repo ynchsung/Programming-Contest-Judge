@@ -47,10 +47,10 @@ public class ClarificationManager {
                 
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
-                        id = rs.getInt(1);
+                    id = rs.getInt(1);
                 }
                 else {
-                        System.err.println("Fail to generate ID");
+                    System.err.println("Fail to generate ID");
                 }
                 rs.close();
                 stmt.close();
@@ -63,7 +63,7 @@ public class ClarificationManager {
                 continue;
             }
             catch (Exception e) {
-                System.err.println( e.getClass().getName() + ": " + e.getMessage());
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
             }
         }
 

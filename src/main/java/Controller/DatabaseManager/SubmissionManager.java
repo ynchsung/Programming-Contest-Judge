@@ -21,7 +21,8 @@ public class SubmissionManager {
                 " Language      STRING  NOT NULL," +
                 " SourceCode    STRING," +
                 " Result    STRING," +
-                " ResultTimestamp   INT)";
+                " ResultTimestamp   INT," +
+                " DataTimestamp INT)";
             stmt.executeUpdate(sql);
             stmt.close();
             c.close();
@@ -44,8 +45,8 @@ public class SubmissionManager {
                 c.setAutoCommit(false);
 
                 stmt = c.prepareStatement("INSERT INTO Submission " +
-                                "(ProblemID,TeamID,SubmissionTimestamp,Language,SourceCode,Result,ResultTimestamp)" +
-                                "VALUES (?, ?, ?, ?, ?, 'Pending', -1);", Statement.RETURN_GENERATED_KEYS);
+                                "(ProblemID,TeamID,SubmissionTimestamp,Language,SourceCode,Result,ResultTimestamp,DataTimestamp)" +
+                                "VALUES (?, ?, ?, ?, ?, 'Pending', -1, -1);", Statement.RETURN_GENERATED_KEYS);
                 stmt.setString(1, entry.get("problem_id"));
                 stmt.setString(2, entry.get("team_id"));
                 stmt.setString(3, entry.get("time_stamp"));
@@ -55,10 +56,10 @@ public class SubmissionManager {
 
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
-                        id = rs.getInt(1);
+                    id = rs.getInt(1);
                 }
                 else {
-                        System.err.println("Fail to generate ID");
+                    System.err.println("Fail to generate ID");
                 }
                 rs.close();
                 stmt.close();
@@ -71,7 +72,7 @@ public class SubmissionManager {
                 continue;
             }
             catch (Exception e) {
-                System.err.println( e.getClass().getName() + ": " + e.getMessage());
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
             }
         }
         return id;
@@ -101,11 +102,12 @@ public class SubmissionManager {
                 rs.close();
                 stmt.close();
 
-                stmt = c.prepareStatement("UPDATE Submission SET Result = ?, ResultTimestamp = ? WHERE SubmissionID = ?;");
+                stmt = c.prepareStatement("UPDATE Submission SET Result = ?, ResultTimestamp = ?, DataTimestamp = ? WHERE SubmissionID = ?;");
 
                 stmt.setString(1, entry.get("result"));
                 stmt.setString(2, entry.get("time_stamp"));
-                stmt.setString(3, entry.get("submission_id"));
+                stmt.setString(3, entry.get("data_time_stamp"));
+                stmt.setString(4, entry.get("submission_id"));
                 stmt.executeUpdate();
                 stmt.close();
                 c.commit();
@@ -144,6 +146,7 @@ public class SubmissionManager {
                     String result = rs.getString("Result");
                     int rtime = rs.getInt("ResultTimestamp");
                     String lang = rs.getString("Language");
+                    int dtime = rs.getInt("DataTimestamp");
                     entry.put("submission_id", Integer.toString(sid));
                     entry.put("problem_id", pid);
                     entry.put("team_id", tid);
@@ -151,6 +154,7 @@ public class SubmissionManager {
                     entry.put("result", result);
                     entry.put("result_time_stamp", Integer.toString(rtime));
                     entry.put("language", lang);
+                    entry.put("data_time_stamp", Integer.toString(dtime));
                     if (rs.getString("SourceCode") != null) {
                         entry.put("source_code", "1");
                     }
@@ -247,9 +251,11 @@ public class SubmissionManager {
                     String result = rs.getString("Result");
                     int sid = rs.getInt("SubmissionID");
                     int rtime = rs.getInt("ResultTimestamp");
+                    int dtime = rs.getInt("DataTimestamp");
                     entry.put("submission_id", Integer.toString(sid));
                     entry.put("result", result);
                     entry.put("result_time_stamp", Integer.toString(rtime));
+                    entry.put("data_time_stamp", Integer.toString(dtime));
                     response.add(entry);
                 }
                 rs.close();
@@ -284,12 +290,20 @@ public class SubmissionManager {
                     if (rs.next()) {
                         int sid = rs.getInt("SubmissionID");
                         String pid = rs.getString("ProblemID");
+                        int tid = rs.getInt("TeamID");
                         int stime = rs.getInt("SubmissionTimestamp");
                         String lang = rs.getString("Language");
+                        String result = rs.getString("Result");
+                        int rtime = rs.getInt("ResultTimestamp");
+                        int dtime = rs.getInt("DataTimestamp");
                         response.put("submission_id", Integer.toString(sid));
                         response.put("problem_id", pid);
+                        response.put("team_id", Integer.toString(tid));
                         response.put("submission_time_stamp", Integer.toString(stime));
                         response.put("language", lang);
+                        response.put("result", result);
+                        response.put("result_time_stamp", Integer.toString(rtime));
+                        response.put("data_time_stamp", Integer.toString(dtime));
                         if (rs.getString("SourceCode") != null) {
                             response.put("source_code", "1");
                         }
