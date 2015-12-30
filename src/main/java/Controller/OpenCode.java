@@ -22,7 +22,7 @@ public class OpenCode {
 
     public void show() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Controller/OpenCode.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("OpenCode.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setTitle("Open Code");
