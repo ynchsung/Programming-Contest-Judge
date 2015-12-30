@@ -1,0 +1,39 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import CustomNode.MyConfirmationButton?>
+<GridPane xmlns:fx="http://javafx.com/javafx"
+          fx:controller="Controller.TimeUpdateController"
+          hgap="10"
+          vgap="20" >
+    <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+    <Label text="Start Time"
+           GridPane.rowIndex="0"
+           GridPane.columnIndex="0" />
+    <Text  fx:id="startTime"
+           GridPane.rowIndex="0"
+           GridPane.columnIndex="1" />
+    <Label text="Duration"
+           GridPane.rowIndex="1"
+           GridPane.columnIndex="0" />
+    <TextField fx:id="duration"
+               GridPane.rowIndex="1"
+               GridPane.columnIndex="1" />
+    <Label text="minutes"
+           GridPane.rowIndex="1"
+           GridPane.columnIndex="2" />
+    <Label text="End Time"
+           GridPane.rowIndex="2"
+           GridPane.columnIndex="0" />
+    <Text  fx:id="endTime"
+           GridPane.rowIndex="2"
+           GridPane.columnIndex="1" />
+    <MyConfirmationButton fx:id="confirm"
+                          text="confirm"
+                          title="Confirmation"
+                          headerText="Confirmation"
+                          contentText="Confirm to change the ending time of the contest."
+                          GridPane.rowIndex="3"
+                          GridPane.columnIndex="2" />
+</GridPane>

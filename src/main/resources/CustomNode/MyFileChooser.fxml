@@ -1,0 +1,12 @@
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<fx:root type="javafx.scene.layout.HBox"
+         xmlns:fx="http://javafx.com/fxml" >
+    <TextField fx:id="filePath"
+               disable="true"
+               editable="false" />
+    <Button fx:id="choose"
+            text="choose"
+            onAction="#onChooseClicked" />
+</fx:root>

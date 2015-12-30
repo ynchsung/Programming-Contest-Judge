@@ -6,8 +6,6 @@ import Controller.Team;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
 /**
  * Created by tenyoku on 2015/12/24.
  */

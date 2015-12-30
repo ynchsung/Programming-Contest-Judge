@@ -1,0 +1,17 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.SubmissionTableController" >
+    <TableView fx:id="submissionTable"
+               HBox.hgrow="ALWAYS" >
+        <columns>
+            <TableColumn text="Submission Id" fx:id="submissionId" editable="false"/>
+            <TableColumn text="Problem Id" fx:id="problemId" editable="false"/>
+            <TableColumn text="Team Id" fx:id="teamId" editable="false"/>
+            <TableColumn text="Source Code" fx:id="sourceCode" editable="false"/>
+            <TableColumn text="Submission Time Stamp" fx:id="submissionTimeStamp" editable="false"/>
+            <TableColumn text="Result" fx:id="result" editable="false"/>
+            <TableColumn text="Result Time Stamp" fx:id="resultTimeStamp" editable="false"/>
+        </columns>
+    </TableView>
+</HBox>

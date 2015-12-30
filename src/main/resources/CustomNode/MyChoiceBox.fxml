@@ -1,0 +1,6 @@
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<fx:root type="javafx.scene.layout.AnchorPane"
+         xmlns:fx="http://javafx.com/fxml" >
+    <ChoiceBox fx:id="choiceBox" />
+</fx:root>
