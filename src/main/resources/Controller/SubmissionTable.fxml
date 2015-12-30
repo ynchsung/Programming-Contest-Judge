@@ -8,7 +8,7 @@
             <TableColumn text="Submission Id" fx:id="submissionId" editable="false"/>
             <TableColumn text="Problem Id" fx:id="problemId" editable="false"/>
             <TableColumn text="Team Id" fx:id="teamId" editable="false"/>
-            <TableColumn text="Source Code" fx:id="sourceCode" editable="false"/>
+            <TableColumn text="Source Code" fx:id="sourceCode" editable="false" sortable="false"/>
             <TableColumn text="Submission Time Stamp" fx:id="submissionTimeStamp" editable="false"/>
             <TableColumn text="Result" fx:id="result" editable="false"/>
             <TableColumn text="Result Time Stamp" fx:id="resultTimeStamp" editable="false"/>

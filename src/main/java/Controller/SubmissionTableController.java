@@ -1,6 +1,7 @@
 package Controller;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -65,7 +66,9 @@ public class SubmissionTableController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.self = this;
-        submissionTable.setTableMenuButtonVisible(true);
+        // init table
+        submissionTable.setTableMenuButtonVisible(false);
+        // set property value factory
         submissionId.setCellValueFactory(new PropertyValueFactory("submissionId"));
         problemId.setCellValueFactory(new PropertyValueFactory("problemId"));
         teamId.setCellValueFactory(new PropertyValueFactory("teamId"));
