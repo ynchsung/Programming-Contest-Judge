@@ -49,6 +49,9 @@ public class ClarificationManager {
                 if (rs.next()) {
                         id = rs.getInt(1);
                 }
+                else {
+                        System.err.println("Fail to generate ID");
+                }
                 rs.close();
                 stmt.close();
                 c.commit();
