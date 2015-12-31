@@ -1,7 +1,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <HBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="Controller.ClarificationTableController" >
+      fx:controller="SharedGuiElement.ClarificationTableController" >
     <TableView fx:id="clarificationTable"
                HBox.hgrow="ALWAYS" >
         <columns>

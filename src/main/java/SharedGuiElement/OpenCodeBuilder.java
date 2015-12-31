@@ -1,4 +1,4 @@
-package Controller;
+package SharedGuiElement;
 
 import javafx.util.Builder;
 

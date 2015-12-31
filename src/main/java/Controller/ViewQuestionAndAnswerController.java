@@ -1,5 +1,6 @@
 package Controller;
 
+import SharedGuiElement.QuestionAndAnswerTableController;
 import javafx.fxml.FXML;
 
 import java.util.List;

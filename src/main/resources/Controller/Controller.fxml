@@ -2,7 +2,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox fx:controller="Controller.MainController" xmlns:fx="http://javafx.com/fxml">
     <fx:include fx:id="remainingTime"
-                source="RemainingTime.fxml"/>
+                source="../SharedGuiElement/RemainingTime.fxml"/>
     <TabPane>
         <tabs>
             <Tab text="General" closable="false">

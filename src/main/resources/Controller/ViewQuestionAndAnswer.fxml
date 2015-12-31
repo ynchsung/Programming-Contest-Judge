@@ -4,6 +4,6 @@
       fx:id="viewQuestionAndAnswer"
       fx:controller="Controller.ViewQuestionAndAnswerController" >
     <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
-    <fx:include source="QuestionAndAnswerTable.fxml"
+    <fx:include source="../SharedGuiElement/QuestionAndAnswerTable.fxml"
                 fx:id="questionAndAnswerTable" />
 </VBox>

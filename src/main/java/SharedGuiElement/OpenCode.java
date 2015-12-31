@@ -1,4 +1,4 @@
-package Controller;
+package SharedGuiElement;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
