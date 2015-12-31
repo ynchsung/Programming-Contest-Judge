@@ -233,7 +233,7 @@ public class ProblemManager {
     }
     public Map<String, String> getProblemById(String problem_id) {
         Connection c = null;
-        Statement s = null;
+        Statement stmt = null;
         Map<String, String> response = new HashMap<String, String>();
         while (true) {
             try {
@@ -265,15 +265,44 @@ public class ProblemManager {
                     c.close();
                     break;
                 }
-                catch (SQLException e) {
-                    checkLock(e.getMessage());
-                    continue;
-                }
-                catch (Exception e) {
-                    System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                }
             }
-            return response;
+            catch (SQLException e) {
+                checkLock(e.getMessage());
+                continue;
+            }
+            catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            }
+        }
+        return response;
+    }
+    
+    public void flushTable() {
+        Connection c = null;
+        Statement stmt = null;
+        String response = new String();
+        while (true) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite:problem.db");
+                c.setAutoCommit(false);
+
+                stmt = c.createStatement();
+                String sql = "DELETE FROM Problem;";
+                stmt.executeUpdate(sql);
+                stmt.close();
+                c.commit();
+                c.close();
+                break;
+            }
+            catch (SQLException e) {
+                checkLock(e.getMessage());
+                continue;
+            }
+            catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            }
+        }
     }
 
     private void checkLock(String message) {
