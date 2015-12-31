@@ -30,6 +30,7 @@
            GridPane.rowIndex="2"
            GridPane.columnIndex="1" />
     <MyConfirmationButton fx:id="confirm"
+                          defaultButton="true"
                           text="confirm"
                           title="Confirmation"
                           headerText="Confirmation"

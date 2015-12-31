@@ -30,17 +30,20 @@ public class MyConfirmationButton extends HBox implements Initializable {
     private String title ;//= "Default Title";
     private String headerText;// = "Default header text.";
     private String contentText ;//= "Default content.";
+    private boolean defaultButton = false;
     private EventHandler okAction = event -> {};
     private EventHandler cancelAction = event -> {};
 
     public MyConfirmationButton(@NamedArg("text") String text,
                                 @NamedArg("title") String title,
                                 @NamedArg("headerText") String headerText,
-                                @NamedArg("contentText") String contentText) {
+                                @NamedArg("contentText") String contentText,
+                                @NamedArg("defaultButton") boolean isDefaultButton) {
         this.text = text;
         this.title = title;
         this.headerText = headerText;
         this.contentText = contentText;
+        this.defaultButton = isDefaultButton;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MyConfirmationButton.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -99,5 +102,6 @@ public class MyConfirmationButton extends HBox implements Initializable {
         setTitle(title);
         setHeaderText(headerText);
         setContentText(contentText);
+        button.setDefaultButton(defaultButton);
     }
 }
