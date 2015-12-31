@@ -50,7 +50,7 @@ public class QAManager {
                 c = DriverManager.getConnection("jdbc:sqlite:qa.db");
                 c.setAutoCommit(false);
 
-                if (entry.get("team_id") != null) {
+                if (entry.get("type").equals("question")) {
                     stmt = c.prepareStatement("INSERT INTO Question (ProblemID,TeamID,Content,Timestamp) VALUES (?, ?, ?, ?);", 
                             Statement.RETURN_GENERATED_KEYS);
                     stmt.setString(1, entry.get("problem_id"));
@@ -111,6 +111,7 @@ public class QAManager {
                     String pid = rs.getString("ProblemID");
                     String content = rs.getString("Content");
                     int time = rs.getInt("Timestamp");
+                    entry.put("type", "question");
                     entry.put("question_id", Integer.toString(qid));
                     entry.put("problem_id", pid);
                     entry.put("content", content);
@@ -129,6 +130,7 @@ public class QAManager {
                     int qid = rs.getInt("QuestionID");
                     String answer = rs.getString("Answer");
                     int time = rs.getInt("Timestamp");
+                    entry.put("type", "answer");
                     entry.put("answer_id", Integer.toString(aid));
                     entry.put("question_id", Integer.toString(qid));
                     entry.put("answer", answer);
@@ -172,6 +174,7 @@ public class QAManager {
                     String pid = rs.getString("ProblemID");
                     String content = rs.getString("Content");
                     int time = rs.getInt("Timestamp");
+                    entry.put("type", "question");
                     entry.put("question_id", Integer.toString(qid));
                     entry.put("problem_id", pid);
                     entry.put("content", content);
@@ -193,6 +196,7 @@ public class QAManager {
                     int qid = rs.getInt("QuestionID");
                     String answer = rs.getString("Content");
                     int time = rs.getInt("Timestamp");
+                    entry.put("type", "answer");
                     entry.put("answer_id", Integer.toString(aid));
                     entry.put("question_id", Integer.toString(qid));
                     entry.put("answer", answer);
@@ -235,6 +239,7 @@ public class QAManager {
                     String pid = rs.getString("ProblemID");
                     String content = rs.getString("Content");
                     int time = rs.getInt("Timestamp");
+                    entry.put("type", "question");
                     entry.put("question_id", Integer.toString(qid));
                     entry.put("problem_id", pid);
                     entry.put("content", content);
@@ -254,6 +259,7 @@ public class QAManager {
                     int qid = rs.getInt("QuestionID");
                     String answer = rs.getString("Content");
                     int time = rs.getInt("Timestamp");
+                    entry.put("type", "answer");
                     entry.put("answer_id", Integer.toString(aid));
                     entry.put("question_id", Integer.toString(qid));
                     entry.put("answer", answer);
