@@ -30,6 +30,11 @@
                     <fx:include fx:id="viewClarification" source="ViewClarification.fxml" />
                 </content>
             </Tab>
+            <Tab text="Q&amp;A" closable="false">
+                <content>
+                    <fx:include fx:id="viewQuestionAndAnswer" source="ViewQuestionAndAnswer.fxml" />
+                </content>
+            </Tab>
         </tabs>
     </TabPane>
 </VBox>

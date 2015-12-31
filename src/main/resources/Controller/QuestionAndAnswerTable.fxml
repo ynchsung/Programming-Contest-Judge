@@ -1,0 +1,14 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.QuestionAndAnswerTableController" >
+    <TableView fx:id="questionAndAnswerTable"
+               HBox.hgrow="ALWAYS" >
+        <columns>
+            <TableColumn text="Type" fx:id="type" editable="false"/>
+            <TableColumn text="Problem Id" fx:id="problemId" editable="false"/>
+            <TableColumn text="Content" fx:id="content" editable="false" sortable="false"/>
+            <TableColumn text="Time Stamp" fx:id="timeStamp" editable="false"/>
+        </columns>
+    </TableView>
+</HBox>
