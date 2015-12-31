@@ -231,6 +231,50 @@ public class ProblemManager {
         }
         return response;
     }
+    public Map<String, String> getProblemById(String problem_id) {
+        Connection c = null;
+        Statement s = null;
+        Map<String, String> response = new HashMap<String, String>();
+        while (true) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite:problem.db");
+                c.setAutoCommit(false);
+
+                stmt = c.createStatement();
+                String sql = "SELECT * FROM Problem WHERE ProblemID = " + problem_id + ";";
+                ResultSet rs = stmt.executeQuery(sql);
+                if (rs.next()) {
+                    String pid = rs.getString("ProblemID");
+                    int time = rs.getInt("Timestamp");
+                    int me = rs.getInt("MemoryLimit");
+                    double te = rs.getDouble("TimeLimit");
+                    String input = rs.getString("Input");
+                    String output = rs.getString("Output");
+                    String sj = rs.getString("SpecialJudge");
+                    response.put("problem_id", pid);
+                    response.put("time_stamp", Integer.toString(time));
+                    response.put("memory_limit", Integer.toString(me));
+                    response.put("time_limit", Double.toString(te));
+                    response.put("input", input);
+                    response.put("output", output);
+                    response.put("special_judge", sj);
+                    
+                    rs.close();
+                    stmt.close();
+                    c.close();
+                    break;
+                }
+                catch (SQLException e) {
+                    checkLock(e.getMessage());
+                    continue;
+                }
+                catch (Exception e) {
+                    System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                }
+            }
+            return response;
+    }
 
     private void checkLock(String message) {
         try {

@@ -277,54 +277,54 @@ public class SubmissionManager {
     }
 
     public Map<String, String> getSubmissionById(int submission_id) {
-            Connection c = null;
-            Statement stmt = null;
-            Map<String, String> response = new HashMap<String, String>();
-            while (true) {
-                try {
-                    Class.forName("org.sqlite.JDBC");
-                    c = DriverManager.getConnection("jdbc:sqlite:submission.db");
-                    c.setAutoCommit(false);
+        Connection c = null;
+        Statement stmt = null;
+        Map<String, String> response = new HashMap<String, String>();
+        while (true) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite:submission.db");
+                c.setAutoCommit(false);
 
-                    stmt = c.createStatement();
-                    String sql = "SELECT * FROM Submission WHERE SubmissionID = " + submission_id + ";";
-                    ResultSet rs = stmt.executeQuery(sql);
-                    if (rs.next()) {
-                        int sid = rs.getInt("SubmissionID");
-                        String pid = rs.getString("ProblemID");
-                        int tid = rs.getInt("TeamID");
-                        int stime = rs.getInt("SubmissionTimestamp");
-                        String lang = rs.getString("Language");
-                        String result = rs.getString("Result");
-                        int rtime = rs.getInt("ResultTimestamp");
-                        int dtime = rs.getInt("DataTimestamp");
-                        response.put("submission_id", Integer.toString(sid));
-                        response.put("problem_id", pid);
-                        response.put("team_id", Integer.toString(tid));
-                        response.put("submission_time_stamp", Integer.toString(stime));
-                        response.put("language", lang);
-                        response.put("result", result);
-                        response.put("result_time_stamp", Integer.toString(rtime));
-                        response.put("data_time_stamp", Integer.toString(dtime));
-                        if (rs.getString("SourceCode") != null) {
-                            response.put("source_code", "1");
-                        }
+                stmt = c.createStatement();
+                String sql = "SELECT * FROM Submission WHERE SubmissionID = " + submission_id + ";";
+                ResultSet rs = stmt.executeQuery(sql);
+                if (rs.next()) {
+                    int sid = rs.getInt("SubmissionID");
+                    String pid = rs.getString("ProblemID");
+                    int tid = rs.getInt("TeamID");
+                    int stime = rs.getInt("SubmissionTimestamp");
+                    String lang = rs.getString("Language");
+                    String result = rs.getString("Result");
+                    int rtime = rs.getInt("ResultTimestamp");
+                    int dtime = rs.getInt("DataTimestamp");
+                    response.put("submission_id", Integer.toString(sid));
+                    response.put("problem_id", pid);
+                    response.put("team_id", Integer.toString(tid));
+                    response.put("submission_time_stamp", Integer.toString(stime));
+                    response.put("language", lang);
+                    response.put("result", result);
+                    response.put("result_time_stamp", Integer.toString(rtime));
+                    response.put("data_time_stamp", Integer.toString(dtime));
+                    if (rs.getString("SourceCode") != null) {
+                        response.put("source_code", "1");
                     }
-                    rs.close();
-                    stmt.close();
-                    c.close();
-                    break;
                 }
-                catch (SQLException e) {
-                    checkLock(e.getMessage());
-                    continue;
-                }
-                catch (Exception e) {
-                    System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                }
+                rs.close();
+                stmt.close();
+                c.close();
+                break;
             }
-            return response;
-    }
+            catch (SQLException e) {
+                checkLock(e.getMessage());
+                continue;
+            }
+            catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            }
+        }
+        return response;
+    } 
 
     private void checkLock(String message) {
         try {
