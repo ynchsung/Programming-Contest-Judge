@@ -219,7 +219,7 @@ public class SubmissionManager {
                 c.setAutoCommit(false);
 
                 stmt = c.prepareStatement("SELECT SubmissionID, ProblemID, SubmissionTimestamp, Language, SourceCode FROM Submission" +
-                    " WHERE TeamID = ? AND SubmissionTimestamp > ?;");
+                    " WHERE TeamID = ? AND SubmissionTimestamp >= ?;");
                 stmt.setString(1, team_id);
                 stmt.setString(2, Integer.toString(time_stamp));
                 ResultSet rs = stmt.executeQuery();
@@ -267,7 +267,7 @@ public class SubmissionManager {
                 c.setAutoCommit(false);
 
                 stmt = c.prepareStatement("SELECT SubmissionID, SubmissionTimestamp, Result, ResultTimestamp, DataTimestamp FROM Submission" +
-                    " WHERE TeamID = ? AND ResultTimestamp > ?;");
+                    " WHERE TeamID = ? AND ResultTimestamp >= ?;");
                 stmt.setString(1, team_id);
                 stmt.setString(2, Integer.toString(time_stamp));
                 ResultSet rs = stmt.executeQuery();

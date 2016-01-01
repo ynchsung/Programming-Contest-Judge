@@ -164,7 +164,7 @@ public class QAManager {
                 c.setAutoCommit(false);
 
                 if (team_id.equals("")) {
-                    stmt = c.prepareStatement("SELECT * FROM Question WHERE Timestamp > ?;");
+                    stmt = c.prepareStatement("SELECT * FROM Question WHERE Timestamp >= ?;");
                     stmt.setString(1, Integer.toString(time_stamp));
                 }
                 else {
@@ -213,12 +213,12 @@ public class QAManager {
                 c.setAutoCommit(false);
 
                 if (team_id.equals("")) {
-                    stmt = c.prepareStatement("SELECT * FROM Answer WHERE Timestamp > ?;");
+                    stmt = c.prepareStatement("SELECT * FROM Answer WHERE Timestamp >= ?;");
                     stmt.setString(1, Integer.toString(time_stamp));
                 }
                 else {
                     stmt = c.prepareStatement("SELECT AnswerID, Answer.QuestionID, Answer.Content, Answer.Timestamp FROM Question, Answer" +
-                            " WHERE Question.QuestionID = Answer.QuestionID AND TeamID = ? AND Answer.Timestamp > ?;");
+                            " WHERE Question.QuestionID = Answer.QuestionID AND TeamID = ? AND Answer.Timestamp >= ?;");
                     stmt.setString(1, team_id);
                     stmt.setString(2, Integer.toString(time_stamp));
                 }
