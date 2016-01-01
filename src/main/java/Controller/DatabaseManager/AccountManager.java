@@ -227,7 +227,7 @@ public class AccountManager {
 
     private void checkLock(String message) {
         try {
-            if (message.equals("database is locked")) {
+            if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
                 Thread.sleep(sleepTime);
             }
             else {
