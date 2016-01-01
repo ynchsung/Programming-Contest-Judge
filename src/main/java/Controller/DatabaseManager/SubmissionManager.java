@@ -108,7 +108,7 @@ public class SubmissionManager {
 
                 stmt.setString(1, entry.get("result"));
                 stmt.setString(2, entry.get("time_stamp"));
-                stmt.setString(3, entry.get("data_time_stamp"));
+                stmt.setString(3, entry.get("testdata_time_stamp"));
                 stmt.setString(4, entry.get("submission_id"));
                 stmt.executeUpdate();
                 stmt.close();
@@ -156,7 +156,7 @@ public class SubmissionManager {
                     entry.put("result", result);
                     entry.put("result_time_stamp", Integer.toString(rtime));
                     entry.put("language", lang);
-                    entry.put("data_time_stamp", Integer.toString(dtime));
+                    entry.put("testdata_time_stamp", Integer.toString(dtime));
                     if (rs.getString("SourceCode") != null) {
                         entry.put("source_code", "1");
                     }
@@ -208,7 +208,7 @@ public class SubmissionManager {
         return response;
     }
 
-    public List<Map<String, String>> sync(String team_id, int time_stamp) {
+    public List<Map<String, String>> syncSubmission(String team_id, int time_stamp) {
         Connection c = null;
         PreparedStatement stmt = null;
         List<Map<String, String>> response = new ArrayList<Map<String, String>>();
@@ -219,7 +219,7 @@ public class SubmissionManager {
                 c.setAutoCommit(false);
 
                 stmt = c.prepareStatement("SELECT SubmissionID, ProblemID, SubmissionTimestamp, Language, SourceCode FROM Submission" +
-                    " WHERE TeamID = ? AND SubmissionTimestamp >= ?;");
+                    " WHERE TeamID = ? AND SubmissionTimestamp > ?;");
                 stmt.setString(1, team_id);
                 stmt.setString(2, Integer.toString(time_stamp));
                 ResultSet rs = stmt.executeQuery();
@@ -241,23 +241,49 @@ public class SubmissionManager {
                 }
                 rs.close();
                 stmt.close();
+                c.close();
+                break;
+            }
+            catch (SQLException e) {
+                checkLock(e.getMessage());
+                continue;
+            }
+            catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            }
+        }
+        return response;
+    }
 
-                stmt = c.prepareStatement("SELECT SubmissionID, Result, ResultTimestamp, DataTimestamp FROM Submission" +
-                    " WHERE TeamID = ? AND ResultTimestamp >= ?;");
+    public List<Map<String, String>> syncResult(String team_id, int time_stamp) {
+        Connection c = null;
+        PreparedStatement stmt = null;
+        List<Map<String, String>> response = new ArrayList<Map<String, String>>();
+
+        while (true) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite:submission.db");
+                c.setAutoCommit(false);
+
+                stmt = c.prepareStatement("SELECT SubmissionID, SubmissionTimestamp, Result, ResultTimestamp, DataTimestamp FROM Submission" +
+                    " WHERE TeamID = ? AND ResultTimestamp > ?;");
                 stmt.setString(1, team_id);
                 stmt.setString(2, Integer.toString(time_stamp));
-                rs = stmt.executeQuery();
+                ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     Map<String, String> entry = new HashMap<String, String>();
 
                     String result = rs.getString("Result");
                     int sid = rs.getInt("SubmissionID");
+                    int stime = rs.getInt("SubmissionTimestamp");
                     int rtime = rs.getInt("ResultTimestamp");
                     int dtime = rs.getInt("DataTimestamp");
                     entry.put("submission_id", Integer.toString(sid));
+                    entry.put("submission_time_stamp", Integer.toString(stime));
                     entry.put("result", result);
                     entry.put("result_time_stamp", Integer.toString(rtime));
-                    entry.put("data_time_stamp", Integer.toString(dtime));
+                    entry.put("testdata_time_stamp", Integer.toString(dtime));
                     response.add(entry);
                 }
                 rs.close();
@@ -305,7 +331,7 @@ public class SubmissionManager {
                     response.put("language", lang);
                     response.put("result", result);
                     response.put("result_time_stamp", Integer.toString(rtime));
-                    response.put("data_time_stamp", Integer.toString(dtime));
+                    response.put("testdata_time_stamp", Integer.toString(dtime));
                     if (rs.getString("SourceCode") != null) {
                         response.put("source_code", "1");
                     }
