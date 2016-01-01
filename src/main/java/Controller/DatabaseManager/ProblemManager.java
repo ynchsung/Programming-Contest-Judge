@@ -34,24 +34,24 @@ public class ProblemManager {
 
     public void addEntry(Map<String, String> entry) {
         Connection c = null;
-        Statement stmt = null;
-        String common = "INSERT INTO Problem (ProblemID,TimeLimit,MemoryLimit,Input,Output,SpecialJudge,Timestamp) ";
-        String sql = common + "VALUES ('" + entry.get("problem_id") + "', " +
-            entry.get("time_limit") + ", " +
-            entry.get("memory_limit") + ", '" +
-            entry.get("input") + "', '" +
-            entry.get("output") + "', '" +
-            entry.get("special_judge") + "', " +
-            entry.get("time_stamp") + ");";
-
+        PreparedStatement stmt = null;
         while (true) {
             try {
                 Class.forName("org.sqlite.JDBC");
                 c = DriverManager.getConnection("jdbc:sqlite:problem.db");
                 c.setAutoCommit(false);
 
-                stmt = c.createStatement();
-                stmt.executeUpdate(sql);
+                stmt = c.prepareStatement("INSERT INTO Problem (ProblemID,TimeLimit,MemoryLimit,Input,Output,SpecialJudge,Timestamp)" + 
+                        "VALUES (?, ?, ?, ?, ?, ?, ?);"); 
+                stmt.setString(1, entry.get("problem_id"));
+                stmt.setString(2, entry.get("time_limit"));
+                stmt.setString(3, entry.get("memory_limit"));
+                stmt.setString(4, entry.get("input"));
+                stmt.setString(5, entry.get("output"));
+                stmt.setString(6, entry.get("special_judge"));
+                stmt.setString(7, entry.get("time_stamp"));
+
+                stmt.executeUpdate();
                 stmt.close();
                 c.commit();
                 c.close();
@@ -69,7 +69,7 @@ public class ProblemManager {
 
     public void updateEntry(Map<String, String> entry) {
         Connection c = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         while (true) {
             try {
                 Class.forName("org.sqlite.JDBC");
@@ -78,9 +78,9 @@ public class ProblemManager {
 
                 int nTS = Integer.parseInt(entry.get("time_stamp"));
 
-                stmt = c.createStatement();
-                String sql = "SELECT Timestamp FROM Problem WHERE ProblemID = '" + entry.get("problem_id") + "';";
-                ResultSet rs = stmt.executeQuery(sql);
+                stmt = c.prepareStatement("SELECT Timestamp FROM Problem WHERE ProblemID = ?;");
+                stmt.setString(1, entry.get("problem_id"));
+                ResultSet rs = stmt.executeQuery();
 
                 if (!rs.next() || rs.getInt("Timestamp") > nTS) {
                     rs.close();
@@ -103,25 +103,28 @@ public class ProblemManager {
                 }
                 if (entry.get("input") != null) {
                     setType.add("Input");
-                    setValue.add("'" + entry.get("input") + "'");
+                    setValue.add(entry.get("input"));
                 }
                 if (entry.get("output") != null) {
                     setType.add("Output");
-                    setValue.add("'" + entry.get("output") + "'");
+                    setValue.add(entry.get("output"));
                 }
                 if (entry.get("special_judge") != null) {
                     setType.add("SpecialJudge");
-                    setValue.add("'" + entry.get("special_judge") + "'");
+                    setValue.add(entry.get("special_judge"));
                 }
 
-                sql = "UPDATE Problem SET ";
+                String sql = "UPDATE Problem SET ";
                 for (int i = 0; i < setType.size(); i++) {
-                    sql += setType.get(i) + " = " + setValue.get(i) + ",";
+                    sql += setType.get(i) + " = ?, ";
                 }
                 sql +=  "Timestamp = " + entry.get("time_stamp") + " WHERE ProblemID = '" + entry.get("problem_id") + "';";
 
-                stmt = c.createStatement();
-                stmt.executeUpdate(sql);
+                stmt = c.prepareStatement(sql);
+                for (int i = 0; i < setValue.size(); i++) {
+                    stmt.setString(i + 1, setValue.get(i));
+                }
+                stmt.executeUpdate();
                 stmt.close();
                 c.commit();
                 c.close();
@@ -230,6 +233,79 @@ public class ProblemManager {
             }
         }
         return response;
+    }
+    public Map<String, String> getProblemById(String problem_id) {
+        Connection c = null;
+        PreparedStatement stmt = null;
+        Map<String, String> response = new HashMap<String, String>();
+        while (true) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite:problem.db");
+                c.setAutoCommit(false);
+
+                stmt = c.prepareStatement("SELECT * FROM Problem WHERE ProblemID = ?;");
+                stmt.setString(1, problem_id);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    String pid = rs.getString("ProblemID");
+                    int time = rs.getInt("Timestamp");
+                    int me = rs.getInt("MemoryLimit");
+                    double te = rs.getDouble("TimeLimit");
+                    String input = rs.getString("Input");
+                    String output = rs.getString("Output");
+                    String sj = rs.getString("SpecialJudge");
+                    response.put("problem_id", pid);
+                    response.put("time_stamp", Integer.toString(time));
+                    response.put("memory_limit", Integer.toString(me));
+                    response.put("time_limit", Double.toString(te));
+                    response.put("input", input);
+                    response.put("output", output);
+                    response.put("special_judge", sj);
+                    
+                    rs.close();
+                    stmt.close();
+                    c.close();
+                    break;
+                }
+            }
+            catch (SQLException e) {
+                checkLock(e.getMessage());
+                continue;
+            }
+            catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            }
+        }
+        return response;
+    }
+    
+    public void flushTable() {
+        Connection c = null;
+        Statement stmt = null;
+        String response = new String();
+        while (true) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite:problem.db");
+                c.setAutoCommit(false);
+
+                stmt = c.createStatement();
+                String sql = "DELETE FROM Problem;";
+                stmt.executeUpdate(sql);
+                stmt.close();
+                c.commit();
+                c.close();
+                break;
+            }
+            catch (SQLException e) {
+                checkLock(e.getMessage());
+                continue;
+            }
+            catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            }
+        }
     }
 
     private void checkLock(String message) {

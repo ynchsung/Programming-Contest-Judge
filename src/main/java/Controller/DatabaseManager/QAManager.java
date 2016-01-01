@@ -50,7 +50,7 @@ public class QAManager {
                 c = DriverManager.getConnection("jdbc:sqlite:qa.db");
                 c.setAutoCommit(false);
 
-                if (entry.get("team_id") != null) {
+                if (entry.get("type").equals("question")) {
                     stmt = c.prepareStatement("INSERT INTO Question (ProblemID,TeamID,Content,Timestamp) VALUES (?, ?, ?, ?);", 
                             Statement.RETURN_GENERATED_KEYS);
                     stmt.setString(1, entry.get("problem_id"));
@@ -111,6 +111,7 @@ public class QAManager {
                     String pid = rs.getString("ProblemID");
                     String content = rs.getString("Content");
                     int time = rs.getInt("Timestamp");
+                    entry.put("type", "question");
                     entry.put("question_id", Integer.toString(qid));
                     entry.put("problem_id", pid);
                     entry.put("content", content);
@@ -129,6 +130,7 @@ public class QAManager {
                     int qid = rs.getInt("QuestionID");
                     String answer = rs.getString("Answer");
                     int time = rs.getInt("Timestamp");
+                    entry.put("type", "answer");
                     entry.put("answer_id", Integer.toString(aid));
                     entry.put("question_id", Integer.toString(qid));
                     entry.put("answer", answer);
@@ -151,7 +153,7 @@ public class QAManager {
         return response;
     }
 
-    public List<Map<String, String>> syncParticipant(String team_id, int time_stamp) {
+    public List<Map<String, String>> syncQuestion(String team_id, int time_stamp) {
         Connection c = null;
         PreparedStatement stmt = null;
         List<Map<String, String>> response = new ArrayList<Map<String, String>>();
@@ -161,9 +163,15 @@ public class QAManager {
                 c = DriverManager.getConnection("jdbc:sqlite:qa.db");
                 c.setAutoCommit(false);
 
-                stmt = c.prepareStatement("SELECT * FROM Question WHERE TeamID = ? AND Timestamp >= ?;");
-                stmt.setString(1, team_id);
-                stmt.setString(2, Integer.toString(time_stamp));
+                if (team_id.equals("")) {
+                    stmt = c.prepareStatement("SELECT * FROM Question WHERE Timestamp >= ?;");
+                    stmt.setString(1, Integer.toString(time_stamp));
+                }
+                else {
+                    stmt = c.prepareStatement("SELECT * FROM Question WHERE TeamID = ? AND Timestamp >= ?;");
+                    stmt.setString(1, team_id);
+                    stmt.setString(2, Integer.toString(time_stamp));
+                }
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     Map<String, String> entry = new HashMap<String, String>();
@@ -175,27 +183,6 @@ public class QAManager {
                     entry.put("question_id", Integer.toString(qid));
                     entry.put("problem_id", pid);
                     entry.put("content", content);
-                    entry.put("time_stamp", Integer.toString(time));
-                    response.add(entry);
-                }
-                rs.close();
-                stmt.close();
-
-                stmt = c.prepareStatement("SELECT AnswerID, Answer.QuestionID, Answer.Content, Answer.Timestamp FROM Question, Answer" +
-                    " WHERE Question.QuestionID = Answer.QuestionID AND TeamID = ? AND Answer.Timestamp >= ?;");
-                stmt.setString(1, team_id);
-                stmt.setString(2, Integer.toString(time_stamp));
-                rs = stmt.executeQuery();
-                while (rs.next()) {
-                    Map<String, String> entry = new HashMap<String, String>();
-
-                    int aid = rs.getInt("AnswerID");
-                    int qid = rs.getInt("QuestionID");
-                    String answer = rs.getString("Content");
-                    int time = rs.getInt("Timestamp");
-                    entry.put("answer_id", Integer.toString(aid));
-                    entry.put("question_id", Integer.toString(qid));
-                    entry.put("answer", answer);
                     entry.put("time_stamp", Integer.toString(time));
                     response.add(entry);
                 }
@@ -215,7 +202,7 @@ public class QAManager {
         return response;
     }
 
-    public List<Map<String, String>> syncJudge(int time_stamp) {
+    public List<Map<String, String>> syncAnswer(String team_id, int time_stamp) {
         Connection c = null;
         PreparedStatement stmt = null;
         List<Map<String, String>> response = new ArrayList<Map<String, String>>();
@@ -225,28 +212,17 @@ public class QAManager {
                 c = DriverManager.getConnection("jdbc:sqlite:qa.db");
                 c.setAutoCommit(false);
 
-                stmt = c.prepareStatement("SELECT * FROM Question WHERE Timestamp >= ?;");
-                stmt.setString(1, Integer.toString(time_stamp));
-                ResultSet rs = stmt.executeQuery();
-                while (rs.next()) {
-                    Map<String, String> entry = new HashMap<String, String>();
-
-                    int qid = rs.getInt("QuestionID");
-                    String pid = rs.getString("ProblemID");
-                    String content = rs.getString("Content");
-                    int time = rs.getInt("Timestamp");
-                    entry.put("question_id", Integer.toString(qid));
-                    entry.put("problem_id", pid);
-                    entry.put("content", content);
-                    entry.put("time_stamp", Integer.toString(time));
-                    response.add(entry);
+                if (team_id.equals("")) {
+                    stmt = c.prepareStatement("SELECT * FROM Answer WHERE Timestamp >= ?;");
+                    stmt.setString(1, Integer.toString(time_stamp));
                 }
-                rs.close();
-                stmt.close();
-
-                stmt = c.prepareStatement("SELECT * FROM Answer WHERE Timestamp >= ?;");
-                stmt.setString(1, Integer.toString(time_stamp));
-                rs = stmt.executeQuery();
+                else {
+                    stmt = c.prepareStatement("SELECT AnswerID, Answer.QuestionID, Answer.Content, Answer.Timestamp FROM Question, Answer" +
+                            " WHERE Question.QuestionID = Answer.QuestionID AND TeamID = ? AND Answer.Timestamp >= ?;");
+                    stmt.setString(1, team_id);
+                    stmt.setString(2, Integer.toString(time_stamp));
+                }
+                ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     Map<String, String> entry = new HashMap<String, String>();
 
@@ -272,6 +248,40 @@ public class QAManager {
             }
         }
         return response;
+    }
+    
+    public void flushTable() {
+        Connection c = null;
+        Statement stmt = null;
+        String response = new String();
+        while (true) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite:qa.db");
+                c.setAutoCommit(false);
+
+                stmt = c.createStatement();
+                String sql = "DELETE FROM Question;";
+                stmt.executeUpdate(sql);
+                stmt.close();
+                c.commit();
+                
+                stmt = c.createStatement();
+                sql = "DELETE FROM Answer;";
+                stmt.executeUpdate(sql);
+                stmt.close();
+                c.commit();
+                c.close();
+                break;
+            }
+            catch (SQLException e) {
+                checkLock(e.getMessage());
+                continue;
+            }
+            catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            }
+        }
     }
 
     private void checkLock(String message) {
