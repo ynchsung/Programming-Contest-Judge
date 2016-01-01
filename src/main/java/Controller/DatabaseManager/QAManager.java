@@ -177,9 +177,11 @@ public class QAManager {
                     Map<String, String> entry = new HashMap<String, String>();
 
                     int qid = rs.getInt("QuestionID");
+                    String tid = rs.getString("TeamID");
                     String pid = rs.getString("ProblemID");
                     String content = rs.getString("Content");
                     int time = rs.getInt("Timestamp");
+                    entry.put("team_id", tid);
                     entry.put("question_id", Integer.toString(qid));
                     entry.put("problem_id", pid);
                     entry.put("content", content);
@@ -213,12 +215,13 @@ public class QAManager {
                 c.setAutoCommit(false);
 
                 if (team_id.equals("")) {
-                    stmt = c.prepareStatement("SELECT * FROM Answer WHERE Timestamp >= ?;");
+                    stmt = c.prepareStatement("SELECT AnswerID, Answer.QuestionID, Answer.Content, Answer.Timestamp, TeamID FROM Question," +
+                            " Answer WHERE Question.QuestionID = Answer.QuestionID AND Answer.Timestamp >= ?;");
                     stmt.setString(1, Integer.toString(time_stamp));
                 }
                 else {
-                    stmt = c.prepareStatement("SELECT AnswerID, Answer.QuestionID, Answer.Content, Answer.Timestamp FROM Question, Answer" +
-                            " WHERE Question.QuestionID = Answer.QuestionID AND TeamID = ? AND Answer.Timestamp >= ?;");
+                    stmt = c.prepareStatement("SELECT AnswerID, Answer.QuestionID, Answer.Content, Answer.Timestamp, TeamID FROM Question," +
+                            " Answer WHERE Question.QuestionID = Answer.QuestionID AND TeamID = ? AND Answer.Timestamp >= ?;");
                     stmt.setString(1, team_id);
                     stmt.setString(2, Integer.toString(time_stamp));
                 }
@@ -228,10 +231,12 @@ public class QAManager {
 
                     int aid = rs.getInt("AnswerID");
                     int qid = rs.getInt("QuestionID");
+                    String tid = rs.getString("TeamID");
                     String answer = rs.getString("Content");
                     int time = rs.getInt("Timestamp");
                     entry.put("answer_id", Integer.toString(aid));
                     entry.put("question_id", Integer.toString(qid));
+                    entry.put("team_id", tid);
                     entry.put("answer", answer);
                     entry.put("time_stamp", Integer.toString(time));
                     response.add(entry);
