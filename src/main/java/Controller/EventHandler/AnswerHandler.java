@@ -55,6 +55,7 @@ public class AnswerHandler extends EventHandler<Judge> {
                 long timeStamp = System.currentTimeMillis() / 1000; /* TODO: get timer time */
                 Map<String, String> store = new HashMap<String, String>();
 
+                store.put("type", "question");
                 store.put("question_id", questionID);
                 store.put("answer", answer);
                 store.put("time_stamp", Long.toString(timeStamp));

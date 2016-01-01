@@ -11,11 +11,11 @@ public class Judge extends Client {
 
     public Judge(String id, Connection connection) {
         super(id, connection);
-        this.eventHandler = new ResultHandler(new AnswerHandler(new SyncJudgeDataHandler(new ClarificationHandler(new SyncHandler(null)))));
+        this.eventHandler = new ResultHandler(new AnswerHandler(new SyncJudgeDataHandler(new ClarificationHandler(new SyncHandler(new SyncTimeHandler(null))))));
     }
 
     @Override
     public void handle(JSONObject msg) {
-
+        this.eventHandler.handle(this, msg);
     }
 }

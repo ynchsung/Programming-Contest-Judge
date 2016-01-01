@@ -1,14 +1,12 @@
 package Controller.EventHandler;
 
 import Controller.Client;
-import Controller.DatabaseManager.ClarificationManager;
 import Controller.Team;
-import Controller.Judge;
-import Controller.DatabaseManager.QAManager;
 import Controller.DatabaseManager.SubmissionManager;
+import Controller.DatabaseManager.QAManager;
+import Controller.DatabaseManager.ClarificationManager;
 
 import java.util.Map;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

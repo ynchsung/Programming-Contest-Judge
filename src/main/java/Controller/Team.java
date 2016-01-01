@@ -11,11 +11,11 @@ public class Team extends Client {
 
     public Team(String id, Connection connection) {
         super(id, connection);
-        this.eventHandler = new SubmissionHandler(new QuestionHandler(new SyncHandler(null)));
+        this.eventHandler = new SubmissionHandler(new QuestionHandler(new SyncHandler(new SyncTimeHandler(null))));
     }
 
     @Override
     public void handle(JSONObject msg) {
-
+        this.eventHandler.handle(this, msg);
     }
 }

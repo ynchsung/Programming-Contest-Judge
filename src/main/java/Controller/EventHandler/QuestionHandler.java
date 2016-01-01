@@ -57,6 +57,7 @@ public class QuestionHandler extends EventHandler<Team> {
                 long timeStamp = System.currentTimeMillis() / 1000; /* TODO: get timer time */
                 Map<String, String> store = new HashMap<String, String>();
 
+                store.put("type", "question");
                 store.put("problem_id", problemID);
                 store.put("team_id", teamID);
                 store.put("content", content);
