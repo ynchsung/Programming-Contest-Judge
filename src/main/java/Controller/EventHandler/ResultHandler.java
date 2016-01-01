@@ -43,15 +43,14 @@ public class ResultHandler extends EventHandler<Judge> {
         }
     }
 
-    private void forward(Team team, String submissionID, String result, String runTime, String memory, long timeStamp) {
+    private void forward(Team team, String submissionID, String result, String submit_timeStamp, String result_timeStamp) {
         try {
             JSONObject msg = new JSONObject();
             msg.append("msg_type", "result");
             msg.append("submission_id", submissionID);
             msg.append("result", result);
-            msg.append("run_time", runTime);
-            msg.append("memory", memory);
-            msg.append("time_stamp", timeStamp);
+            msg.append("submit_time_stamp", submit_timeStamp);
+            msg.append("time_stamp", result_timeStamp);
             team.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -65,27 +64,26 @@ public class ResultHandler extends EventHandler<Judge> {
                 SubmissionManager submissionManager = new SubmissionManager();
                 String submissionID = msg.getString("submission_id");
                 String result = msg.getString("result");
-                String runTime = msg.getString("run_time");
-                String memory = msg.getString("memory");
-                String testdata_timestamp = msg.getString("testdata_timestamp");
-                long timeStamp = System.currentTimeMillis() / 1000;
+                String testdata_timeStamp = msg.getString("testdata_time_stamp");
+                long result_timeStamp = System.currentTimeMillis() / 1000;
                 if (true /*not appeared*/) {
                     Map<String, String> store = new HashMap<String, String>();
                     store.put("submission_id", submissionID);
                     store.put("result", result);
-                    store.put("time_stamp", Long.toString(timeStamp));
-                    store.put("testdata_timestamp", testdata_timestamp);
+                    store.put("time_stamp", Long.toString(result_timeStamp));
+                    store.put("testdata_time_stamp", testdata_timeStamp);
                     submissionManager.updateEntry(store);
 
-                    sendAck(judge, submissionID, timeStamp);
+                    sendAck(judge, submissionID, result_timeStamp);
 
                     Map<String, String> getSub = submissionManager.getSubmissionById(Integer.valueOf(submissionID));
                     String teamID = getSub.get("team_id");
+                    String submit_timeStamp = getSub.get("submission_time_stamp");
                     Team team = Core.getInstance().getTeamByID(teamID);
-                    forward(team, submissionID, result, runTime, memory, timeStamp);
+                    forward(team, submissionID, result, submit_timeStamp, String.valueOf(result_timeStamp));
                 }
                 else {
-                    sendNak(judge, timeStamp);
+                    sendNak(judge, result_timeStamp);
                 }
             }
             else doNext(judge, msg);

@@ -5,26 +5,26 @@ package Controller;
  */
 public class Problem {
     private final String id;
-    private int time_limit;
-    private int memory_limit;
-    private long timestamp;
+    private int timeLimit;
+    private int memoryLimit;
+    private long testDataTimeStamp;
 
-    public Problem(String id, int time_limit, int memory_limit, long timestamp) {
+    public Problem(String id, int timeLimit, int memoryLimit, long testDataTimeStamp) {
         this.id = id;
-        this.time_limit = time_limit;
-        this.memory_limit = memory_limit;
-        this.timestamp = timestamp;
+        this.timeLimit = timeLimit;
+        this.memoryLimit = memoryLimit;
+        this.testDataTimeStamp = testDataTimeStamp;
     }
 
     public int getTimeLimit() {
-        return this.time_limit;
+        return this.timeLimit;
     }
 
     public int getMemoryLimit() {
-        return this.memory_limit;
+        return this.memoryLimit;
     }
 
-    public long getTimestamp() {
-        return this.timestamp;
+    public long getTestDataTimeStamp() {
+        return this.testDataTimeStamp;
     }
 }

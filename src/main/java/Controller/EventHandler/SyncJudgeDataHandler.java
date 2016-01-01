@@ -23,7 +23,7 @@ public class SyncJudgeDataHandler extends EventHandler<Judge> {
             content.append("judge_method", judgeMethod);
             content.append("time_limit", timeLimit);
             content.append("memory_limit", memoryLimit);
-            content.append("testdata_timestamp", testDataTimeStamp);
+            content.append("testdata_time_stamp", testDataTimeStamp);
             msg.append("msg_type", "syncjudgedata");
             msg.append("problem_id", problemID);
             msg.append("content", content);
@@ -40,7 +40,7 @@ public class SyncJudgeDataHandler extends EventHandler<Judge> {
                 ProblemManager problemManager = new ProblemManager();
                 String problemID = msg.getString("problem_id");
 
-                forward(judge, problemID, ""/* input data */, ""/* output data */, ""/* judge_method */, ""/* time_limit */, ""/* memory_limit */, ""/*testdata_timestamp*/);
+                forward(judge, problemID, ""/* input data */, ""/* output data */, ""/* judge_method */, ""/* time_limit */, ""/* memory_limit */, ""/*testdata_time_stamp*/);
             }
             else doNext(judge, msg);
         } catch (JSONException e) {

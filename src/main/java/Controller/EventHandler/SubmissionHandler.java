@@ -77,7 +77,7 @@ public class SubmissionHandler extends EventHandler<Team> {
                     store.put("source_code", sourceCode);
                     String sid = Integer.toString(submissionManager.addEntry(store));
 
-                    forward(sid, problemID, language, sourceCode, timeStamp, Core.getInstance().getProblemByID(problemID).getTimestamp());
+                    forward(sid, problemID, language, sourceCode, timeStamp, Core.getInstance().getProblemByID(problemID).getTestDataTimeStamp());
                     sendAck(team, sid, timeStamp);
                 }
                 else {

@@ -63,7 +63,7 @@ public class ClarificationHandler extends EventHandler<Judge> {
                 String cid = Integer.toString(clarificationManager.addEntry(store));
 
                 sendAck(judge, problemID, timeStamp);
-                for(Team team: Core.getInstance().getAllTeam()) {
+                for (Team team: Core.getInstance().getAllTeam()) {
                     forward(team, cid, problemID, content, timeStamp);
                 }
             }
