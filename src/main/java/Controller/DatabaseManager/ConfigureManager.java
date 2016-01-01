@@ -158,6 +158,34 @@ public class ConfigureManager {
         }
         return response;
     }
+    
+    public void flushTable() {
+        Connection c = null;
+        Statement stmt = null;
+        String response = new String();
+        while (true) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite:configure.db");
+                c.setAutoCommit(false);
+
+                stmt = c.createStatement();
+                String sql = "DELETE FROM Configure;";
+                stmt.executeUpdate(sql);
+                stmt.close();
+                c.commit();
+                c.close();
+                break;
+            }
+            catch (SQLException e) {
+                checkLock(e.getMessage());
+                continue;
+            }
+            catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            }
+        }
+    }
 
     private void checkLock(String message) {
         try {
