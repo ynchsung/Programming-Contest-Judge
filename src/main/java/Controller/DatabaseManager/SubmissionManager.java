@@ -20,7 +20,7 @@ public class SubmissionManager {
                 " ProblemID STRING NOT NULL," +
                 " TeamID    STRING NOT NULL," +
                 " SubmissionTimestamp   INT NOT NULL," +
-                " Language      STRING  NOT NULL," +
+                " Language      STRING," +
                 " SourceCode    STRING," +
                 " Result    STRING," +
                 " ResultTimestamp   INT," +
@@ -242,7 +242,7 @@ public class SubmissionManager {
                 rs.close();
                 stmt.close();
 
-                stmt = c.prepareStatement("SELECT SubmissionID, Result, ResultTimestamp FROM Submission" +
+                stmt = c.prepareStatement("SELECT SubmissionID, Result, ResultTimestamp, DataTimestamp FROM Submission" +
                     " WHERE TeamID = ? AND ResultTimestamp >= ?;");
                 stmt.setString(1, team_id);
                 stmt.setString(2, Integer.toString(time_stamp));
