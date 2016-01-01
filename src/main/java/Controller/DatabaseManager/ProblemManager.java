@@ -103,15 +103,15 @@ public class ProblemManager {
                 }
                 if (entry.get("input") != null) {
                     setType.add("Input");
-                    setValue.add("'" + entry.get("input") + "'");
+                    setValue.add(entry.get("input"));
                 }
                 if (entry.get("output") != null) {
                     setType.add("Output");
-                    setValue.add("'" + entry.get("output") + "'");
+                    setValue.add(entry.get("output"));
                 }
                 if (entry.get("special_judge") != null) {
                     setType.add("SpecialJudge");
-                    setValue.add("'" + entry.get("special_judge") + "'");
+                    setValue.add(entry.get("special_judge"));
                 }
 
                 String sql = "UPDATE Problem SET ";
@@ -236,7 +236,7 @@ public class ProblemManager {
     }
     public Map<String, String> getProblemById(String problem_id) {
         Connection c = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         Map<String, String> response = new HashMap<String, String>();
         while (true) {
             try {
@@ -244,9 +244,8 @@ public class ProblemManager {
                 c = DriverManager.getConnection("jdbc:sqlite:problem.db");
                 c.setAutoCommit(false);
 
-                stmt = c.createStatement();
-                String sql = "SELECT * FROM Problem WHERE ProblemID = " + problem_id + ";";
-                ResultSet rs = stmt.executeQuery(sql);
+                stmt = c.prepareStatement("SELECT * FROM Problem WHERE ProblemID = ?;");
+                ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     String pid = rs.getString("ProblemID");
                     int time = rs.getInt("Timestamp");

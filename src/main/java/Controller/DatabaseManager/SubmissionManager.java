@@ -180,7 +180,7 @@ public class SubmissionManager {
 
     public String queryCode(int submission_id) {
         Connection c = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         String response = new String();
         while (true) {
             try {
@@ -188,9 +188,9 @@ public class SubmissionManager {
                 c = DriverManager.getConnection("jdbc:sqlite:submission.db");
                 c.setAutoCommit(false);
 
-                stmt = c.createStatement();
-                String sql = "SELECT SourceCode FROM Submission WHERE SubmissionID = " + Integer.toString(submission_id) + ";";
-                ResultSet rs = stmt.executeQuery(sql);
+                stmt = c.prepareStatement("SELECT SourceCode FROM Submission WHERE SubmissionID = ?;");
+                stmt.setString(1, Integer.toString(submission_id));
+                ResultSet rs = stmt.executeQuery();
                 response = rs.getString("SourceCode");
                 rs.close();
                 stmt.close();
@@ -278,7 +278,7 @@ public class SubmissionManager {
 
     public Map<String, String> getSubmissionById(int submission_id) {
         Connection c = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         Map<String, String> response = new HashMap<String, String>();
         while (true) {
             try {
@@ -286,9 +286,9 @@ public class SubmissionManager {
                 c = DriverManager.getConnection("jdbc:sqlite:submission.db");
                 c.setAutoCommit(false);
 
-                stmt = c.createStatement();
-                String sql = "SELECT * FROM Submission WHERE SubmissionID = " + submission_id + ";";
-                ResultSet rs = stmt.executeQuery(sql);
+                stmt = c.prepareStatement("SELECT * FROM Submission WHERE SubmissionID = ?;");
+                stmt.setString(1, Integer.toString(submission_id));
+                ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     int sid = rs.getInt("SubmissionID");
                     String pid = rs.getString("ProblemID");
