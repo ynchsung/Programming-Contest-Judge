@@ -67,7 +67,7 @@ public class SubmissionHandler extends EventHandler<Team> {
                 String problemID = msg.getString("problem_id");
                 String language = msg.getString("language");
                 String sourceCode = msg.getString("source_code");
-                long timeStamp = System.currentTimeMillis() / 1000;
+                long timeStamp = System.currentTimeMillis() / 1000; /* TODO: get timer time */
                 if (true /*not appeared*/) {
                     Map<String, String> store = new HashMap<String, String>();
                     store.put("problem_id", problemID);

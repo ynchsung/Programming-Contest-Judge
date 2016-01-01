@@ -3,6 +3,7 @@ package Controller.EventHandler;
 import Controller.Judge;
 import Controller.DatabaseManager.ProblemManager;
 
+import java.util.Map;
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -39,8 +40,9 @@ public class SyncJudgeDataHandler extends EventHandler<Judge> {
             if (msg.getString("msg_type").equals("syncjudgedata")) {
                 ProblemManager problemManager = new ProblemManager();
                 String problemID = msg.getString("problem_id");
+                Map<String, String> prob = problemManager.getProblemById(problemID);
 
-                forward(judge, problemID, ""/* input data */, ""/* output data */, ""/* judge_method */, ""/* time_limit */, ""/* memory_limit */, ""/*testdata_time_stamp*/);
+                forward(judge, problemID, prob.get("input"), prob.get("output"), prob.get("special_judge"), prob.get("time_limit"), prob.get("memory_limit"), prob.get("time_stamp"));
             }
             else doNext(judge, msg);
         } catch (JSONException e) {

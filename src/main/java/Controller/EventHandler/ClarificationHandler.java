@@ -32,7 +32,7 @@ public class ClarificationHandler extends EventHandler<Judge> {
         }
     }
 
-    private void forward(Team team, String clarificationID, String problemID, String content, long timeStamp) {
+    private void forward(Client client, String clarificationID, String problemID, String content, long timeStamp) {
         try {
             JSONObject msg = new JSONObject();
             msg.append("msg_type", "clarification");
@@ -40,7 +40,7 @@ public class ClarificationHandler extends EventHandler<Judge> {
             msg.append("problem_id", problemID);
             msg.append("content", content);
             msg.append("time_stamp", timeStamp);
-            team.send(msg);
+            client.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -53,7 +53,7 @@ public class ClarificationHandler extends EventHandler<Judge> {
                 ClarificationManager clarificationManager = new ClarificationManager();
                 String problemID = msg.getString("problem_id");
                 String content = msg.getString("content");
-                long timeStamp = System.currentTimeMillis() / 1000;
+                long timeStamp = System.currentTimeMillis() / 1000; /* TODO: get timer time */
                 Map<String, String> store = new HashMap<String, String>();
 
                 store.put("problem_id", problemID);
@@ -65,6 +65,9 @@ public class ClarificationHandler extends EventHandler<Judge> {
                 sendAck(judge, problemID, timeStamp);
                 for (Team team: Core.getInstance().getAllTeam()) {
                     forward(team, cid, problemID, content, timeStamp);
+                }
+                for (Judge judge1: Core.getInstance().getAllJudge()) {
+                    forward(judge1, cid, problemID, content, timeStamp);
                 }
             }
             else doNext(judge, msg);

@@ -54,7 +54,7 @@ public class QuestionHandler extends EventHandler<Team> {
                 String problemID = msg.getString("problem_id");
                 String teamID = team.getID();
                 String content = msg.getString("content");
-                long timeStamp = System.currentTimeMillis() / 1000;
+                long timeStamp = System.currentTimeMillis() / 1000; /* TODO: get timer time */
                 Map<String, String> store = new HashMap<String, String>();
 
                 store.put("problem_id", problemID);

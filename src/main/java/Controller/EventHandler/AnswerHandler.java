@@ -1,5 +1,6 @@
 package Controller.EventHandler;
 
+import Controller.Client;
 import Controller.Core;
 import Controller.Judge;
 import Controller.Team;
@@ -30,14 +31,14 @@ public class AnswerHandler extends EventHandler<Judge> {
         }
     }
 
-    private void forward(Team team, String questionID, String answer, long timeStamp) {
+    private void forward(Client client, String questionID, String answer, long timeStamp) {
         try {
             JSONObject msg = new JSONObject();
             msg.append("msg_type", "answer");
             msg.append("question_id", questionID);
             msg.append("answer", answer);
             msg.append("time_stamp", timeStamp);
-            team.send(msg);
+            client.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -51,7 +52,7 @@ public class AnswerHandler extends EventHandler<Judge> {
                 String questionID = msg.getString("question_id");
                 String teamID = msg.getString("team_id");
                 String answer = msg.getString("answer");
-                long timeStamp = System.currentTimeMillis() / 1000;
+                long timeStamp = System.currentTimeMillis() / 1000; /* TODO: get timer time */
                 Map<String, String> store = new HashMap<String, String>();
 
                 store.put("question_id", questionID);
@@ -61,6 +62,9 @@ public class AnswerHandler extends EventHandler<Judge> {
 
                 sendAck(judge, questionID, timeStamp);
                 forward(Core.getInstance().getTeamByID(teamID), questionID, answer, timeStamp);
+                for (Judge judge1: Core.getInstance().getAllJudge()) {
+                    forward(judge1, questionID, answer, timeStamp);
+                }
             }
             else doNext(judge, msg);
         } catch (JSONException e) {
