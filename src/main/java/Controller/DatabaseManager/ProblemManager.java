@@ -245,6 +245,7 @@ public class ProblemManager {
                 c.setAutoCommit(false);
 
                 stmt = c.prepareStatement("SELECT * FROM Problem WHERE ProblemID = ?;");
+                stmt.setString(1, problem_id);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     String pid = rs.getString("ProblemID");
