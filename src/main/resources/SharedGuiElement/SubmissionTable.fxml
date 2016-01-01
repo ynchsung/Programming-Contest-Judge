@@ -1,7 +1,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <HBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="Controller.SubmissionTableController" >
+      fx:controller="SharedGuiElement.SubmissionTableController" >
     <TableView fx:id="submissionTable"
                HBox.hgrow="ALWAYS" >
         <columns>

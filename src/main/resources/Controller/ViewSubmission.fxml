@@ -26,6 +26,6 @@
                               GridPane.columnIndex="2" />
     </GridPane>
     <fx:include fx:id="submissionTable"
-                source="SubmissionTable.fxml"
+                source="../SharedGuiElement/SubmissionTable.fxml"
                 VBox.vgrow="ALWAYS" />
 </VBox>

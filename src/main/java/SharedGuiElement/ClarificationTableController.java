@@ -1,4 +1,4 @@
-package Controller;
+package SharedGuiElement;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

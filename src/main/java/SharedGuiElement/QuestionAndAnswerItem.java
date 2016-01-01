@@ -1,32 +1,32 @@
-package Controller;
+package SharedGuiElement;
 
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- * Created by aalexx on 12/30/15.
+ * Created by aalexx on 12/31/15.
  */
-public class ClarificationItem {
-    private SimpleStringProperty clarificationId;
+public class QuestionAndAnswerItem {
+    private SimpleStringProperty type;
     private SimpleStringProperty problemId;
     private SimpleStringProperty content;
     private SimpleStringProperty timeStamp;
 
-    public ClarificationItem (String clarificationId, String problemId, String content, String timeStamp) {
-        this.clarificationId = new SimpleStringProperty(clarificationId);
+    public QuestionAndAnswerItem(String type, String problemId, String content, String timeStamp) {
+        this.type = new SimpleStringProperty(type);
         this.problemId = new SimpleStringProperty(problemId);
         this.content = new SimpleStringProperty(content);
         this.timeStamp = new SimpleStringProperty(timeStamp);
     }
 
-    // clarificationId
-    public void setClarificationId (String clarificationId) {
-        this.clarificationId.set(clarificationId);
+    // type
+    public void setType(String type) {
+        this.type.set(type);
     }
-    public String getClarificationId () {
-        return this.clarificationId.get();
+    public String getType () {
+        return this.type.get();
     }
-    public SimpleStringProperty clarificationProperty () {
-        return clarificationId;
+    public SimpleStringProperty typeProperty () {
+        return type;
     }
     //problemId
     public void setProblemId (String problemId) {

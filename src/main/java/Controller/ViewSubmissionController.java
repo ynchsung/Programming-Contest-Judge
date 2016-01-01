@@ -2,6 +2,7 @@ package Controller;
 
 import CustomNode.MyChoiceBox;
 import CustomNode.MyConfirmationButton;
+import SharedGuiElement.SubmissionTableController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

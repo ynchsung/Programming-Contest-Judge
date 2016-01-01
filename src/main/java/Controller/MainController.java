@@ -1,5 +1,8 @@
 package Controller;
 
+import SharedGuiElement.OpenCode;
+import SharedGuiElement.OpenCodeBuilder;
+import SharedGuiElement.RemainingTimeController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.util.Callback;
@@ -21,6 +24,7 @@ public class MainController implements Initializable {
     @FXML private TestDataUpdateController testDataUpdateController;
     @FXML private ViewSubmissionController viewSubmissionController;
     @FXML private ViewClarificationController viewClarificationController;
+    @FXML private ViewQuestionAndAnswerController viewQuestionAndAnswerController;
 
     // getter for each tab's controller
     public ViewSubmissionController getViewSubmissionController() {
@@ -123,5 +127,20 @@ public class MainController implements Initializable {
             System.out.println("WTF");
         else
             viewClarificationController.setClarification(cl);
+        // question and answer table
+        List<Map<String, String>> qal = new ArrayList<>();
+        Map<String, String> qam = new HashMap<>();
+        qam.put("type", "question");
+        qam.put("problem_id", "1");
+        qam.put("content", "Is iron equal to wisdom?");
+        qam.put("time_stamp", "7122");
+        qal.add(qam);
+        Map<String, String> qamb = new HashMap<>();
+        qamb.put("type", "answer");
+        qamb.put("problem_id", "1");
+        qamb.put("content", "Yes");
+        qamb.put("time_stamp", "7123");
+        qal.add(qamb);
+        viewQuestionAndAnswerController.setQuestionAndAnswer(qal);
     }
 }

@@ -4,6 +4,6 @@
       fx:id="viewClarification"
       fx:controller="Controller.ViewClarificationController" >
     <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
-    <fx:include source="ClarificationTable.fxml"
+    <fx:include source="../SharedGuiElement/ClarificationTable.fxml"
                 fx:id="clarificationTable" />
 </VBox>

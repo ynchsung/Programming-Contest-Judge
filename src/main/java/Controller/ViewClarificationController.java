@@ -1,5 +1,6 @@
 package Controller;
 
+import SharedGuiElement.ClarificationTableController;
 import javafx.fxml.FXML;
 
 import java.util.List;
