@@ -130,6 +130,7 @@ public class MainController implements Initializable {
         // question and answer table
         List<Map<String, String>> qal = new ArrayList<>();
         Map<String, String> qam = new HashMap<>();
+        qam.put("id", "111");
         qam.put("type", "question");
         qam.put("problem_id", "1");
         qam.put("content", "Is iron equal to wisdom?");

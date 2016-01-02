@@ -4,10 +4,11 @@
     <TableView fx:id="questionAndAnswerTable"
                HBox.hgrow="ALWAYS" >
         <columns>
-            <TableColumn text="Type" fx:id="type" editable="false"/>
-            <TableColumn text="Problem Id" fx:id="problemId" editable="false"/>
+            <TableColumn text="Type" fx:id="type" editable="false" sortable="false"/>
+            <TableColumn text="Answer" fx:id="answerButton" editable="false" sortable="false"/>
+            <TableColumn text="Problem Id" fx:id="problemId" editable="false" sortable="false"/>
             <TableColumn text="Content" fx:id="content" editable="false" sortable="false"/>
-            <TableColumn text="Time Stamp" fx:id="timeStamp" editable="false"/>
+            <TableColumn text="Time Stamp" fx:id="timeStamp" editable="false" sortable="false"/>
         </columns>
     </TableView>
 </fx:root>
