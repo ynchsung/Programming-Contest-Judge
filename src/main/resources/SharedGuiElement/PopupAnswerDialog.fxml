@@ -1,0 +1,22 @@
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import CustomNode.MyConfirmationButton?>
+<?import javafx.scene.layout.VBox?>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="SharedGuiElement.PopupAnswerDialogController" >
+    <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+    <VBox spacing="10">
+        <Label text="Please Input the answer to the question."/>
+        <TextArea fx:id="questionTextArea"
+                  editable="false" />
+        <TextArea fx:id="answerTextArea" />
+        <MyConfirmationButton fx:id="confirmationButton"
+                              text="Confirm"
+                              title="Answer"
+                              headerText="Confirmation"
+                              contentText="Confirm to submit new answer." />
+    </VBox>
+</StackPane>
