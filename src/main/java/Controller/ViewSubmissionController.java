@@ -2,7 +2,7 @@ package Controller;
 
 import CustomNode.MyChoiceBox;
 import CustomNode.MyConfirmationButton;
-import SharedGuiElement.SubmissionTableController;
+import SharedGuiElement.SubmissionTable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -17,7 +17,7 @@ import java.util.Map;
 public class ViewSubmissionController {
     @FXML private MyChoiceBox rejudgeProblemChoiceBox;
     @FXML private MyConfirmationButton rejudgeButton;
-    @FXML private SubmissionTableController submissionTableController;
+    @FXML private SubmissionTable submissionTable;
 
     public void setRejudgeProblemChoice (List<String> choice) {
         rejudgeProblemChoiceBox.setChoice(choice);
@@ -28,11 +28,11 @@ public class ViewSubmissionController {
     }
 
     public void setOpenCodeCallBack (Callback callBack) {
-        submissionTableController.setOpenCodeCallBack(callBack);
+        submissionTable.setOpenCodeCallBack(callBack);
     }
 
     public void setSubmissions (List<Map<String, String>> submissions) {
-        submissionTableController.setSubmissions(submissions);
+        submissionTable.setSubmissions(submissions);
     }
 
     public Object getRejudgeProblemChoice () {
