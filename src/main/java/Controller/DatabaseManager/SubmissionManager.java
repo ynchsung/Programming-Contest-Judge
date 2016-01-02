@@ -352,6 +352,63 @@ public class SubmissionManager {
         return response;
     }
 
+    public void rejudge(String problem_id) {
+        Connection c = null;
+        PreparedStatement stmt = null;
+        List<Map<String, String>> response = new ArrayList<Map<String, String>>();
+        while (true) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite:submission.db");
+                c.setAutoCommit(false);
+
+                stmt = c.prepareStatement("SELECT * FROM Submission WHERE ProblemID = ?;");
+                stmt.setString(1, problem_id);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    Map<String, String> entry = new HashMap<String, String>();
+
+                    int sid = rs.getInt("SubmissionID");
+                    String pid = rs.getString("ProblemID");
+                    String tid = rs.getString("TeamID");
+                    int stime = rs.getInt("SubmissionTimestamp");
+                    String result = rs.getString("Result");
+                    int rtime = rs.getInt("ResultTimestamp");
+                    String lang = rs.getString("Language");
+                    int dtime = rs.getInt("DataTimestamp");
+                    String code = rs.getString("SourceCode");
+                    entry.put("submission_id", Integer.toString(sid));
+                    entry.put("problem_id", pid);
+                    entry.put("team_id", tid);
+                    entry.put("submission_time_stamp", Integer.toString(stime));
+                    entry.put("result", result);
+                    entry.put("result_time_stamp", Integer.toString(rtime));
+                    entry.put("language", lang);
+                    entry.put("testdata_time_stamp", Integer.toString(dtime));
+                    entry.put("source_code", code);
+                    response.add(entry);
+                }
+                rs.close();
+                stmt.close();
+
+                stmt = c.prepareStatement("UPDATE Submission SET Result = 'Pending', ResultTimestamp = -1 WHERE ProblemID = ?;");
+                stmt.setString(1, problem_id);
+                stmt.executeUpdate();
+                stmt.close();
+                c.close();
+                break;
+            }
+            catch (SQLException e) {
+                checkLock(e.getMessage());
+                continue;
+            }
+            catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            }
+        }
+        return response;
+    }
+
     public void flushTable() {
         Connection c = null;
         Statement stmt = null;
