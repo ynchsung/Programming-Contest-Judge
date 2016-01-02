@@ -1,0 +1,32 @@
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import CustomNode.MyFileSaver?>
+<?import CustomNode.MyChoiceBox?>
+<?import CustomNode.MyConfirmationButton?>
+<GridPane xmlns:fx="http://javafx.com/fxml"
+          fx:controller="Judge.ManualJudgePageController"
+          vgap="10"
+          hgap="20" >
+    <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+    <Label text="Save Submission Code"
+           GridPane.rowIndex="0"
+           GridPane.columnIndex="0" />
+    <MyFileSaver fx:id="submissionCodeSaver"
+                 text="Save"
+                 GridPane.rowIndex="0"
+                 GridPane.columnIndex="1" />
+    <Label text="Set Result"
+           GridPane.rowIndex="1"
+           GridPane.columnIndex="0" />
+    <MyChoiceBox fx:id="resultChoiceBox"
+                 GridPane.rowIndex="1"
+                 GridPane.columnIndex="1" />
+    <MyConfirmationButton fx:id="confirmButton"
+                          text="Confirm"
+                          title="Manual Judge Result"
+                          headerText="Confirmation"
+                          contentText="Confirm to set result."
+                          GridPane.rowIndex="2"
+                          GridPane.columnIndex="3" />
+</GridPane>
