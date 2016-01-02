@@ -2,9 +2,13 @@ package Controller;
 
 import Controller.DatabaseManager.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,14 +26,24 @@ public class Core {
     private Map<String, Judge> judges;
     private Map<String, Problem> problems;
     private Scheduler scheduler;
-    private final int port;
+    private InetAddress ip;
+    private int port;
+    private int scoreBoardPort;
+    private ContestTimer timer;
 
     private Core() {
         this.teams = new HashMap<String, Team>();
         this.judges = new HashMap<String, Judge>();
         this.problems = new HashMap<String, Problem>();
         this.scheduler = new Scheduler();
+        try {
+            this.ip = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         this.port = 7122;
+        this.scoreBoardPort = 7123;
+        this.timer = new ContestTimer(300*60);
 
         // TODO: read config, build teams, judges, problems(Map)
         /* ==== DUMMY TEST CONFIG ==== */
@@ -48,16 +62,17 @@ public class Core {
         qaManager.createTable();
         clarificationManager.createTable();
 
-        config.put("ip", "8.8.8.8"/* TODO: get local ip */);
-        config.put("port", "7122");
-        config.put("scoreboard_port", "7123");
+        config.put("ip", this.ip.getHostAddress());
+        config.put("port", Integer.toString(this.port));
+        config.put("scoreboard_port", Integer.toString(this.scoreBoardPort));
         config.put("judge_password", "judge7122");
-        config.put("start_time", "2016-01-01T12:00:00");
+        config.put("start_time", "0");
         config.put("duration", "300");
+        config.put("time_stamp", "0");
         configureManager.addEntry(config);
 
         for (int i = 1; i <= 10; i++) {
-            String id = String.format("team%0d", i);
+            String id = String.format("team%02d", i);
             this.teams.put(id, new Team(id, null));
             Map<String, String> team_account = new HashMap<String, String>();
             team_account.put("account", id);
@@ -66,7 +81,7 @@ public class Core {
             accountManager.addEntry(team_account);
         }
         for (int i = 1; i <= 3; i++) {
-            String id = String.format("judge%0d", i);
+            String id = String.format("judge%02d", i);
             this.judges.put(id, new Judge(id, null));
             Map<String, String> judge_account = new HashMap<String, String>();
             judge_account.put("account", id);
@@ -88,21 +103,53 @@ public class Core {
             pinfo.put("time_stamp", Long.toString(timeStamp));
             problemManager.addEntry(pinfo);
         }
+
+        Map<String, String> submission = new HashMap<>();
+        submission.put("problem_id", "pA");
+        submission.put("team_id", "7122");
+        submission.put("source_code", "#include \"jizz\"");
+        submission.put("time_stamp", "9900");
+        submission.put("result", "TLE");
+        submission.put("result_time_stamp", "33333");
+        submissionManager.addEntry(submission);
+
+        Map<String, String> qa = new HashMap<>();
+        qa.put("type", "question");
+        qa.put("team_id", "1");
+        qa.put("problem_id", "1");
+        qa.put("content", "Is iron equal to wisdom?");
+        qa.put("time_stamp", "7122");
+        int qaID = qaManager.addEntry(qa);
+
+        qa = new HashMap<>();
+        qa.put("type", "answer");
+        qa.put("question_id", Integer.toString(qaID));
+        qa.put("answer", "Yes");
+        qa.put("time_stamp", "7123");
+        qaManager.addEntry(qa);
+
+        Map<String, String> cr = new HashMap<>();
+        cr.put("clarification_id", "1");
+        cr.put("problem_id", "0");
+        cr.put("content", "This is a test.");
+        cr.put("time_stamp", "712222");
+        clarificationManager.addEntry(cr);
         /* ==== DUMMY TEST CONFIG ==== */
     }
 
     static public Core getInstance() {
+        if (sharedInstance == null) {
+            synchronized (Core.class) {
+                if (sharedInstance == null) {
+                    sharedInstance = new Core();
+                }
+            }
+        }
         return sharedInstance;
     }
 
-    static public void run() {
-        if (sharedInstance != null)
-            return;
-        sharedInstance = new Core();
-        sharedInstance.start();
-    }
-
-    private void start() {
+    public void start() {
+        this.timer.start();
         this.scheduler.setStrategy(new RoundRobinStrategy(this.judges));
         this.scheduler.start();
         Thread listenThread = new Thread(new Runnable() {
@@ -146,6 +193,24 @@ public class Core {
         listenThread.start();
     }
 
+    public void updateTestData(String problemID, File input, File output, File specialJudge) {
+        try {
+            long timeStamp = System.currentTimeMillis() / 1000;
+            Map<String, String> entry = new HashMap<>();
+            entry.put("problem_id", problemID);
+            entry.put("input", MyUtil.readFromFile(input));
+            entry.put("output", MyUtil.readFromFile(output));
+            if (specialJudge != null) {
+                entry.put("special_judge", MyUtil.readFromFile(specialJudge));
+            }
+            entry.put("time_stamp", Long.toString(timeStamp));
+            ProblemManager problemManager = new ProblemManager();
+            problemManager.updateEntry(entry);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Team getTeamByID(String id) {
         return this.teams.get(id);
     }
@@ -168,5 +233,25 @@ public class Core {
 
     public Scheduler getScheduler() {
         return this.scheduler;
+    }
+
+    public InetAddress getIP() {
+        return this.ip;
+    }
+
+    public int getPort() {
+        return this.port;
+    }
+
+    public int getScoreboardPort() {
+        return this.scoreBoardPort;
+    }
+
+    public ContestTimer getTimer() {
+        return timer;
+    }
+
+    public ArrayList<String> getProblemIDList() {
+        return new ArrayList<>(problems.keySet());
     }
 }
