@@ -2,16 +2,17 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.text.Text?>
-<GridPane xmlns:fx="http://javafx.com/fxml"
-          fx:controller="SharedGuiElement.RemainingTimeController"
-          alignment="center"
-          hgap="10"
-          vgap="10" >
-    <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
-    <Label text="Remaining Time"
-           GridPane.rowIndex="0"
-           GridPane.columnIndex="3" />
-    <Text fx:id="remainingTime"
-          GridPane.rowIndex="0"
-          GridPane.columnIndex="4" />
-</GridPane>
+<?import javafx.scene.layout.HBox?>
+<fx:root type="HBox" xmlns:fx="http://javafx.com/fxml">
+    <GridPane alignment="center"
+              hgap="10"
+              vgap="10" >
+        <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+        <Label text="Remaining Time"
+               GridPane.rowIndex="0"
+               GridPane.columnIndex="3" />
+        <Text fx:id="remainingTime"
+              GridPane.rowIndex="0"
+              GridPane.columnIndex="4" />
+    </GridPane>
+</fx:root>

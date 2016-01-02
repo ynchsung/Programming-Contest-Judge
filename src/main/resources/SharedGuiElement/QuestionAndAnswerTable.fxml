@@ -1,7 +1,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
-<HBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="SharedGuiElement.QuestionAndAnswerTableController" >
+<fx:root type="HBox" xmlns:fx="http://javafx.com/fxml">
     <TableView fx:id="questionAndAnswerTable"
                HBox.hgrow="ALWAYS" >
         <columns>
@@ -11,4 +10,4 @@
             <TableColumn text="Time Stamp" fx:id="timeStamp" editable="false"/>
         </columns>
     </TableView>
-</HBox>
+</fx:root>

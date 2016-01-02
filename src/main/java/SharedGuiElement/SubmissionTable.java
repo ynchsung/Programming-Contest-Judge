@@ -6,10 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
@@ -18,6 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -50,7 +48,8 @@ public class SubmissionTable extends HBox implements Initializable {
     private SubmissionTable self;
     private ObservableList submissions = FXCollections.observableArrayList();
     private Callback<String, Void> openCodeCallBack = param -> null;
-    private Callback<String, Void> rejudgeCallBack = param -> null;
+    private Callback<String, Void> autoRejudgeCallBack = param -> null;
+    private Callback<String, Void> manualJudgeCallBack = param -> null;
 
     public SubmissionTable(@NamedArg("submissionIdDisable") boolean submissionIdDisable,
                            @NamedArg("problemIdDisable") boolean problemIdDisable,
@@ -89,10 +88,12 @@ public class SubmissionTable extends HBox implements Initializable {
     }
 
     public void rejudgeCall (String submissionId) {
-        try {
-            rejudgeCallBack.call(submissionId);
-        } catch (Exception e) {
-            e.printStackTrace();
+        RejudgeConfirmationAlert alert = new RejudgeConfirmationAlert();
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == RejudgeConfirmationAlert.autoJudge) {
+            autoRejudgeCallBack.call(submissionId);
+        } else if (result.get() == RejudgeConfirmationAlert.manualJudge) {
+            manualJudgeCallBack.call(submissionId);
         }
     }
 
@@ -100,8 +101,12 @@ public class SubmissionTable extends HBox implements Initializable {
         this.openCodeCallBack = callBack;
     }
 
-    public void setRejudgeCallBack (Callback callBack) {
-        this.rejudgeCallBack = callBack;
+    public void setAutojudgeCallBack(Callback callBack) {
+        this.autoRejudgeCallBack = callBack;
+    }
+
+    public void setManualJudgeCallBack(Callback callBack) {
+        this.manualJudgeCallBack = callBack;
     }
 
     @FXML public void setSubmissions (List<Map<String, String>> submissions) {

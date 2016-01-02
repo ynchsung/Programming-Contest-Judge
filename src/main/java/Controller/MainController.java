@@ -2,7 +2,7 @@ package Controller;
 
 import SharedGuiElement.OpenCode;
 import SharedGuiElement.OpenCodeBuilder;
-import SharedGuiElement.RemainingTimeController;
+import SharedGuiElement.RemainingTime;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.util.Callback;
@@ -18,7 +18,7 @@ import java.util.*;
  * Every controller of sub-tabs can be accessed here.
  */
 public class MainController implements Initializable {
-    @FXML private RemainingTimeController remainingTimeController;
+    @FXML private RemainingTime remainingTime;
     @FXML private GeneralController generalController;
     @FXML private TimeUpdateController timeUpdateController;
     @FXML private TestDataUpdateController testDataUpdateController;
@@ -39,8 +39,8 @@ public class MainController implements Initializable {
         return testDataUpdateController;
     }
 
-    public RemainingTimeController getRemainingTimeController() {
-        return remainingTimeController;
+    public RemainingTime getRemainingTime() {
+        return remainingTime;
     }
 
     public GeneralController getGeneralController() {
@@ -50,7 +50,7 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // init remainingTime
-        remainingTimeController.setRemainingTime("lalala");
+        remainingTime.setRemainingTime("lalala");
         // init each tab
         // general example
         generalController.setIp("127.0.0.1");

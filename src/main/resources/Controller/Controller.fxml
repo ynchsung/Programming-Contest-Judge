@@ -1,8 +1,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
+<?import SharedGuiElement.RemainingTime?>
 <VBox fx:controller="Controller.MainController" xmlns:fx="http://javafx.com/fxml">
-    <fx:include fx:id="remainingTime"
-                source="../SharedGuiElement/RemainingTime.fxml"/>
+    <RemainingTime fx:id="remainingTime" />
     <TabPane>
         <tabs>
             <Tab text="General" closable="false">

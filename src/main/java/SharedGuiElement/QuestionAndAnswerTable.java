@@ -3,10 +3,13 @@ package SharedGuiElement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -15,13 +18,25 @@ import java.util.ResourceBundle;
 /**
  * Created by aalexx on 12/31/15.
  */
-public class QuestionAndAnswerTableController implements Initializable {
+public class QuestionAndAnswerTable extends HBox implements Initializable {
     @FXML private TableView questionAndAnswerTable;
     @FXML private TableColumn type;
     @FXML private TableColumn problemId;
     @FXML private TableColumn content;
     @FXML private TableColumn timeStamp;
     private ObservableList questionAndAnswer = FXCollections.observableArrayList();
+
+    public QuestionAndAnswerTable() {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("QuestionAndAnswerTable.fxml"));
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+
+        try {
+            fxmlLoader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 
     public void setQuestionAndAnswer(List<Map<String, String>> questionAndAnswer) {
         this.questionAndAnswer = FXCollections.observableArrayList();
