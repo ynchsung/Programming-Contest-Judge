@@ -187,6 +187,40 @@ public class ProblemManager {
         return response;
     }
 
+    public List<String> queryAllId() {
+        Connection c = null;
+        Statement stmt = null;
+        List<String> response = new ArrayList<String>();
+        while (true) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite:problem.db");
+                c.setAutoCommit(false);
+
+                stmt = c.createStatement();
+                ResultSet rs = stmt.executeQuery( "SELECT ProblemID FROM Problem;" );
+                while (rs.next()) {
+                    String pid = rs.getString("ProblemID");
+                    response.add(pid);
+                }
+                rs.close();
+                stmt.close();
+                c.close();
+                break;
+            }
+            catch (SQLException e) {
+                if(checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
+            }
+            catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                break;
+            }
+        }
+        return response;
+    }
     public List<Map<String, String>> sync(int time_stamp) {
         Connection c = null;
         Statement stmt = null;
@@ -308,17 +342,20 @@ public class ProblemManager {
         }
     }
 
-    private void checkLock(String message) {
+    private boolean checkLock(String message) {
         try {
             if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
                 Thread.sleep(sleepTime);
+                return true;
             }
             else {
                 System.err.println("SQLException: " + message);
+                return false;
             }
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            return false;
         }
     }
 }
