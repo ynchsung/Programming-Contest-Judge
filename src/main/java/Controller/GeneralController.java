@@ -15,11 +15,11 @@ public class GeneralController {
         this.ip.setText(ip);
     }
 
-    public void setPort(String port) {
-        this.port.setText(port);
+    public void setPort(int port) {
+        this.port.setText(Integer.toString(port));
     }
 
-    public void setScoreBoardPort(String scoreBoardPort) {
-        this.scoreBoardPort.setText(scoreBoardPort);
+    public void setScoreBoardPort(int scoreBoardPort) {
+        this.scoreBoardPort.setText(Integer.toString(scoreBoardPort));
     }
 }

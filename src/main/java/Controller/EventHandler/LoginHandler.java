@@ -43,7 +43,7 @@ public class LoginHandler extends EventHandler<Guest> {
                     }
                 }
                 else if (userType.equals("participant")) {
-                    if (accountManager.authenticateJudge(username, password)) {
+                    if (accountManager.authenticateTeam(username, password)) {
                         Team team = Core.getInstance().getTeamByID(username);
                         team.login(guest);
                         sendResponse(team, "success");
