@@ -56,12 +56,11 @@ public class AccountManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
     }
@@ -112,12 +111,11 @@ public class AccountManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -145,12 +143,11 @@ public class AccountManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -177,11 +174,12 @@ public class AccountManager {
                 stmt.close();
                 c.close();
                 break;
-            } catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            } catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            }
+            catch (Exception e) {
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -198,7 +196,7 @@ public class AccountManager {
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
-                String sql = "DELETE FROM Account;";
+                String sql = "DROP TABLE IF EXISTS Account;";
                 stmt.executeUpdate(sql);
                 stmt.close();
                 c.commit();
@@ -208,27 +206,27 @@ public class AccountManager {
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
-                sql = "DELETE FROM Account;";
+                sql = "DROP TABLE IF EXISTS Account;";
                 stmt.executeUpdate(sql);
                 stmt.close();
                 c.commit();
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
     }
 
-    private void checkLock(String message) {
+    private boolean checkLock(String message) {
         try {
             if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
                 Thread.sleep(sleepTime);
+                return true;
             }
             else {
                 System.err.println("SQLException: " + message);
@@ -237,5 +235,6 @@ public class AccountManager {
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
+        return false;
     }
 }

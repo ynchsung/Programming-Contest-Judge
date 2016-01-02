@@ -57,12 +57,11 @@ public class ProblemManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println( e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
     }
@@ -130,12 +129,11 @@ public class ProblemManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
     }
@@ -176,12 +174,11 @@ public class ProblemManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -208,15 +205,11 @@ public class ProblemManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                if(checkLock(e.getMessage()))
+            catch (Exception e) {
+                if (checkLock(e.getMessage()))
                     continue;
                 else
                     break;
-            }
-            catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                break;
             }
         }
         return response;
@@ -258,12 +251,11 @@ public class ProblemManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -303,12 +295,11 @@ public class ProblemManager {
                     break;
                 }
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -325,19 +316,18 @@ public class ProblemManager {
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
-                String sql = "DELETE FROM Problem;";
+                String sql = "DROP TABLE IF EXISTS Problem;";
                 stmt.executeUpdate(sql);
                 stmt.close();
                 c.commit();
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
     }
@@ -350,12 +340,11 @@ public class ProblemManager {
             }
             else {
                 System.err.println("SQLException: " + message);
-                return false;
             }
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            return false;
         }
+        return false;
     }
 }

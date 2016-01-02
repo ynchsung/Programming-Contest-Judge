@@ -6,6 +6,7 @@ import java.lang.String;
 
 public class QAManager {
     final int sleepTime = 200;
+    List<Observer> observers = new ArrayList<Observer>();
 
     public void createTable() {
         Connection c = null;
@@ -79,14 +80,14 @@ public class QAManager {
                 stmt.close();
                 c.commit();
                 c.close();
+                notifyObservers();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return id;
@@ -142,12 +143,11 @@ public class QAManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -193,12 +193,11 @@ public class QAManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -244,15 +243,24 @@ public class QAManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
+    }
+
+    public void register(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update();
+        }
     }
     
     public void flushTable() {
@@ -266,33 +274,33 @@ public class QAManager {
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
-                String sql = "DELETE FROM Question;";
+                String sql = "DROP TABLE IF EXISTS Question;";
                 stmt.executeUpdate(sql);
                 stmt.close();
                 c.commit();
                 
                 stmt = c.createStatement();
-                sql = "DELETE FROM Answer;";
+                sql = "DROP TABLE IF EXISTS Answer;";
                 stmt.executeUpdate(sql);
                 stmt.close();
                 c.commit();
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
     }
 
-    private void checkLock(String message) {
+    private boolean checkLock(String message) {
         try {
             if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
                 Thread.sleep(sleepTime);
+                return true;
             }
             else {
                 System.err.println("SQLException: " + message);
@@ -301,5 +309,6 @@ public class QAManager {
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
+        return false;
     }
 }

@@ -6,6 +6,7 @@ import java.lang.String;
 
 public class ClarificationManager {
     final int sleepTime = 200;
+    List<Observer> observers = new ArrayList<Observer>();
 
     public void createTable() {
         Connection c = null;
@@ -58,17 +59,16 @@ public class ClarificationManager {
                 stmt.close();
                 c.commit();
                 c.close();
+                notifyObservers();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
-
         return id;
     }
 
@@ -102,12 +102,11 @@ public class ClarificationManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -144,17 +143,26 @@ public class ClarificationManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
     }
-    
+
+    public void register(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update();
+        }
+    }
+
     public void flushTable() {
         Connection c = null;
         Statement stmt = null;
@@ -166,27 +174,27 @@ public class ClarificationManager {
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
-                String sql = "DELETE FROM Clarification;";
+                String sql = "DROP TABLE IF EXISTS Clarification;";
                 stmt.executeUpdate(sql);
                 stmt.close();
                 c.commit();
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
     }
 
-    private void checkLock(String message) {
+    private boolean checkLock(String message) {
         try {
             if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
                 Thread.sleep(sleepTime);
+                return true;
             }
             else {
                 System.err.println("SQLException: " + message);
@@ -195,5 +203,6 @@ public class ClarificationManager {
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
+        return false;
     }
 }

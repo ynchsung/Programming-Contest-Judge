@@ -6,6 +6,7 @@ import java.lang.String;
 
 public class SubmissionManager {
     final int sleepTime = 200;
+    private static List<Observer> observers = new ArrayList<Observer>();
 
     public void createTable() {
         Connection c = null;
@@ -67,14 +68,14 @@ public class SubmissionManager {
                 stmt.close();
                 c.commit();
                 c.close();
+                notifyObservers();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return id;
@@ -114,14 +115,14 @@ public class SubmissionManager {
                 stmt.close();
                 c.commit();
                 c.close();
+                notifyObservers();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
     }
@@ -167,12 +168,11 @@ public class SubmissionManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -197,12 +197,11 @@ public class SubmissionManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -244,12 +243,11 @@ public class SubmissionManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -291,12 +289,11 @@ public class SubmissionManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -341,12 +338,11 @@ public class SubmissionManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -395,18 +391,28 @@ public class SubmissionManager {
                 stmt.setString(1, problem_id);
                 stmt.executeUpdate();
                 stmt.close();
+                c.commit();
                 c.close();
+                notifyObservers();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
-        return response;
+    }
+
+    public void register(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update();
+        }
     }
 
     public void flushTable() {
@@ -420,34 +426,36 @@ public class SubmissionManager {
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
-                String sql = "DELETE FROM Submission;";
+                String sql = "DROP TABLE IF EXISTS Submission;";
                 stmt.executeUpdate(sql);
                 stmt.close();
                 c.commit();
                 c.close();
+                notifyObservers();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage()))
+                    continue;
+                else
+                    break;
             }
         }
     }
 
-    private void checkLock(String message) {
+    private boolean checkLock(String message) {
         try {
             if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
                 Thread.sleep(sleepTime);
+                return true;
             }
             else {
-                System.err.println("SQLException: " + message);
+                System.err.println("Exception: " + message);
             }
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
+        return false;
     }
 }
