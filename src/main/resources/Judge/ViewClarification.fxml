@@ -1,0 +1,29 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+<?import SharedGuiElement.ClarificationTable?>
+<?import javafx.scene.layout.HBox?>
+<?import CustomNode.MyConfirmationButton?>
+<?import CustomNode.MyChoiceBox?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:id="viewClarification"
+      fx:controller="Judge.ViewClarificationController"
+      spacing="10" >
+    <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+    <ClarificationTable fx:id="clarificationTable" />
+    <HBox spacing="20"
+          alignment="BOTTOM_LEFT" >
+        <TextArea fx:id="newClarificationTextArea" />
+        <VBox alignment="BOTTOM_CENTER"
+              spacing="10" >
+            <MyChoiceBox fx:id="clarificationProblemChoice" />
+            <MyConfirmationButton fx:id="confirmNewClarificationButton"
+                                  alignment="BOTTOM_CENTER"
+                                  defaultButton="true"
+                                  text="Confirm"
+                                  title="Confirm"
+                                  headerText="New Clarification"
+                                  contentText="Confirm to make new clarification." />
+        </VBox>
+    </HBox>
+</VBox>

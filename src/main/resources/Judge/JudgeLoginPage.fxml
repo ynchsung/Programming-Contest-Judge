@@ -1,0 +1,6 @@
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Judge.JudgeLoginPageController"
+      alignment="CENTER" >
+    <fx:include fx:id="loginPage" source="../SharedGuiElement/LoginPage.fxml" />
+</VBox>

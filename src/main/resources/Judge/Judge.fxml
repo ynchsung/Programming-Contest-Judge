@@ -1,0 +1,25 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<?import SharedGuiElement.RemainingTime?>
+<VBox fx:controller="Judge.MainController" xmlns:fx="http://javafx.com/fxml">
+    <RemainingTime fx:id="remainingTime" />
+    <TabPane>
+        <tabs>
+            <Tab text="View Submissions" closable="false">
+                <content>
+                    <fx:include fx:id="viewSubmission" source="ViewSubmission.fxml" />
+                </content>
+            </Tab>
+            <Tab text="View Clarification" closable="false">
+                <content>
+                    <fx:include fx:id="viewClarification" source="ViewClarification.fxml" />
+                </content>
+            </Tab>
+            <Tab text="Q&amp;A" closable="false">
+                <content>
+                    <fx:include fx:id="viewQuestionAndAnswer" source="ViewQuestionAndAnswer.fxml" />
+                </content>
+            </Tab>
+        </tabs>
+    </TabPane>
+</VBox>
