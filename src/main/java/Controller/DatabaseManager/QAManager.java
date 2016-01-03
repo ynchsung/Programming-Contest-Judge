@@ -84,7 +84,7 @@ public class QAManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -144,7 +144,7 @@ public class QAManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -194,7 +194,7 @@ public class QAManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -244,7 +244,7 @@ public class QAManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -288,7 +288,7 @@ public class QAManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -296,7 +296,7 @@ public class QAManager {
         }
     }
 
-    private boolean checkLock(String message) {
+    private boolean checkLock(String message, Connection c) {
         try {
             if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
                 Thread.sleep(sleepTime);

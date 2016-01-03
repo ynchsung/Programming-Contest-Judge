@@ -57,7 +57,7 @@ public class AccountManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -112,7 +112,7 @@ public class AccountManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -144,7 +144,7 @@ public class AccountManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -176,7 +176,7 @@ public class AccountManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -214,7 +214,7 @@ public class AccountManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -222,8 +222,9 @@ public class AccountManager {
         }
     }
 
-    private boolean checkLock(String message) {
+    private boolean checkLock(String message, Connection c) {
         try {
+            c.close();
             if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
                 Thread.sleep(sleepTime);
                 return true;

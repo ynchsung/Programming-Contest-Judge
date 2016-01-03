@@ -59,7 +59,7 @@ public class ConfigureManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -102,7 +102,7 @@ public class ConfigureManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -147,7 +147,7 @@ public class ConfigureManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -175,7 +175,7 @@ public class ConfigureManager {
                 break;
             }
             catch (Exception e) {
-                if (checkLock(e.getMessage()))
+                if (checkLock(e.getMessage(), c))
                     continue;
                 else
                     break;
@@ -183,7 +183,7 @@ public class ConfigureManager {
         }
     }
 
-    private boolean checkLock(String message) {
+    private boolean checkLock(String message, Connection c) {
         try {
             if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
                 Thread.sleep(sleepTime);
