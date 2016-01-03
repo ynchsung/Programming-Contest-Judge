@@ -16,6 +16,22 @@ public class MainController implements Initializable {
     @FXML private ViewClarificationController viewClarificationController;
     @FXML private ViewQuestionAndAnswerController viewQuestionAndAnswerController;
 
+    public RemainingTime getRemainingTimeController() {
+        return remainingTime;
+    }
+
+    public ViewClarificationController getViewClarificationController() {
+        return viewClarificationController;
+    }
+
+    public ViewQuestionAndAnswerController getViewQuestionAndAnswerController() {
+        return viewQuestionAndAnswerController;
+    }
+
+    public ViewSubmissionController getViewSubmissionController() {
+        return viewSubmissionController;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     }
