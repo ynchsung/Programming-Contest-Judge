@@ -340,7 +340,7 @@ public class ProblemManager {
                 return true;
             }
             else {
-                System.err.println("SQLException: " + message);
+                System.err.println("Exception: " + message);
             }
         }
         catch (Exception e) {
