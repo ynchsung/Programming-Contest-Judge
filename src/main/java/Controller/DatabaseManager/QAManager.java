@@ -60,7 +60,6 @@ public class QAManager {
                     stmt.setString(4, entry.get("time_stamp"));
                 }
                 else {
-                    String common = "INSERT INTO Answer (QuestionID,Content,Timestamp) ";
                     stmt = c.prepareStatement("INSERT INTO Answer (QuestionID,Content,Timestamp) VALUES (?, ?, ?);", 
                             Statement.RETURN_GENERATED_KEYS);
                     stmt.setString(1, entry.get("question_id"));
@@ -253,11 +252,11 @@ public class QAManager {
         return response;
     }
 
-    public void register(Observer observer) {
+    public static void register(Observer observer) {
         observers.add(observer);
     }
 
-    public void notifyObservers() {
+    private void notifyObservers() {
         for (Observer observer : observers) {
             observer.update();
         }
@@ -303,7 +302,7 @@ public class QAManager {
                 return true;
             }
             else {
-                System.err.println("SQLException: " + message);
+                System.err.println("Exception: " + message);
             }
         }
         catch (Exception e) {

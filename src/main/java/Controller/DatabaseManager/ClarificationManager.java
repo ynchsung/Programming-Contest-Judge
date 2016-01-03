@@ -153,11 +153,11 @@ public class ClarificationManager {
         return response;
     }
 
-    public void register(Observer observer) {
+    public static void register(Observer observer) {
         observers.add(observer);
     }
 
-    public void notifyObservers() {
+    private void notifyObservers() {
         for (Observer observer : observers) {
             observer.update();
         }
@@ -198,7 +198,7 @@ public class ClarificationManager {
                 return true;
             }
             else {
-                System.err.println("SQLException: " + message);
+                System.err.println("Exception: " + message);
             }
         }
         catch (Exception e) {

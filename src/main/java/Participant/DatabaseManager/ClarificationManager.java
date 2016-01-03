@@ -6,6 +6,7 @@ import java.lang.String;
 
 public class ClarificationManager {
     final int sleepTime = 200;
+    private static List<Observer> observers = new ArrayList<Observer>();
 
     public void createTable() {
         Connection c = null;
@@ -16,7 +17,7 @@ public class ClarificationManager {
 
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS Clarification " +
-                "(ClarificationID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "(ClarificationID INT PRIMARY KEY NOT NULL," +
                 " ProblemID STRING  NOT NULL, " +
                 " Content   STRING  NOT NULL, " +
                 " Timestamp INT NOT NULL)";
@@ -29,10 +30,9 @@ public class ClarificationManager {
         }
     }
 
-    public int addEntry(Map<String, String> entry) {
+    public void addEntry(Map<String, String> entry) {
         Connection c = null;
         PreparedStatement stmt = null;
-        int id = -1;
 
         while (true) {
             try {
@@ -40,36 +40,25 @@ public class ClarificationManager {
                 c = DriverManager.getConnection("jdbc:sqlite:clarification.db");
                 c.setAutoCommit(false);
 
-                stmt = c.prepareStatement("INSERT INTO Clarification (ProblemID,Content,Timestamp) VALUES (?, ?, ?);", 
-                                Statement.RETURN_GENERATED_KEYS);
-                stmt.setString(1, entry.get("problem_id"));
-                stmt.setString(2, entry.get("content"));
-                stmt.setString(3, entry.get("time_stamp"));
+                stmt = c.prepareStatement("INSERT INTO Clarification (ClarificationID,ProblemID,Content,Timestamp) VALUES (?, ?, ?, ?);");
+                stmt.setString(1, entry.get("clarification_id"));
+                stmt.setString(2, entry.get("problem_id"));
+                stmt.setString(3, entry.get("content"));
+                stmt.setString(4, entry.get("time_stamp"));
                 stmt.executeUpdate();
-                
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    id = rs.getInt(1);
-                }
-                else {
-                    System.err.println("Fail to generate ID");
-                }
-                rs.close();
                 stmt.close();
                 c.commit();
                 c.close();
+                notifyObservers();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
-
-        return id;
     }
 
     public List<Map<String, String>> queryAll() {
@@ -102,12 +91,11 @@ public class ClarificationManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -144,17 +132,26 @@ public class ClarificationManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
     }
-    
+
+    public static void register(Observer observer) {
+        observers.add(observer);
+    }
+
+    private void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update();
+        }
+    }
+
     public void flushTable() {
         Connection c = null;
         Statement stmt = null;
@@ -166,34 +163,36 @@ public class ClarificationManager {
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
-                String sql = "DELETE FROM Clarification;";
+                String sql = "DROP TABLE IF EXISTS Clarification;";
                 stmt.executeUpdate(sql);
                 stmt.close();
                 c.commit();
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
     }
 
-    private void checkLock(String message) {
+    private boolean checkLock(String message, Connection c) {
         try {
+            c.close();
             if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
                 Thread.sleep(sleepTime);
+                return true;
             }
             else {
-                System.err.println("SQLException: " + message);
+                System.err.println("Exception: " + message);
             }
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
+        return false;
     }
 }

@@ -405,11 +405,11 @@ public class SubmissionManager {
         }
     }
 
-    public void register(Observer observer) {
+    public static void register(Observer observer) {
         observers.add(observer);
     }
 
-    public void notifyObservers() {
+    private void notifyObservers() {
         for (Observer observer : observers) {
             observer.update();
         }
