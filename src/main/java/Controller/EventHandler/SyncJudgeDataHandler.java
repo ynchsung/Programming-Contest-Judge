@@ -19,15 +19,15 @@ public class SyncJudgeDataHandler extends EventHandler<Judge> {
                          String timeLimit, String memoryLimit, String testDataTimeStamp) {
         try {
             JSONObject msg = new JSONObject(), content = new JSONObject();
-            content.append("input", inputData);
-            content.append("output", outputData);
-            content.append("judge_method", judgeMethod);
-            content.append("time_limit", timeLimit);
-            content.append("memory_limit", memoryLimit);
-            content.append("testdata_time_stamp", testDataTimeStamp);
-            msg.append("msg_type", "syncjudgedata");
-            msg.append("problem_id", problemID);
-            msg.append("content", content);
+            content.put("input", inputData);
+            content.put("output", outputData);
+            content.put("judge_method", judgeMethod);
+            content.put("time_limit", timeLimit);
+            content.put("memory_limit", memoryLimit);
+            content.put("testdata_time_stamp", testDataTimeStamp);
+            msg.put("msg_type", "syncjudgedata");
+            msg.put("problem_id", problemID);
+            msg.put("content", content);
             judge.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();

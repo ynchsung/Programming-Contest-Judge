@@ -17,8 +17,8 @@ public class LoginHandler extends EventHandler<Guest> {
     private void sendResponse(Client client, String status) {
         try {
             JSONObject msg = new JSONObject();
-            msg.append("msg_type", "login");
-            msg.append("status", status);
+            msg.put("msg_type", "login");
+            msg.put("status", status);
             client.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();

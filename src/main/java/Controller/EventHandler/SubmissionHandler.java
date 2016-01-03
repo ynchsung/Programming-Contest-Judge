@@ -17,25 +17,25 @@ public class SubmissionHandler extends EventHandler<Team> {
         super(nextHandler);
     }
 
-    private void sendAck(Team team, String submissionID, long timeStamp) {
+    private void sendAck(Team team, String submissionID, String timeStamp) {
         try {
             JSONObject msg = new JSONObject();
-            msg.append("msg_type", "submit");
-            msg.append("status", "success");
-            msg.append("submission_id", submissionID);
-            msg.append("time_stamp", timeStamp);
+            msg.put("msg_type", "submit");
+            msg.put("status", "success");
+            msg.put("submission_id", submissionID);
+            msg.put("time_stamp", timeStamp);
             team.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void sendNak(Team team, long timeStamp) {
+    private void sendNak(Team team, String timeStamp) {
         try {
             JSONObject msg = new JSONObject();
-            msg.append("msg_type", "submit");
-            msg.append("status", "redundant");
-            msg.append("time_stamp", timeStamp);
+            msg.put("msg_type", "submit");
+            msg.put("status", "redundant");
+            msg.put("time_stamp", timeStamp);
             team.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -43,16 +43,16 @@ public class SubmissionHandler extends EventHandler<Team> {
     }
 
     private void forward(String submissionID, String problemID, String language, String sourceCode,
-                         long timeStamp, long testDataTimeStamp) {
+                         String timeStamp, String testDataTimeStamp) {
         try {
             JSONObject msg = new JSONObject();
-            msg.append("msg_type", "submit");
-            msg.append("submission_id", submissionID);
-            msg.append("problem_id", problemID);
-            msg.append("language", language);
-            msg.append("source_code", sourceCode);
-            msg.append("time_stamp", timeStamp);
-            msg.append("testdata_time_stamp", testDataTimeStamp);
+            msg.put("msg_type", "submit");
+            msg.put("submission_id", submissionID);
+            msg.put("problem_id", problemID);
+            msg.put("language", language);
+            msg.put("source_code", sourceCode);
+            msg.put("time_stamp", timeStamp);
+            msg.put("testdata_time_stamp", testDataTimeStamp);
             Core.getInstance().getScheduler().add(msg);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -67,17 +67,17 @@ public class SubmissionHandler extends EventHandler<Team> {
                 String problemID = msg.getString("problem_id");
                 String language = msg.getString("language");
                 String sourceCode = msg.getString("source_code");
-                long timeStamp = Core.getInstance().getTimer().getCountedTime();
+                String timeStamp = Integer.toString(Core.getInstance().getTimer().getCountedTime() / 60);
                 if (true /*not appeared*/) {
                     Map<String, String> store = new HashMap<String, String>();
                     store.put("problem_id", problemID);
                     store.put("language", language);
                     store.put("team_id", team.getID());
-                    store.put("time_stamp", Long.toString(timeStamp));
+                    store.put("time_stamp", timeStamp);
                     store.put("source_code", sourceCode);
                     String sid = Integer.toString(submissionManager.addEntry(store));
 
-                    forward(sid, problemID, language, sourceCode, timeStamp, Core.getInstance().getProblemByID(problemID).getTestDataTimeStamp());
+                    forward(sid, problemID, language, sourceCode, timeStamp, Integer.toString(Core.getInstance().getProblemByID(problemID).getTestDataTimeStamp()));
                     sendAck(team, sid, timeStamp);
                 }
                 else {

@@ -92,7 +92,7 @@ public class Core {
         for (int i = 1; i <= 5; i++) {
             String id = String.format("p%c", 'A' + i - 1);
             Map<String, String> pinfo = new HashMap<String, String>();
-            long timeStamp = System.currentTimeMillis() / 1000;
+            int timeStamp = 0;
             this.problems.put(id, new Problem(id, 6 - i, 65536, timeStamp));
             pinfo.put("problem_id", id);
             pinfo.put("time_limit", Integer.toString(6 - i));

@@ -18,25 +18,25 @@ public class ResultHandler extends EventHandler<Judge> {
         super(nextHandler);
     }
 
-    private void sendAck(Judge judge, String submissionID, long timeStamp) {
+    private void sendAck(Judge judge, String submissionID, String timeStamp) {
         try {
             JSONObject msg = new JSONObject();
-            msg.append("msg_type", "result");
-            msg.append("submission_id", submissionID);
-            msg.append("status", "received");
-            msg.append("time_stamp", timeStamp);
+            msg.put("msg_type", "result");
+            msg.put("submission_id", submissionID);
+            msg.put("status", "received");
+            msg.put("time_stamp", timeStamp);
             judge.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void sendNak(Judge judge, long timeStamp) {
+    private void sendNak(Judge judge, String timeStamp) {
         try {
             JSONObject msg = new JSONObject();
-            msg.append("msg_type", "result");
-            msg.append("status", "redundant");
-            msg.append("time_stamp", timeStamp);
+            msg.put("msg_type", "result");
+            msg.put("status", "redundant");
+            msg.put("time_stamp", timeStamp);
             judge.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -46,11 +46,11 @@ public class ResultHandler extends EventHandler<Judge> {
     private void forward(Team team, String submissionID, String result, String submit_timeStamp, String result_timeStamp) {
         try {
             JSONObject msg = new JSONObject();
-            msg.append("msg_type", "result");
-            msg.append("submission_id", submissionID);
-            msg.append("result", result);
-            msg.append("submit_time_stamp", submit_timeStamp);
-            msg.append("time_stamp", result_timeStamp);
+            msg.put("msg_type", "result");
+            msg.put("submission_id", submissionID);
+            msg.put("result", result);
+            msg.put("submit_time_stamp", submit_timeStamp);
+            msg.put("time_stamp", result_timeStamp);
             team.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -65,12 +65,12 @@ public class ResultHandler extends EventHandler<Judge> {
                 String submissionID = msg.getString("submission_id");
                 String result = msg.getString("result");
                 String testdata_timeStamp = msg.getString("testdata_time_stamp");
-                long result_timeStamp = Core.getInstance().getTimer().getCountedTime();
+                String result_timeStamp = Integer.toString(Core.getInstance().getTimer().getCountedTime() / 60);
                 if (true /*not appeared*/) {
                     Map<String, String> store = new HashMap<String, String>();
                     store.put("submission_id", submissionID);
                     store.put("result", result);
-                    store.put("time_stamp", Long.toString(result_timeStamp));
+                    store.put("time_stamp", result_timeStamp);
                     store.put("testdata_time_stamp", testdata_timeStamp);
                     submissionManager.updateEntry(store);
 
@@ -80,7 +80,7 @@ public class ResultHandler extends EventHandler<Judge> {
                     String teamID = getSub.get("team_id");
                     String submit_timeStamp = getSub.get("submission_time_stamp");
                     Team team = Core.getInstance().getTeamByID(teamID);
-                    forward(team, submissionID, result, submit_timeStamp, String.valueOf(result_timeStamp));
+                    forward(team, submissionID, result, submit_timeStamp, result_timeStamp);
                 }
                 else {
                     sendNak(judge, result_timeStamp);

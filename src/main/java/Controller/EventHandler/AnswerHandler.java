@@ -18,26 +18,26 @@ public class AnswerHandler extends EventHandler<Judge> {
         super(nextHandler);
     }
 
-    private void sendAck(Judge judge, String questionID, long timeStamp) {
+    private void sendAck(Judge judge, String questionID, String timeStamp) {
         try {
             JSONObject msg = new JSONObject();
-            msg.append("msg_type", "answer");
-            msg.append("status", "received");
-            msg.append("question_id", questionID);
-            msg.append("time_stamp", timeStamp);
+            msg.put("msg_type", "answer");
+            msg.put("status", "received");
+            msg.put("question_id", questionID);
+            msg.put("time_stamp", timeStamp);
             judge.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void forward(Client client, String questionID, String answer, long timeStamp) {
+    private void forward(Client client, String questionID, String answer, String timeStamp) {
         try {
             JSONObject msg = new JSONObject();
-            msg.append("msg_type", "answer");
-            msg.append("question_id", questionID);
-            msg.append("answer", answer);
-            msg.append("time_stamp", timeStamp);
+            msg.put("msg_type", "answer");
+            msg.put("question_id", questionID);
+            msg.put("answer", answer);
+            msg.put("time_stamp", timeStamp);
             client.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -52,13 +52,13 @@ public class AnswerHandler extends EventHandler<Judge> {
                 String questionID = msg.getString("question_id");
                 String teamID = msg.getString("team_id");
                 String answer = msg.getString("answer");
-                long timeStamp = Core.getInstance().getTimer().getCountedTime();
+                String timeStamp = Integer.toString(Core.getInstance().getTimer().getCountedTime() / 60);
                 Map<String, String> store = new HashMap<String, String>();
 
                 store.put("type", "answer");
                 store.put("question_id", questionID);
                 store.put("answer", answer);
-                store.put("time_stamp", Long.toString(timeStamp));
+                store.put("time_stamp", timeStamp);
                 qaManager.addEntry(store);
 
                 sendAck(judge, questionID, timeStamp);

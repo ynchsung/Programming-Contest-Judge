@@ -18,28 +18,28 @@ public class QuestionHandler extends EventHandler<Team> {
         super(nextHandler);
     }
 
-    private void sendAck(Team team, String questionID, long timeStamp) {
+    private void sendAck(Team team, String questionID, String timeStamp) {
         try {
             JSONObject msg = new JSONObject();
-            msg.append("msg_type", "question");
-            msg.append("status", "success");
-            msg.append("question_id", questionID);
-            msg.append("time_stamp", timeStamp);
+            msg.put("msg_type", "question");
+            msg.put("status", "success");
+            msg.put("question_id", questionID);
+            msg.put("time_stamp", timeStamp);
             team.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void forward(Judge judge, String teamID, String questionID, String problemID, String content, long timeStamp) {
+    private void forward(Judge judge, String teamID, String questionID, String problemID, String content, String timeStamp) {
         try {
             JSONObject msg = new JSONObject();
-            msg.append("msg_type", "question");
-            msg.append("team_id", teamID);
-            msg.append("question_id", questionID);
-            msg.append("problem_id", problemID);
-            msg.append("content", content);
-            msg.append("time_stamp", timeStamp);
+            msg.put("msg_type", "question");
+            msg.put("team_id", teamID);
+            msg.put("question_id", questionID);
+            msg.put("problem_id", problemID);
+            msg.put("content", content);
+            msg.put("time_stamp", timeStamp);
             judge.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -54,14 +54,14 @@ public class QuestionHandler extends EventHandler<Team> {
                 String problemID = msg.getString("problem_id");
                 String teamID = team.getID();
                 String content = msg.getString("content");
-                long timeStamp = Core.getInstance().getTimer().getCountedTime();
+                String timeStamp = Integer.toString(Core.getInstance().getTimer().getCountedTime() / 60);
                 Map<String, String> store = new HashMap<String, String>();
 
                 store.put("type", "question");
                 store.put("problem_id", problemID);
                 store.put("team_id", teamID);
                 store.put("content", content);
-                store.put("time_stamp", Long.toString(timeStamp));
+                store.put("time_stamp", timeStamp);
                 String qid = Integer.toString(qaManager.addEntry(store));
 
                 sendAck(team, qid, timeStamp);

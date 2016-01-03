@@ -14,11 +14,11 @@ public class SyncTimeHandler extends EventHandler<Client> {
         super(nextHandler);
     }
 
-    void forward(Client client, int time) {
+    void forward(Client client, String time) {
         try {
             JSONObject msg = new JSONObject();
-            msg.append("msg_type", "sync_time");
-            msg.append("remain_time", time);
+            msg.put("msg_type", "sync_time");
+            msg.put("remain_time", time);
             client.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -29,7 +29,7 @@ public class SyncTimeHandler extends EventHandler<Client> {
     public void handle(Client client, JSONObject msg) {
         try {
             if (msg.getString("msg_type").equals("sync_time")) {
-                forward(client, Core.getInstance().getTimer().getRemainTime());
+                forward(client, Integer.toString(Core.getInstance().getTimer().getRemainTime()));
             }
             else doNext(client, msg);
         } catch (JSONException e) {

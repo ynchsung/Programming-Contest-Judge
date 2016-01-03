@@ -21,12 +21,12 @@ public class SyncHandler extends EventHandler<Client> {
         super(nextHandler);
     }
 
-    void forward(Client client, int timeStamp, JSONObject content) {
+    void forward(Client client, String timeStamp, JSONObject content) {
         try {
             JSONObject msg = new JSONObject();
-            msg.append("msg_type", "sync");
-            msg.append("time_stamp", timeStamp);
-            msg.append("content", content);
+            msg.put("msg_type", "sync");
+            msg.put("time_stamp", timeStamp);
+            msg.put("content", content);
             client.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -37,6 +37,7 @@ public class SyncHandler extends EventHandler<Client> {
     public void handle(Client client, JSONObject msg) {
         try {
             if (msg.getString("msg_type").equals("sync")) {
+                String nowTime = Integer.toString(Core.getInstance().getTimer().getCountedTime() / 60);
                 int timeStamp = Integer.valueOf(msg.getString("time_stamp"));
                 JSONObject fwd = new JSONObject();
                 JSONObject content = new JSONObject();
@@ -50,20 +51,20 @@ public class SyncHandler extends EventHandler<Client> {
                     SubmissionManager submissionManager = new SubmissionManager();
                     for (Map<String, String> submit: submissionManager.syncSubmission(client.getID(), timeStamp)) {
                         JSONObject jsonSub = new JSONObject();
-                        jsonSub.append("msg_type", "submit");
-                        jsonSub.append("submission_id", submit.get("submission_id"));
-                        jsonSub.append("problem_id", submit.get("problem_id"));
-                        jsonSub.append("language", submit.get("language"));
-                        jsonSub.append("time_stamp", submit.get("submission_time_stamp"));
+                        jsonSub.put("msg_type", "submit");
+                        jsonSub.put("submission_id", submit.get("submission_id"));
+                        jsonSub.put("problem_id", submit.get("problem_id"));
+                        jsonSub.put("language", submit.get("language"));
+                        jsonSub.put("time_stamp", submit.get("submission_time_stamp"));
                         jsonSubmissions.put(jsonSub);
                     }
                     for (Map<String, String> result: submissionManager.syncResult(client.getID(), timeStamp)) {
                         JSONObject jsonRes = new JSONObject();
-                        jsonRes.append("msg_type", "result");
-                        jsonRes.append("submission_id", result.get("submission_id"));
-                        jsonRes.append("result", result.get("result"));
-                        jsonRes.append("submit_time_stamp", result.get("submission_time_stamp"));
-                        jsonRes.append("time_stamp", result.get("result_time_stamp"));
+                        jsonRes.put("msg_type", "result");
+                        jsonRes.put("submission_id", result.get("submission_id"));
+                        jsonRes.put("result", result.get("result"));
+                        jsonRes.put("submit_time_stamp", result.get("submission_time_stamp"));
+                        jsonRes.put("time_stamp", result.get("result_time_stamp"));
                         jsonResults.put(jsonRes);
                     }
                 }
@@ -76,42 +77,42 @@ public class SyncHandler extends EventHandler<Client> {
                     qid = "";
                 for (Map<String, String> question: qaManager.syncQuestion(qid, timeStamp)) {
                     JSONObject jsonQ = new JSONObject();
-                    jsonQ.append("msg_type", "question");
-                    jsonQ.append("team_id", question.get("team_id"));
-                    jsonQ.append("question_id", question.get("question_id"));
-                    jsonQ.append("problem_id", question.get("problem_id"));
-                    jsonQ.append("content", question.get("content"));
-                    jsonQ.append("time_stamp", question.get("time_stamp"));
+                    jsonQ.put("msg_type", "question");
+                    jsonQ.put("team_id", question.get("team_id"));
+                    jsonQ.put("question_id", question.get("question_id"));
+                    jsonQ.put("problem_id", question.get("problem_id"));
+                    jsonQ.put("content", question.get("content"));
+                    jsonQ.put("time_stamp", question.get("time_stamp"));
                     jsonQuestions.put(jsonQ);
                 }
                 for (Map<String, String> answer: qaManager.syncAnswer(qid, timeStamp)) {
                     JSONObject jsonA = new JSONObject();
-                    jsonA.append("msg_type", "answer");
-                    jsonA.append("team_id", answer.get("team_id"));
-                    jsonA.append("question_id", answer.get("question_id"));
-                    jsonA.append("answer", answer.get("answer"));
-                    jsonA.append("time_stamp", answer.get("time_stamp"));
+                    jsonA.put("msg_type", "answer");
+                    jsonA.put("team_id", answer.get("team_id"));
+                    jsonA.put("question_id", answer.get("question_id"));
+                    jsonA.put("answer", answer.get("answer"));
+                    jsonA.put("time_stamp", answer.get("time_stamp"));
                     jsonAnswers.put(jsonA);
                 }
 
                 ClarificationManager clarificationManager = new ClarificationManager();
                 for (Map<String, String> clar: clarificationManager.sync(timeStamp)) {
                     JSONObject jsonC = new JSONObject();
-                    jsonC.append("msg_type", "clarification");
-                    jsonC.append("clarification_id", clar.get("clarification_id"));
-                    jsonC.append("problem_id", clar.get("problem_id"));
-                    jsonC.append("content", clar.get("content"));
-                    jsonC.append("time_stamp", clar.get("time_stamp"));
+                    jsonC.put("msg_type", "clarification");
+                    jsonC.put("clarification_id", clar.get("clarification_id"));
+                    jsonC.put("problem_id", clar.get("problem_id"));
+                    jsonC.put("content", clar.get("content"));
+                    jsonC.put("time_stamp", clar.get("time_stamp"));
                     jsonClarifications.put(jsonC);
                 }
 
-                content.append("submission", jsonSubmissions);
-                content.append("result", jsonResults);
-                content.append("question", jsonQuestions);
-                content.append("answer", jsonAnswers);
-                content.append("clarification", jsonClarifications);
+                content.put("submission", jsonSubmissions);
+                content.put("result", jsonResults);
+                content.put("question", jsonQuestions);
+                content.put("answer", jsonAnswers);
+                content.put("clarification", jsonClarifications);
 
-                forward(client, Core.getInstance().getTimer().getCountedTime(), content);
+                forward(client, nowTime, content);
             }
             else doNext(client, msg);
         } catch (JSONException e) {
