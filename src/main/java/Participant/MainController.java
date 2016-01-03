@@ -18,7 +18,7 @@ public class MainController implements Initializable {
     @FXML private ViewClarificationController viewClarificationController;
     @FXML private ViewQuestionAndAnswerController viewQuestionAndAnswerController;
 
-    public RemainingTime getRemainingTime() {
+    public RemainingTime getRemainingTimeController() {
         return remainingTime;
     }
 
