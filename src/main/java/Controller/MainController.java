@@ -39,7 +39,7 @@ public class MainController implements Initializable {
         return testDataUpdateController;
     }
 
-    public RemainingTime getRemainingTime() {
+    public RemainingTime getRemainingTimeController () {
         return remainingTime;
     }
 

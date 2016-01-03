@@ -1,6 +1,9 @@
 package CustomNode;
 
 import javafx.beans.NamedArg;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,9 +34,9 @@ public class MyFileChooser extends HBox implements Initializable {
     @FXML private TextField filePath;
     @FXML private Button choose;
     private String text;
-    private File chosenFile;
     private List<String> filterDescription;
     private List<List<String> > filterExtension;
+    private SimpleObjectProperty<File> chosenFile = new SimpleObjectProperty<>();
 
     public MyFileChooser (@NamedArg("text") String text) {
         this.text = text;
@@ -46,6 +49,10 @@ public class MyFileChooser extends HBox implements Initializable {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
+    }
+
+    public void addListener (ChangeListener<? super File> listener) {
+        chosenFile.addListener(listener);
     }
 
     public void setButtonText (String text) {
@@ -67,7 +74,7 @@ public class MyFileChooser extends HBox implements Initializable {
     }
 
     public File getChosenFile() {
-        return chosenFile;
+        return chosenFile.getValue();
     }
 
     @FXML protected void onChooseClicked () {
@@ -78,9 +85,9 @@ public class MyFileChooser extends HBox implements Initializable {
                 fileChooser.getExtensionFilters().add(exfilter);
             }
         }
-        chosenFile = fileChooser.showOpenDialog(choose.getScene().getWindow());
-        if (chosenFile != null)
-            setFilePath(chosenFile.getName());
+        chosenFile.set(fileChooser.showOpenDialog(choose.getScene().getWindow()));
+        if (chosenFile.getValue() != null)
+            setFilePath(chosenFile.getValue().getName());
     }
 
     @Override

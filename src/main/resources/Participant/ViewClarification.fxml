@@ -1,0 +1,9 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import SharedGuiElement.ClarificationTable?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:id="viewClarification"
+      fx:controller="Participant.ViewClarificationController" >
+    <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+    <ClarificationTable fx:id="clarificationTable" />
+</VBox>
