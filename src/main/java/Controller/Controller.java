@@ -46,7 +46,7 @@ public class Controller extends Application{
         core.getTimer().setListener(new ContestTimer.ContestTimerListener() {
             @Override
             public void onUpdate(int totalSecond, int secondCounted) {
-                controller.getRemainingTimeController().setRemainingTime(totalSecond - secondCounted);
+                controller.getRemainingTimeController().setRemainingTime(String.valueOf(totalSecond - secondCounted));
             }
 
             @Override
