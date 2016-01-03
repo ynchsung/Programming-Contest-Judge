@@ -117,7 +117,7 @@ public class QAManager {
 
                     int aid = rs.getInt("AnswerID");
                     int qid = rs.getInt("QuestionID");
-                    String answer = rs.getString("Answer");
+                    String answer = rs.getString("Content");
                     int time = rs.getInt("Timestamp");
                     entry.put("type", "answer");
                     entry.put("answer_id", Integer.toString(aid));

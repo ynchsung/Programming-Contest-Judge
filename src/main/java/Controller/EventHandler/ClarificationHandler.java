@@ -53,7 +53,7 @@ public class ClarificationHandler extends EventHandler<Judge> {
                 ClarificationManager clarificationManager = new ClarificationManager();
                 String problemID = msg.getString("problem_id");
                 String content = msg.getString("content");
-                long timeStamp = System.currentTimeMillis() / 1000; /* TODO: get timer time */
+                long timeStamp = Core.getInstance().getTimer().getCountedTime();
                 Map<String, String> store = new HashMap<String, String>();
 
                 store.put("problem_id", problemID);
