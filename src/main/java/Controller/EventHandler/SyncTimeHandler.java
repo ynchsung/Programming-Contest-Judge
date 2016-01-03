@@ -2,6 +2,7 @@ package Controller.EventHandler;
 
 import Controller.Client;
 
+import Controller.Core;
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -28,7 +29,7 @@ public class SyncTimeHandler extends EventHandler<Client> {
     public void handle(Client client, JSONObject msg) {
         try {
             if (msg.getString("msg_type").equals("sync_time")) {
-                forward(client, 0 /* TODO: get timer remain time */);
+                forward(client, Core.getInstance().getTimer().getRemainTime());
             }
             else doNext(client, msg);
         } catch (JSONException e) {

@@ -65,7 +65,7 @@ public class ResultHandler extends EventHandler<Judge> {
                 String submissionID = msg.getString("submission_id");
                 String result = msg.getString("result");
                 String testdata_timeStamp = msg.getString("testdata_time_stamp");
-                long result_timeStamp = System.currentTimeMillis() / 1000; /* TODO: get timer time */
+                long result_timeStamp = Core.getInstance().getTimer().getCountedTime();
                 if (true /*not appeared*/) {
                     Map<String, String> store = new HashMap<String, String>();
                     store.put("submission_id", submissionID);

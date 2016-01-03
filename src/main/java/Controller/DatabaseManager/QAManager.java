@@ -128,12 +128,12 @@ public class QAManager {
 
                     int aid = rs.getInt("AnswerID");
                     int qid = rs.getInt("QuestionID");
-                    String answer = rs.getString("Answer");
+                    String answer = rs.getString("Content");
                     int time = rs.getInt("Timestamp");
                     entry.put("type", "answer");
                     entry.put("answer_id", Integer.toString(aid));
                     entry.put("question_id", Integer.toString(qid));
-                    entry.put("answer", answer);
+                    entry.put("content", answer);
                     entry.put("time_stamp", Integer.toString(time));
                     response.add(entry);
                 }
@@ -183,7 +183,7 @@ public class QAManager {
                     entry.put("team_id", tid);
                     entry.put("question_id", Integer.toString(qid));
                     entry.put("problem_id", pid);
-                    entry.put("content", content);
+                    entry.put("answer", content);
                     entry.put("time_stamp", Integer.toString(time));
                     response.add(entry);
                 }

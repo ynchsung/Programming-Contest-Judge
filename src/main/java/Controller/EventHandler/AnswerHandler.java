@@ -52,7 +52,7 @@ public class AnswerHandler extends EventHandler<Judge> {
                 String questionID = msg.getString("question_id");
                 String teamID = msg.getString("team_id");
                 String answer = msg.getString("answer");
-                long timeStamp = System.currentTimeMillis() / 1000; /* TODO: get timer time */
+                long timeStamp = Core.getInstance().getTimer().getCountedTime();
                 Map<String, String> store = new HashMap<String, String>();
 
                 store.put("type", "answer");

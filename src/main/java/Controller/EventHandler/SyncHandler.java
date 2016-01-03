@@ -1,6 +1,7 @@
 package Controller.EventHandler;
 
 import Controller.Client;
+import Controller.Core;
 import Controller.Team;
 import Controller.DatabaseManager.SubmissionManager;
 import Controller.DatabaseManager.QAManager;
@@ -110,7 +111,7 @@ public class SyncHandler extends EventHandler<Client> {
                 content.append("answer", jsonAnswers);
                 content.append("clarification", jsonClarifications);
 
-                forward(client, 0 /* TODO: get timer time */, content);
+                forward(client, Core.getInstance().getTimer().getCountedTime(), content);
             }
             else doNext(client, msg);
         } catch (JSONException e) {

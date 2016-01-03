@@ -1,9 +1,6 @@
 package Controller;
 
-import Controller.DatabaseManager.ClarificationManager;
-import Controller.DatabaseManager.ProblemManager;
-import Controller.DatabaseManager.QAManager;
-import Controller.DatabaseManager.SubmissionManager;
+import Controller.DatabaseManager.*;
 import Controller.EventHandler.EventHandler;
 import SharedGuiElement.OpenCode;
 import SharedGuiElement.OpenCodeBuilder;
@@ -97,14 +94,17 @@ public class Controller extends Application{
             }
         });
         viewSubmissionController.setSubmissions((new SubmissionManager()).queryAll());
+        SubmissionManager.register(() -> viewSubmissionController.setSubmissions((new SubmissionManager()).queryAll()));
 
         // QA Controller
         ViewQuestionAndAnswerController viewQuestionAndAnswerController = controller.getViewQuestionAndAnswerController();
-        //viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll());
+        viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll());
+        QAManager.register(() -> viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll()));
 
         // ClarificationController
         ViewClarificationController viewClarificationController = controller.getViewClarificationController();
         viewClarificationController.setClarification((new ClarificationManager()).queryAll());
+        ClarificationManager.register(() -> viewClarificationController.setClarification((new ClarificationManager()).queryAll()));
 
         primaryStage.setTitle("Controller");
         primaryStage.setScene(new Scene(root, 800, 600));
