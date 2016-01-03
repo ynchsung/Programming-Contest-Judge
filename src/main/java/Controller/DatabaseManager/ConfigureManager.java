@@ -58,12 +58,11 @@ public class ConfigureManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println( e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
     }
@@ -102,12 +101,11 @@ public class ConfigureManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
     }
@@ -148,12 +146,11 @@ public class ConfigureManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -170,27 +167,27 @@ public class ConfigureManager {
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
-                String sql = "DELETE FROM Configure;";
+                String sql = "DROP TABLE IF EXISTS Configure;";
                 stmt.executeUpdate(sql);
                 stmt.close();
                 c.commit();
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
     }
 
-    private void checkLock(String message) {
+    private boolean checkLock(String message, Connection c) {
         try {
             if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
                 Thread.sleep(sleepTime);
+                return true;
             }
             else {
                 System.err.println("SQLException: " + message);
@@ -199,5 +196,6 @@ public class ConfigureManager {
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
+        return false;
     }
 }
