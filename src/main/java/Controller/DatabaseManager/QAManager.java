@@ -6,7 +6,7 @@ import java.lang.String;
 
 public class QAManager {
     final int sleepTime = 200;
-    List<Observer> observers = new ArrayList<Observer>();
+    private static List<Observer> observers = new ArrayList<Observer>();
 
     public void createTable() {
         Connection c = null;
