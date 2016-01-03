@@ -57,12 +57,11 @@ public class ProblemManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println( e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
     }
@@ -130,12 +129,11 @@ public class ProblemManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
     }
@@ -176,17 +174,46 @@ public class ProblemManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
     }
 
+    public List<String> queryAllId() {
+        Connection c = null;
+        Statement stmt = null;
+        List<String> response = new ArrayList<String>();
+        while (true) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite:problem.db");
+                c.setAutoCommit(false);
+
+                stmt = c.createStatement();
+                ResultSet rs = stmt.executeQuery( "SELECT ProblemID FROM Problem;" );
+                while (rs.next()) {
+                    String pid = rs.getString("ProblemID");
+                    response.add(pid);
+                }
+                rs.close();
+                stmt.close();
+                c.close();
+                break;
+            }
+            catch (Exception e) {
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
+            }
+        }
+        return response;
+    }
     public List<Map<String, String>> sync(int time_stamp) {
         Connection c = null;
         Statement stmt = null;
@@ -224,12 +251,11 @@ public class ProblemManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -269,12 +295,11 @@ public class ProblemManager {
                     break;
                 }
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -291,34 +316,36 @@ public class ProblemManager {
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
-                String sql = "DELETE FROM Problem;";
+                String sql = "DROP TABLE IF EXISTS Problem;";
                 stmt.executeUpdate(sql);
                 stmt.close();
                 c.commit();
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
     }
 
-    private void checkLock(String message) {
+    private boolean checkLock(String message, Connection c) {
         try {
+            c.close();
             if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
                 Thread.sleep(sleepTime);
+                return true;
             }
             else {
-                System.err.println("SQLException: " + message);
+                System.err.println("Exception: " + message);
             }
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
+        return false;
     }
 }

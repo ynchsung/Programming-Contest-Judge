@@ -6,6 +6,7 @@ import java.lang.String;
 
 public class SubmissionManager {
     final int sleepTime = 200;
+    private static List<Observer> observers = new ArrayList<Observer>();
 
     public void createTable() {
         Connection c = null;
@@ -16,7 +17,7 @@ public class SubmissionManager {
 
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS Submission " +
-                "(SubmissionID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "(SubmissionID INT PRIMARY KEY NOT NULL," +
                 " ProblemID STRING NOT NULL," +
                 " TeamID    STRING NOT NULL," +
                 " SubmissionTimestamp   INT NOT NULL," +
@@ -34,11 +35,9 @@ public class SubmissionManager {
         }
     }
 
-    public int addEntry(Map<String, String> entry) {
+    public void addEntry(Map<String, String> entry) {
         Connection c = null;
         PreparedStatement stmt = null;
-
-        int id = -1;
 
         while (true) {
             try {
@@ -47,37 +46,28 @@ public class SubmissionManager {
                 c.setAutoCommit(false);
 
                 stmt = c.prepareStatement("INSERT INTO Submission " +
-                                "(ProblemID,TeamID,SubmissionTimestamp,Language,SourceCode,Result,ResultTimestamp,DataTimestamp)" +
-                                "VALUES (?, ?, ?, ?, ?, 'Pending', -1, -1);", Statement.RETURN_GENERATED_KEYS);
-                stmt.setString(1, entry.get("problem_id"));
-                stmt.setString(2, entry.get("team_id"));
-                stmt.setString(3, entry.get("time_stamp"));
-                stmt.setString(4, entry.get("language"));
-                stmt.setString(5, entry.get("source_code"));
+                                "(SubmissionID,ProblemID,TeamID,SubmissionTimestamp,Language,SourceCode,Result,ResultTimestamp,DataTimestamp)" +
+                                "VALUES (?, ?, ?, ?, ?, ?, 'Pending', -1, -1);");
+                stmt.setString(1, entry.get("submission_id"));
+                stmt.setString(2, entry.get("problem_id"));
+                stmt.setString(3, entry.get("team_id"));
+                stmt.setString(4, entry.get("time_stamp"));
+                stmt.setString(5, entry.get("language"));
+                stmt.setString(6, entry.get("source_code"));
                 stmt.executeUpdate();
-
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    id = rs.getInt(1);
-                }
-                else {
-                    System.err.println("Fail to generate ID");
-                }
-                rs.close();
                 stmt.close();
                 c.commit();
                 c.close();
+                notifyObservers();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
-        return id;
     }
 
     public void updateEntry(Map<String, String> entry) {
@@ -114,14 +104,14 @@ public class SubmissionManager {
                 stmt.close();
                 c.commit();
                 c.close();
+                notifyObservers();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
     }
@@ -167,12 +157,11 @@ public class SubmissionManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -197,12 +186,11 @@ public class SubmissionManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -244,12 +232,11 @@ public class SubmissionManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -291,12 +278,11 @@ public class SubmissionManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
@@ -341,15 +327,81 @@ public class SubmissionManager {
                 c.close();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
         return response;
+    }
+
+    public void rejudge(String problem_id) {
+        Connection c = null;
+        PreparedStatement stmt = null;
+        List<Map<String, String>> response = new ArrayList<Map<String, String>>();
+        while (true) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite:submission.db");
+                c.setAutoCommit(false);
+
+                stmt = c.prepareStatement("SELECT * FROM Submission WHERE ProblemID = ?;");
+                stmt.setString(1, problem_id);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    Map<String, String> entry = new HashMap<String, String>();
+
+                    int sid = rs.getInt("SubmissionID");
+                    String pid = rs.getString("ProblemID");
+                    String tid = rs.getString("TeamID");
+                    int stime = rs.getInt("SubmissionTimestamp");
+                    String result = rs.getString("Result");
+                    int rtime = rs.getInt("ResultTimestamp");
+                    String lang = rs.getString("Language");
+                    int dtime = rs.getInt("DataTimestamp");
+                    String code = rs.getString("SourceCode");
+                    entry.put("submission_id", Integer.toString(sid));
+                    entry.put("problem_id", pid);
+                    entry.put("team_id", tid);
+                    entry.put("submission_time_stamp", Integer.toString(stime));
+                    entry.put("result", result);
+                    entry.put("result_time_stamp", Integer.toString(rtime));
+                    entry.put("language", lang);
+                    entry.put("testdata_time_stamp", Integer.toString(dtime));
+                    entry.put("source_code", code);
+                    response.add(entry);
+                }
+                rs.close();
+                stmt.close();
+
+                stmt = c.prepareStatement("UPDATE Submission SET Result = 'Pending', ResultTimestamp = -1 WHERE ProblemID = ?;");
+                stmt.setString(1, problem_id);
+                stmt.executeUpdate();
+                stmt.close();
+                c.commit();
+                c.close();
+                notifyObservers();
+                break;
+            }
+            catch (Exception e) {
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
+            }
+        }
+    }
+
+    public void register(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update();
+        }
     }
 
     public void flushTable() {
@@ -363,34 +415,37 @@ public class SubmissionManager {
                 c.setAutoCommit(false);
 
                 stmt = c.createStatement();
-                String sql = "DELETE FROM Submission;";
+                String sql = "DROP TABLE IF EXISTS Submission;";
                 stmt.executeUpdate(sql);
                 stmt.close();
                 c.commit();
                 c.close();
+                notifyObservers();
                 break;
             }
-            catch (SQLException e) {
-                checkLock(e.getMessage());
-                continue;
-            }
             catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                if (checkLock(e.getMessage(), c))
+                    continue;
+                else
+                    break;
             }
         }
     }
 
-    private void checkLock(String message) {
+    private boolean checkLock(String message, Connection c) {
         try {
+            c.close();
             if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
                 Thread.sleep(sleepTime);
+                return true;
             }
             else {
-                System.err.println("SQLException: " + message);
+                System.err.println("Exception: " + message);
             }
         }
         catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
+        return false;
     }
 }
