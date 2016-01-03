@@ -6,18 +6,30 @@ import javafx.beans.property.SimpleStringProperty;
  * Created by aalexx on 12/31/15.
  */
 public class QuestionAndAnswerItem {
+    private SimpleStringProperty id;
     private SimpleStringProperty type;
     private SimpleStringProperty problemId;
     private SimpleStringProperty content;
     private SimpleStringProperty timeStamp;
 
-    public QuestionAndAnswerItem(String type, String problemId, String content, String timeStamp) {
+    public QuestionAndAnswerItem(String id, String type, String problemId, String content, String timeStamp) {
+        this.id = new SimpleStringProperty(id);
         this.type = new SimpleStringProperty(type);
         this.problemId = new SimpleStringProperty(problemId);
         this.content = new SimpleStringProperty(content);
         this.timeStamp = new SimpleStringProperty(timeStamp);
     }
 
+    //id
+    public void setId (String id) {
+        this.id.set(id);
+    }
+    public String getId () {
+        return id.get();
+    }
+    public SimpleStringProperty idProperty () {
+        return id;
+    }
     // type
     public void setType(String type) {
         this.type.set(type);

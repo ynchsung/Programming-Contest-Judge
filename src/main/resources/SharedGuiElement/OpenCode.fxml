@@ -1,9 +1,9 @@
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.geometry.Insets?>
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="SharedGuiElement.OpenCodeController" >
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.StackPane?>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="SharedGuiElement.OpenCodeController" >
     <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
     <TextArea fx:id="code"
               editable="false" />
-</VBox>
+</StackPane>

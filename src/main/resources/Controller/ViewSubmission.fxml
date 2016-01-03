@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import CustomNode.MyChoiceBox?>
 <?import CustomNode.MyConfirmationButton?>
+<?import SharedGuiElement.SubmissionTable?>
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="Controller.ViewSubmissionController"
       spacing="20"
@@ -25,7 +26,7 @@
                               GridPane.rowIndex="0"
                               GridPane.columnIndex="2" />
     </GridPane>
-    <fx:include fx:id="submissionTable"
-                source="../SharedGuiElement/SubmissionTable.fxml"
-                VBox.vgrow="ALWAYS" />
+    <SubmissionTable fx:id="submissionTable"
+                     rejudgeDisable="true"
+                     VBox.vgrow="ALWAYS" />
 </VBox>

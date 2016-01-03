@@ -1,25 +1,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
 <?import SharedGuiElement.RemainingTime?>
-<VBox fx:controller="Controller.MainController" xmlns:fx="http://javafx.com/fxml">
+<VBox fx:controller="Judge.MainController" xmlns:fx="http://javafx.com/fxml">
     <RemainingTime fx:id="remainingTime" />
     <TabPane>
         <tabs>
-            <Tab text="General" closable="false">
-                <content>
-                    <fx:include fx:id="general" source="General.fxml" />
-                </content>
-            </Tab>
-            <Tab text="Time Update" closable="false">
-                <content>
-                    <fx:include fx:id="timeUpdate" source="TimeUpdate.fxml" />
-                </content>
-            </Tab>
-            <Tab text="Test Data Update" closable="false">
-                <content>
-                    <fx:include fx:id="testDataUpdate" source="TestDataUpdate.fxml" />
-                </content>
-            </Tab>
             <Tab text="View Submissions" closable="false">
                 <content>
                     <fx:include fx:id="viewSubmission" source="ViewSubmission.fxml" />
