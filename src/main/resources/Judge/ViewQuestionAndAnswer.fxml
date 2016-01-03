@@ -1,10 +1,9 @@
-<?import javafx.scene.layout.VBox?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
 <?import SharedGuiElement.QuestionAndAnswerTable?>
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:id="viewQuestionAndAnswer"
-      fx:controller="Controller.ViewQuestionAndAnswerController" >
+      fx:controller="Judge.ViewQuestionAndAnswerController" >
     <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
-    <QuestionAndAnswerTable fx:id="questionAndAnswerTable"
-                            answerButtonDisable="true" />
+    <QuestionAndAnswerTable fx:id="questionAndAnswerTable" />
 </VBox>
