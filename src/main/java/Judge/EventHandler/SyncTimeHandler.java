@@ -1,5 +1,6 @@
 package Judge.EventHandler;
 
+import Judge.JudgeCore;
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -12,7 +13,8 @@ public class SyncTimeHandler extends EventHandler {
     public void handle(JSONObject msg) {
         try {
             if (msg.getString("msg_type").equals("sync_time")) {
-                // refresh time
+                int time = msg.getInt("time");
+                JudgeCore.getInstance().getTimer().setSecondCounted(time);
             }
             else doNext(msg);
         } catch (JSONException e) {

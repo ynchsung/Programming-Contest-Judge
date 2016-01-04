@@ -1,11 +1,10 @@
 package Controller;
 
 import Controller.DatabaseManager.*;
-import Controller.EventHandler.EventHandler;
+import Shared.ContestTimer;
 import SharedGuiElement.OpenCode;
 import SharedGuiElement.OpenCodeBuilder;
 import javafx.application.Application;
-import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,13 +12,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by tenyoku on 2015/12/24.
@@ -43,7 +36,7 @@ public class Controller extends Application{
         core.getTimer().setListener(new ContestTimer.ContestTimerListener() {
             @Override
             public void onUpdate(int totalSecond, int secondCounted) {
-                controller.getRemainingTimeController().setRemainingTime(String.valueOf(totalSecond - secondCounted));
+                controller.getRemainingTimeController().setRemainingTime(totalSecond - secondCounted);
             }
 
             @Override

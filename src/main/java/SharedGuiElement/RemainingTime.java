@@ -25,7 +25,12 @@ public class RemainingTime extends HBox {
         }
     }
 
-    public void setRemainingTime (String remainingTime) {
-        this.remainingTime.setText(remainingTime);
+    public void setRemainingTime (int seconds) {
+        int second = seconds%60;
+        seconds /= 60;
+        int minute = seconds%60;
+        seconds /= 60;
+        int hour = seconds;
+        this.remainingTime.setText(String.format("%d:%d:%d", hour, minute, second));
     }
 }

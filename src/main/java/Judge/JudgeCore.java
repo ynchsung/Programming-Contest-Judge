@@ -1,37 +1,59 @@
 package Judge;
 
-import Judge.DatabaseManager.*;
-
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import Shared.AckQueue;
+import Shared.ContestTimer;
+import org.json.JSONObject;
 
 public class JudgeCore {
     static private JudgeCore sharedInstance = null;
 
     private ControllerServer controllerServer;
+    private AckQueue sendResultQueue;
+    private AckQueue sendClarificationQueue;
+    private AckQueue sendAnswerQueue;
+    private ContestTimer timer;
 
-    private JudgeCore(ControllerServer controllerServer) {
+    public JudgeCore() {
+        timer = new ContestTimer(300*60);
+    }
+
+    public void setControllerServer(ControllerServer controllerServer) {
         this.controllerServer = controllerServer;
+        this.sendResultQueue = new AckQueue(this.controllerServer);
+        this.sendClarificationQueue = new AckQueue(this.controllerServer);
+        this.sendAnswerQueue = new AckQueue(this.controllerServer);
     }
 
     static public JudgeCore getInstance() {
+        if (sharedInstance == null) {
+            synchronized (JudgeCore.class) {
+                if (sharedInstance == null) {
+                    sharedInstance = new JudgeCore();
+                }
+            }
+        }
         return sharedInstance;
     }
 
-    static public void run(ControllerServer controllerServer) {
-        if (sharedInstance != null)
-            return;
-        sharedInstance = new JudgeCore(controllerServer);
-        sharedInstance.start();
+    public void start() {
+        this.sendResultQueue.start();
+        this.sendClarificationQueue.start();
+        this.sendAnswerQueue.start();
     }
 
-    private void start() {
+    public void sendResult(JSONObject msg) {
+        sendResultQueue.add(msg);
+    }
+
+    public void sendClrification(JSONObject msg) {
+        sendClarificationQueue.add(msg);
+    }
+
+    public void sendAnswer(JSONObject msg) {
+        sendAnswerQueue.add(msg);
+    }
+
+    public ContestTimer getTimer() {
+        return timer;
     }
 }
