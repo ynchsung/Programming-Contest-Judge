@@ -45,6 +45,18 @@ public class ViewClarificationController implements Initializable {
         confirmNewClarificationButton.setOkAction(handler);
     }
 
+    public Object getProblemChoice () {
+        return clarificationProblemChoice.getChoice();
+    }
+
+    public int getProblemChoiceNumber () {
+        return clarificationProblemChoice.getChoiceNumber();
+    }
+
+    public void setProblemChoice (List<String> choice) {
+        clarificationProblemChoice.setChoice(choice);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         newClarificationTextArea.clear();
