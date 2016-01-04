@@ -1,4 +1,4 @@
-package Judge.InfoManager;
+package Judge;
 
 public class AnswerInfo {
     private final String content;

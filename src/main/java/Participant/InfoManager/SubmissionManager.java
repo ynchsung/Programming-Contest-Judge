@@ -1,6 +1,6 @@
-package Judge.InfoManager;
+package Participant.InfoManager;
 
-import Judge.SubmissionInfo;
+import Participant.SubmissionInfo;
 
 import java.util.*;
 

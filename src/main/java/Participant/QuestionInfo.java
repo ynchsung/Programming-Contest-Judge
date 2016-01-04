@@ -1,4 +1,4 @@
-package Judge.InfoManager;
+package Participant;
 
 import java.util.*;
 

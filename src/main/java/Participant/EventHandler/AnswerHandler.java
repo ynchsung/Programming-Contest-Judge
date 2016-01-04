@@ -1,9 +1,8 @@
 package Participant.EventHandler;
 
-import Participant.DatabaseManager.QAManager;
+import Participant.InfoManager.QAManager;
+import Participant.AnswerInfo;
 
-import java.util.Map;
-import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,16 +16,11 @@ public class AnswerHandler extends EventHandler {
         try {
             if (msg.getString("msg_type").equals("answer")) {
                 QAManager qaManager = new QAManager();
-                String questionID = msg.getString("question_id");
-                String answer = msg.getString("answer");
-                String timeStamp = msg.getString("time_stamp");
-                Map<String, String> store = new HashMap<String, String>();
+                int questionID = Integer.valueOf(msg.getString("question_id"));
+                String content = msg.getString("answer");
+                int timeStamp = Integer.valueOf(msg.getString("time_stamp"));
 
-                store.put("type", "answer");
-                store.put("question_id", questionID);
-                store.put("answer", answer);
-                store.put("time_stamp", timeStamp);
-                qaManager.addEntry(store);
+                qaManager.addAnswer(questionID, new AnswerInfo(content, timeStamp));
             }
             else doNext(msg);
         } catch (JSONException e) {

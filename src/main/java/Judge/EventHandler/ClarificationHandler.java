@@ -1,7 +1,7 @@
 package Judge.EventHandler;
 
 import Judge.InfoManager.ClarificationManager;
-import Judge.InfoManager.ClarificationInfo;
+import Judge.ClarificationInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;

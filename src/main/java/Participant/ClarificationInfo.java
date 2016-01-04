@@ -1,4 +1,4 @@
-package Judge.InfoManager;
+package Participant;
 
 public class ClarificationInfo {
     private final int id;

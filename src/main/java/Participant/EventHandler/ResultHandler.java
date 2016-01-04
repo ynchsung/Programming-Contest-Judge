@@ -1,9 +1,7 @@
 package Participant.EventHandler;
 
-import Participant.DatabaseManager.SubmissionManager;
+import Participant.InfoManager.SubmissionManager;
 
-import java.util.Map;
-import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,12 +18,8 @@ public class ResultHandler extends EventHandler {
                 String submissionID = msg.getString("submission_id");
                 String result = msg.getString("result");
                 String result_timeStamp = msg.getString("time_stamp");
-                Map<String, String> store = new HashMap<String, String>();
 
-                store.put("submission_id", submissionID);
-                store.put("result", result);
-                store.put("time_stamp", result_timeStamp);
-                submissionManager.updateEntry(store);
+                // TODO
             }
             else doNext(msg);
         } catch (JSONException e) {

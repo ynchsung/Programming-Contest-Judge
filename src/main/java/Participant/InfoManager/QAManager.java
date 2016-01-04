@@ -1,7 +1,7 @@
-package Judge.InfoManager;
+package Participant.InfoManager;
 
-import Judge.AnswerInfo;
-import Judge.QuestionInfo;
+import Participant.AnswerInfo;
+import Participant.QuestionInfo;
 
 import java.util.*;
 

@@ -1,7 +1,7 @@
 package Judge.EventHandler;
 
 import Judge.InfoManager.QAManager;
-import Judge.InfoManager.AnswerInfo;
+import Judge.AnswerInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package Participant.DatabaseManager;
+package Participant.InfoManager;
 
 import java.sql.*;
 import java.util.*;
