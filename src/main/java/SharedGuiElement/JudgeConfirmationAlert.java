@@ -10,13 +10,13 @@ import java.util.Optional;
 /**
  * Created by aalexx on 1/2/16.
  */
-public class RejudgeConfirmationAlert {
+public class JudgeConfirmationAlert {
     private Alert alert;
     public static ButtonType autoJudge = new ButtonType("Auto");
     public static ButtonType manualJudge = new ButtonType("Manual");
     public static ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-    public RejudgeConfirmationAlert () {
+    public JudgeConfirmationAlert() {
         ConfirmationAlertBuilder builder = ConfirmationAlertBuilder.create();
         builder.setTitle("Rejudge")
                 .setHeaderText("Confirmation")
