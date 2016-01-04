@@ -1,6 +1,7 @@
 package Controller;
 
 import Controller.DatabaseManager.*;
+import Shared.ContestTimer;
 
 import java.io.File;
 import java.io.FileNotFoundException;

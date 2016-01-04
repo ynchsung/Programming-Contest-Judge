@@ -1,30 +1,38 @@
-package Participant;
+package Shared;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Created by tenyoku on 2015/12/31.
+ */
 public class ContestTimer {
+    public interface ContestTimerListener {
+        void onUpdate(int totalSecond, int secondCounted);
+        void onOver(int totalSecond);
+    }
     private int totalSecond;
     private int secondCounted;
     private Timer timer;
     private final Object lock;
-    private Runnable callback;
+    private ContestTimerListener listener;
     private class CountDownTask extends TimerTask {
         @Override
         public void run() {
             secondCounted += 1;
+            listener.onUpdate(totalSecond, secondCounted);
             if (secondCounted >= totalSecond) {
                 synchronized (lock) {
                     timer.cancel();
-                    callback.run();
+                    listener.onOver(totalSecond);
                 }
             }
         }
     }
 
-    public ContestTimer(int totalSecond, Runnable callback) {
+    public ContestTimer(int totalSecond) {
         this.totalSecond = totalSecond;
-        this.callback = callback;
+        this.secondCounted = 0;
         this.timer = new Timer();
         this.lock = new Object();
     }
@@ -63,9 +71,19 @@ public class ContestTimer {
         }
     }
 
+    public void setListener(ContestTimerListener listener) {
+        this.listener = listener;
+    }
+
     public void setDuration(int duration) {
         synchronized (lock) {
             this.totalSecond = duration;
+        }
+    }
+
+    public void setSecondCounted(int secondCounted) {
+        synchronized (lock) {
+            this.secondCounted = secondCounted;
         }
     }
 
