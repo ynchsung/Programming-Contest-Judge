@@ -24,11 +24,13 @@ import java.util.ResourceBundle;
 public class QuestionAndAnswerTable extends HBox implements Initializable {
     @FXML private TableView questionAndAnswerTable;
     @FXML private TableColumn type;
+    @FXML private TableColumn id;
     @FXML private TableColumn answerButton;
     @FXML private TableColumn problemId;
     @FXML private TableColumn content;
     @FXML private TableColumn timeStamp;
     private boolean typeDisable;
+    private boolean idDisable;
     private boolean answerButtonDisable;
     private boolean problemIdDisable;
     private boolean contentDisable;
@@ -38,11 +40,13 @@ public class QuestionAndAnswerTable extends HBox implements Initializable {
     private Callback<Map<String, String>, Void> answerQuestionCallBack = event -> null;
 
     public QuestionAndAnswerTable(@NamedArg("typeDisable") boolean typeDisable,
+                                  @NamedArg("idDisable") boolean idDisable,
                                   @NamedArg("answerButtonDisable") boolean answerButtonDisable,
                                   @NamedArg("problemIdDisable") boolean problemIdDisable,
                                   @NamedArg("contentDisable") boolean contentDisable,
                                   @NamedArg("timeStampDisable") boolean timeStampDisable) {
         this.typeDisable = typeDisable;
+        this.idDisable = idDisable;
         this.answerButtonDisable = answerButtonDisable;
         this.problemIdDisable = problemIdDisable;
         this.contentDisable = contentDisable;
@@ -99,10 +103,11 @@ public class QuestionAndAnswerTable extends HBox implements Initializable {
         answerButton.setCellFactory(param -> new answerCell(questionAndAnswerTable, self));
         // visibility
         type.setVisible(!typeDisable);
+        id.setVisible(!idDisable);
         answerButton.setVisible(!answerButtonDisable);
         problemId.setVisible(!problemIdDisable);
         content.setVisible(!contentDisable);
-        timeStamp.setVisible(timeStampDisable);
+        timeStamp.setVisible(!timeStampDisable);
     }
 
     protected class typeCell extends TableCell<QuestionAndAnswerItem, String> {

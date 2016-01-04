@@ -5,6 +5,7 @@
                HBox.hgrow="ALWAYS" >
         <columns>
             <TableColumn text="Type" fx:id="type" editable="false" sortable="false"/>
+            <TableColumn text="Q/A Id" fx:id="id" editable="false" sortable="false" />
             <TableColumn text="Answer" fx:id="answerButton" editable="false" sortable="false"/>
             <TableColumn text="Problem Id" fx:id="problemId" editable="false" sortable="false"/>
             <TableColumn text="Content" fx:id="content" editable="false" sortable="false"/>
