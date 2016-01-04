@@ -4,8 +4,7 @@ import java.sql.*;
 import java.util.*;
 import java.lang.String;
 
-public class ConfigureManager {
-    final int sleepTime = 200;
+public class ConfigureManager extends DatabaseManager {
 
     public void createTable() {
         Connection c = null;
@@ -181,21 +180,5 @@ public class ConfigureManager {
                     break;
             }
         }
-    }
-
-    private boolean checkLock(String message, Connection c) {
-        try {
-            if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
-                Thread.sleep(sleepTime);
-                return true;
-            }
-            else {
-                System.err.println("Exception: " + message);
-            }
-        }
-        catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-        }
-        return false;
     }
 }
