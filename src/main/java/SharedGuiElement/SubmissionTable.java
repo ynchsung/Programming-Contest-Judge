@@ -1,5 +1,6 @@
 package SharedGuiElement;
 
+import Shared.SubmissionInfo;
 import javafx.beans.NamedArg;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -114,6 +115,18 @@ public class SubmissionTable extends HBox implements Initializable {
         for (Map<String, String> m : submissions) {
             SubmissionItem item = new SubmissionItem(m.get("submission_id"), m.get("problem_id"), m.get("team_id"),
                     m.get("source_code"), m.get("submission_time_stamp"), m.get("result"), m.get("result_time_stamp"));
+            this.submissions.add(item);
+        }
+        submissionTable.setItems(this.submissions);
+    }
+
+    @FXML public void setSubmissions (Map<Integer, SubmissionInfo> infos) {
+        this.submissions = FXCollections.observableArrayList();
+        for (Map.Entry<Integer, SubmissionInfo> entry : infos.entrySet()) {
+            SubmissionItem item = new SubmissionItem(String.valueOf(entry.getValue().getID()),
+                    entry.getValue().getProblemID(), entry.getValue().getTeamID(),
+                    entry.getValue().getSourceCode(), String.valueOf(entry.getValue().getSubmitTimeStamp()),
+                    entry.getValue().getResult(), String.valueOf(entry.getValue().getResultTimeStamp()));
             this.submissions.add(item);
         }
         submissionTable.setItems(this.submissions);

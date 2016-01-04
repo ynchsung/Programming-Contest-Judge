@@ -1,7 +1,7 @@
 package Participant.EventHandler;
 
 import Participant.InfoManager.QAManager;
-import Participant.AnswerInfo;
+import Shared.AnswerInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;

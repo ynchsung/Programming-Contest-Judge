@@ -1,4 +1,4 @@
-package Participant;
+package Shared;
 
 import java.util.*;
 
@@ -16,7 +16,7 @@ public class QuestionInfo {
         this.team_id = team_id;
         this.content = content;
         this.timeStamp = timeStamp;
-        this.answers = Collections.synchronizedList(new ArrayList<AnswerInfo>());
+        this.answers = new ArrayList<AnswerInfo>();
     }
 
     public int getID() {
@@ -45,5 +45,13 @@ public class QuestionInfo {
 
     public void addAnswer(AnswerInfo answerInfo) {
         this.answers.add(answerInfo);
+    }
+
+    public QuestionInfo copy() {
+        QuestionInfo ret = new QuestionInfo(this.id, this.problem_id, this.team_id, this.content, this.timeStamp);
+        for (AnswerInfo answerInfo : this.answers) {
+            ret.addAnswer(answerInfo.copy());
+        }
+        return ret;
     }
 }

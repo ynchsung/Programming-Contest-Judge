@@ -1,5 +1,6 @@
 package SharedGuiElement;
 
+import Shared.ClarificationInfo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -44,6 +45,17 @@ public class ClarificationTable extends HBox implements Initializable {
         for (Map<String, String> i : clarification) {
             ClarificationItem item = new ClarificationItem(i.get("clarification_id"),
                     i.get("problem_id"), i.get("content"), i.get("time_stamp"));
+            this.clarification.add(item);
+        }
+        clarificationTable.setItems(this.clarification);
+    }
+
+    public void setClarification (Map<Integer, ClarificationInfo> infos) {
+        this.clarification = FXCollections.observableArrayList();
+        for (Map.Entry<Integer, ClarificationInfo> entry : infos.entrySet()) {
+            ClarificationItem item = new ClarificationItem(String.valueOf(entry.getValue().getID()),
+                    entry.getValue().getProblemID(), entry.getValue().getContent(),
+                    String.valueOf(entry.getValue().getTimeStamp()));
             this.clarification.add(item);
         }
         clarificationTable.setItems(this.clarification);

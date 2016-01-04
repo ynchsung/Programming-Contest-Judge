@@ -1,7 +1,7 @@
 package Participant.EventHandler;
 
 import Participant.InfoManager.ClarificationManager;
-import Participant.ClarificationInfo;
+import Shared.ClarificationInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;

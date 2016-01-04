@@ -1,4 +1,4 @@
-package Participant;
+package Shared;
 
 public class ClarificationInfo {
     private final int id;
@@ -27,5 +27,9 @@ public class ClarificationInfo {
 
     public int getTimeStamp() {
         return this.timeStamp;
+    }
+
+    public ClarificationInfo copy() {
+        return new ClarificationInfo(this.id, this.problem_id, this.content, this.timeStamp);
     }
 }

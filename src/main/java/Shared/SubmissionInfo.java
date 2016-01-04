@@ -1,18 +1,20 @@
-package Judge;
+package Shared;
 
 public class SubmissionInfo {
     private final int id;
     private final String problem_id;
+    private final String team_id;
     private final String language;
     private final String sourceCode;
     private final int submitTimeStamp;
 
-    private final String result;
-    private final int resultTimeStamp;
+    private String result;
+    private int resultTimeStamp;
 
-    public SubmissionInfo(int id, String problem_id, String language, String sourceCode, int submitTimeStamp, String result, int resultTimeStamp) {
+    public SubmissionInfo(int id, String problem_id, String team_id, String language, String sourceCode, int submitTimeStamp, String result, int resultTimeStamp) {
         this.id = id;
         this.problem_id = problem_id;
+        this.team_id = team_id;
         this.language = language;
         this.sourceCode = sourceCode;
         this.submitTimeStamp = submitTimeStamp;
@@ -26,6 +28,10 @@ public class SubmissionInfo {
 
     public String getProblemID() {
         return this.problem_id;
+    }
+
+    public String getTeamID() {
+        return this.team_id;
     }
 
     public String getLanguage() {
@@ -46,5 +52,9 @@ public class SubmissionInfo {
 
     public int getResultTimeStamp() {
         return this.resultTimeStamp;
+    }
+
+    public SubmissionInfo copy() {
+        return new SubmissionInfo(this.id, this.problem_id, this.team_id, this.language, this.sourceCode, this.submitTimeStamp, this.result, this.resultTimeStamp);
     }
 }

@@ -1,4 +1,4 @@
-package Judge;
+package Shared;
 
 public class AnswerInfo {
     private final String content;
@@ -15,5 +15,9 @@ public class AnswerInfo {
 
     public int getTimeStamp() {
         return this.timeStamp;
+    }
+
+    public AnswerInfo copy() {
+        return new AnswerInfo(this.content, this.timeStamp);
     }
 }

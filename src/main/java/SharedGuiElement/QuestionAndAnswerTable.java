@@ -1,5 +1,7 @@
 package SharedGuiElement;
 
+import Shared.AnswerInfo;
+import Shared.QuestionInfo;
 import javafx.beans.NamedArg;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -83,6 +85,23 @@ public class QuestionAndAnswerTable extends HBox implements Initializable {
             QuestionAndAnswerItem item = new QuestionAndAnswerItem(i.get("id"), i.get("type"),
                     i.get("problem_id"), i.get("content"), i.get("time_stamp"));
             this.questionAndAnswer.add(item);
+        }
+        questionAndAnswerTable.setItems(this.questionAndAnswer);
+    }
+
+    public void setQuestionAndAnswer(Map<Integer, QuestionInfo> infos) {
+        this.questionAndAnswer = FXCollections.observableArrayList();
+        for (Map.Entry<Integer, QuestionInfo> entry : infos.entrySet()) {
+            QuestionAndAnswerItem questionItem = new QuestionAndAnswerItem(String.valueOf(entry.getValue().getID()),
+                    "question", entry.getValue().getProblemID(), entry.getValue().getContent(),
+                    String.valueOf(entry.getValue().getTimeStamp()));
+            this.questionAndAnswer.add(questionItem);
+            for (AnswerInfo answerInfo : entry.getValue().getAnswers()) {
+                QuestionAndAnswerItem answerItem = new QuestionAndAnswerItem(String.valueOf(entry.getValue().getID()),
+                        "answer", entry.getValue().getProblemID(), answerInfo.getContent(),
+                        String.valueOf(answerInfo.getTimeStamp()));
+                this.questionAndAnswer.add(answerItem);
+            }
         }
         questionAndAnswerTable.setItems(this.questionAndAnswer);
     }
