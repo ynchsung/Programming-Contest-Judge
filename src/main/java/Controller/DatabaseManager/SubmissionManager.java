@@ -5,7 +5,7 @@ import java.util.*;
 import java.lang.String;
 
 public class SubmissionManager extends DatabaseManager {
-    private static List<Observer> observers = new ArrayList<Observer>();
+    private static List<Observer> observers = Collections.synchronizedList(new ArrayList<Observer>());
 
     public void createTable() {
         Connection c = null;
@@ -404,7 +404,7 @@ public class SubmissionManager extends DatabaseManager {
         }
     }
 
-    public static synchronized void register(Observer observer) {
+    public static void register(Observer observer) {
         observers.add(observer);
     }
 
