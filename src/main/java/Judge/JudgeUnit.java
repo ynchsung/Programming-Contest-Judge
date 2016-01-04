@@ -1,11 +1,11 @@
 package Judge;
 
+import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.lang.ProcessBuilder;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 public class JudgeUnit {
     private final String sourceCodeFileType;
@@ -20,6 +20,8 @@ public class JudgeUnit {
 
     private void resetFile() {
         File file;
+        file = new File("sandbox_meta");
+        file.delete();
         file = new File(String.format("%s/exec.%s", this.sandboxPath, this.sourceCodeFileType));
         file.delete();
         file = new File(String.format("%s/exec", this.sandboxPath));
@@ -35,7 +37,8 @@ public class JudgeUnit {
             fileWriter.write(sourceCode);
             fileWriter.close();
         }
-        catch (IOException e) {
+        catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
         return true;
@@ -54,11 +57,13 @@ public class JudgeUnit {
                 p.waitFor();
             }
             catch (InterruptedException e) {
+                e.printStackTrace();
                 return false;
             }
             return (p.exitValue() == 0);
         }
-        catch (IOException e) {
+        catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -71,17 +76,43 @@ public class JudgeUnit {
                 p.waitFor();
             }
             catch (InterruptedException e) {
+                e.printStackTrace();
                 return false;
             }
         }
-        catch (IOException e) {
+        catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
         return true;
     }
 
+    private String parseSandboxMetaFile() {
+        Map<String, String> info = new HashMap<String, String>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("sandbox_meta"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] tokens = line.split(":");
+                if (tokens.length != 2)
+                    continue;
+                info.put(tokens[0], tokens[1]);
+            }
+            br.close();
+        }
+        catch (Exception e) {
+            return "SE";
+        }
+        if (Integer.valueOf(info.getOrDefault("exitsig", "0")) != 0)
+            return "RE";
+        else if (info.getOrDefault("status", "").equals("TO"))
+            return "TLE";
+        else
+            return "";
+    }
+
     private boolean judgeAnswer(String pathName1, String pathName2, String judgeMethodPath) {
-        ProcessBuilder pb = new ProcessBuilder("diff", "-b", pathName1, pathName2);
+        ProcessBuilder pb;
         if (judgeMethodPath.equals(""))
             pb = new ProcessBuilder("diff", "-b", pathName1, pathName2);
         else
@@ -92,18 +123,20 @@ public class JudgeUnit {
             try {
                 p.waitFor();
             }
-            catch (InterruptedException e) {
+            catch (Exception e) {
+                e.printStackTrace();
                 return false;
             }
             return (p.exitValue() == 0);
         }
-        catch (IOException e) {
+        catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
 
     public String judge(String sourceCode, int timeLimit, int memoryLimit, String inputPathName, String outputPathName, String judgeMethodPath) {
-        String result = "";
+        String result;
 
         resetFile();
         if (!writeCode(sourceCode))
@@ -113,29 +146,15 @@ public class JudgeUnit {
         else if (!runCode(inputPathName, timeLimit, memoryLimit))
             result = "SE";
         else {
-            // TODO: parse sandbox meta file
-            if (false /* TLE, RE, MLE */) ;
+            String tmp = parseSandboxMetaFile();
+            if (!tmp.equals(""))
+                return tmp;
             else if (!judgeAnswer(String.format("%s/participant.out", this.sandboxPath), outputPathName, judgeMethodPath))
                 result = "WA";
             else
                 result = "AC";
         }
         resetFile();
-
         return result;
     }
-
-    // test
-    /*
-    public static void main(String[] argv) {
-        List<String> cpp = new ArrayList<String>();
-        cpp.add("g++");
-        cpp.add("-O2");
-        cpp.add("-std=c++11");
-        cpp.add("--static");
-
-        JudgeUnit jj = new JudgeUnit("cpp", "./box/0/box", cpp);
-        System.out.println(jj.judge("#include <cstdio>\n#include <cstdlib>\n\nusing namespace std;\n\nint main() {\n    int cases;\n    scanf(\"%d\", &cases);\n    while (cases--) {\n        int a, b;\n        scanf(\"%d%d\", &a, &b);\n        printf(\"%d\\n\", a + b);\n    }\n    return 0;\n}", 1, 65536, "test/pa.in", "answer/pa.out", ""));
-    }
-    */
 }
