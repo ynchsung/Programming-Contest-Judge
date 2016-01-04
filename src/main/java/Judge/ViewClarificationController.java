@@ -29,14 +29,6 @@ public class ViewClarificationController implements Initializable {
         clarificationTable.setClarification(clarification);
     }
 
-    public Object getSelectedProblem () {
-        return clarificationProblemChoice.getChoice();
-    }
-
-    public int getSelectedProblemNumber () {
-        return clarificationProblemChoice.getChoiceNumber();
-    }
-
     public String getNewClarificationText () {
         return newClarificationTextArea.getText();
     }
