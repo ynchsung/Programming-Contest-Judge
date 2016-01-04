@@ -88,11 +88,11 @@ public class SubmissionTable extends HBox implements Initializable {
     }
 
     public void rejudgeCall (String submissionId) {
-        RejudgeConfirmationAlert alert = new RejudgeConfirmationAlert();
+        JudgeConfirmationAlert alert = new JudgeConfirmationAlert();
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == RejudgeConfirmationAlert.autoJudge) {
+        if (result.get() == JudgeConfirmationAlert.autoJudge) {
             autoRejudgeCallBack.call(submissionId);
-        } else if (result.get() == RejudgeConfirmationAlert.manualJudge) {
+        } else if (result.get() == JudgeConfirmationAlert.manualJudge) {
             manualJudgeCallBack.call(submissionId);
         }
     }
