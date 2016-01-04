@@ -4,9 +4,8 @@ import java.sql.*;
 import java.util.*;
 import java.lang.String;
 
-public class SubmissionManager {
-    final int sleepTime = 200;
-    private static List<Observer> observers = new ArrayList<Observer>();
+public class SubmissionManager extends DatabaseManager {
+    private static List<Observer> observers = Collections.synchronizedList(new ArrayList<Observer>());
 
     public void createTable() {
         Connection c = null;
@@ -441,22 +440,5 @@ public class SubmissionManager {
                     break;
             }
         }
-    }
-
-    private boolean checkLock(String message, Connection c) {
-        try {
-            c.close();
-            if (message.equals("database is locked") || message.startsWith("[SQLITE_BUSY]")) {
-                Thread.sleep(sleepTime);
-                return true;
-            }
-            else {
-                System.err.println("Exception: " + message);
-            }
-        }
-        catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-        }
-        return false;
     }
 }
