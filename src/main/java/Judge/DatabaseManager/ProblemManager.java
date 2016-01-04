@@ -19,9 +19,9 @@ public class ProblemManager {
                 "(ProblemID STRING PRIMARY KEY NOT NULL," +
                 " TimeLimit DOUBLE  NOT NULL," +
                 " MemoryLimit   INT NOT NULL," +
-                " Input     STRING  NOT NULL," +
-                " Output    STRING  NOT NULL," +
-                " SpecialJudge  STRING," +
+                " InputPath     STRING  NOT NULL," +
+                " OutputPath    STRING  NOT NULL," +
+                " SpecialJudgePath  STRING," +
                 " Timestamp INT NOT NULL)";
             stmt.executeUpdate(sql);
             stmt.close();
@@ -41,14 +41,14 @@ public class ProblemManager {
                 c = DriverManager.getConnection("jdbc:sqlite:problem.db");
                 c.setAutoCommit(false);
 
-                stmt = c.prepareStatement("INSERT INTO Problem (ProblemID,TimeLimit,MemoryLimit,Input,Output,SpecialJudge,Timestamp)" + 
+                stmt = c.prepareStatement("INSERT INTO Problem (ProblemID,TimeLimit,MemoryLimit,InputPath,OutputPath,SpecialJudgePath,Timestamp)" + 
                         "VALUES (?, ?, ?, ?, ?, ?, ?);"); 
                 stmt.setString(1, entry.get("problem_id"));
                 stmt.setString(2, entry.get("time_limit"));
                 stmt.setString(3, entry.get("memory_limit"));
-                stmt.setString(4, entry.get("input"));
-                stmt.setString(5, entry.get("output"));
-                stmt.setString(6, entry.get("special_judge"));
+                stmt.setString(4, entry.get("input_pathname"));
+                stmt.setString(5, entry.get("output_pathname"));
+                stmt.setString(6, entry.get("special_judge_path"));
                 stmt.setString(7, entry.get("time_stamp"));
 
                 stmt.executeUpdate();
@@ -100,17 +100,17 @@ public class ProblemManager {
                     setType.add("MemoryLimit");
                     setValue.add(entry.get("memory_limit"));
                 }
-                if (entry.get("input") != null) {
-                    setType.add("Input");
-                    setValue.add(entry.get("input"));
+                if (entry.get("input_pathname") != null) {
+                    setType.add("InputPath");
+                    setValue.add(entry.get("input_pathname"));
                 }
-                if (entry.get("output") != null) {
-                    setType.add("Output");
-                    setValue.add(entry.get("output"));
+                if (entry.get("output_pathname") != null) {
+                    setType.add("OutputPath");
+                    setValue.add(entry.get("output_pathname"));
                 }
-                if (entry.get("special_judge") != null) {
-                    setType.add("SpecialJudge");
-                    setValue.add(entry.get("special_judge"));
+                if (entry.get("special_judge_path") != null) {
+                    setType.add("SpecialJudgePath");
+                    setValue.add(entry.get("special_judge_path"));
                 }
 
                 String sql = "UPDATE Problem SET ";
@@ -157,16 +157,16 @@ public class ProblemManager {
                     int time = rs.getInt("Timestamp");
                     int me = rs.getInt("MemoryLimit");
                     double te = rs.getDouble("TimeLimit");
-                    String input = rs.getString("Input");
-                    String output = rs.getString("Output");
-                    String sj = rs.getString("SpecialJudge");
+                    String input_pathname = rs.getString("InputPath");
+                    String output_pathname = rs.getString("OutputPath");
+                    String sj = rs.getString("SpecialJudgePath");
                     entry.put("problem_id", pid);
                     entry.put("time_stamp", Integer.toString(time));
                     entry.put("memory_limit", Integer.toString(me));
                     entry.put("time_limit", Double.toString(te));
-                    entry.put("input", input);
-                    entry.put("output", output);
-                    entry.put("special_judge", sj);
+                    entry.put("input_pathname", input_pathname);
+                    entry.put("output_pathname", output_pathname);
+                    entry.put("special_judge_path", sj);
                     response.add(entry);
                 }
                 rs.close();
@@ -234,16 +234,16 @@ public class ProblemManager {
                     int time = rs.getInt("Timestamp");
                     int me = rs.getInt("MemoryLimit");
                     double te = rs.getDouble("TimeLimit");
-                    String input = rs.getString("Input");
-                    String output = rs.getString("Output");
-                    String sj = rs.getString("SpecialJudge");
+                    String input_pathname = rs.getString("InputPath");
+                    String output_pathname = rs.getString("OutputPath");
+                    String sj = rs.getString("SpecialJudgePath");
                     entry.put("problem_id", pid);
                     entry.put("time_stamp", Integer.toString(time));
                     entry.put("memory_limit", Integer.toString(me));
                     entry.put("time_limit", Double.toString(te));
-                    entry.put("input", input);
-                    entry.put("output", output);
-                    entry.put("special_judge", sj);
+                    entry.put("input_pathname", input_pathname);
+                    entry.put("output_pathname", output_pathname);
+                    entry.put("special_judge_path", sj);
                     response.add(entry);
                 }
                 rs.close();
@@ -278,16 +278,16 @@ public class ProblemManager {
                     int time = rs.getInt("Timestamp");
                     int me = rs.getInt("MemoryLimit");
                     double te = rs.getDouble("TimeLimit");
-                    String input = rs.getString("Input");
-                    String output = rs.getString("Output");
-                    String sj = rs.getString("SpecialJudge");
+                    String input_pathname = rs.getString("InputPath");
+                    String output_pathname = rs.getString("OutputPath");
+                    String sj = rs.getString("SpecialJudgePath");
                     response.put("problem_id", pid);
                     response.put("time_stamp", Integer.toString(time));
                     response.put("memory_limit", Integer.toString(me));
                     response.put("time_limit", Double.toString(te));
-                    response.put("input", input);
-                    response.put("output", output);
-                    response.put("special_judge", sj);
+                    response.put("input_pathname", input_pathname);
+                    response.put("output_pathname", output_pathname);
+                    response.put("special_judge_path", sj);
                     
                     rs.close();
                     stmt.close();

@@ -19,9 +19,6 @@ public class ProblemManager {
                 "(ProblemID STRING PRIMARY KEY NOT NULL," +
                 " TimeLimit DOUBLE  NOT NULL," +
                 " MemoryLimit   INT NOT NULL," +
-                " Input     STRING  NOT NULL," +
-                " Output    STRING  NOT NULL," +
-                " SpecialJudge  STRING," +
                 " Timestamp INT NOT NULL)";
             stmt.executeUpdate(sql);
             stmt.close();
@@ -41,15 +38,12 @@ public class ProblemManager {
                 c = DriverManager.getConnection("jdbc:sqlite:problem.db");
                 c.setAutoCommit(false);
 
-                stmt = c.prepareStatement("INSERT INTO Problem (ProblemID,TimeLimit,MemoryLimit,Input,Output,SpecialJudge,Timestamp)" + 
-                        "VALUES (?, ?, ?, ?, ?, ?, ?);"); 
+                stmt = c.prepareStatement("INSERT INTO Problem (ProblemID,TimeLimit,MemoryLimit,Timestamp)" + 
+                        "VALUES (?, ?, ?, ?);"); 
                 stmt.setString(1, entry.get("problem_id"));
                 stmt.setString(2, entry.get("time_limit"));
                 stmt.setString(3, entry.get("memory_limit"));
-                stmt.setString(4, entry.get("input"));
-                stmt.setString(5, entry.get("output"));
-                stmt.setString(6, entry.get("special_judge"));
-                stmt.setString(7, entry.get("time_stamp"));
+                stmt.setString(4, entry.get("time_stamp"));
 
                 stmt.executeUpdate();
                 stmt.close();
@@ -100,18 +94,6 @@ public class ProblemManager {
                     setType.add("MemoryLimit");
                     setValue.add(entry.get("memory_limit"));
                 }
-                if (entry.get("input") != null) {
-                    setType.add("Input");
-                    setValue.add(entry.get("input"));
-                }
-                if (entry.get("output") != null) {
-                    setType.add("Output");
-                    setValue.add(entry.get("output"));
-                }
-                if (entry.get("special_judge") != null) {
-                    setType.add("SpecialJudge");
-                    setValue.add(entry.get("special_judge"));
-                }
 
                 String sql = "UPDATE Problem SET ";
                 for (int i = 0; i < setType.size(); i++) {
@@ -157,16 +139,10 @@ public class ProblemManager {
                     int time = rs.getInt("Timestamp");
                     int me = rs.getInt("MemoryLimit");
                     double te = rs.getDouble("TimeLimit");
-                    String input = rs.getString("Input");
-                    String output = rs.getString("Output");
-                    String sj = rs.getString("SpecialJudge");
                     entry.put("problem_id", pid);
                     entry.put("time_stamp", Integer.toString(time));
                     entry.put("memory_limit", Integer.toString(me));
                     entry.put("time_limit", Double.toString(te));
-                    entry.put("input", input);
-                    entry.put("output", output);
-                    entry.put("special_judge", sj);
                     response.add(entry);
                 }
                 rs.close();
@@ -234,16 +210,10 @@ public class ProblemManager {
                     int time = rs.getInt("Timestamp");
                     int me = rs.getInt("MemoryLimit");
                     double te = rs.getDouble("TimeLimit");
-                    String input = rs.getString("Input");
-                    String output = rs.getString("Output");
-                    String sj = rs.getString("SpecialJudge");
                     entry.put("problem_id", pid);
                     entry.put("time_stamp", Integer.toString(time));
                     entry.put("memory_limit", Integer.toString(me));
                     entry.put("time_limit", Double.toString(te));
-                    entry.put("input", input);
-                    entry.put("output", output);
-                    entry.put("special_judge", sj);
                     response.add(entry);
                 }
                 rs.close();
@@ -278,16 +248,10 @@ public class ProblemManager {
                     int time = rs.getInt("Timestamp");
                     int me = rs.getInt("MemoryLimit");
                     double te = rs.getDouble("TimeLimit");
-                    String input = rs.getString("Input");
-                    String output = rs.getString("Output");
-                    String sj = rs.getString("SpecialJudge");
                     response.put("problem_id", pid);
                     response.put("time_stamp", Integer.toString(time));
                     response.put("memory_limit", Integer.toString(me));
                     response.put("time_limit", Double.toString(te));
-                    response.put("input", input);
-                    response.put("output", output);
-                    response.put("special_judge", sj);
                     
                     rs.close();
                     stmt.close();
