@@ -1,6 +1,6 @@
 package Judge.EventHandler;
 
-import Judge.DatabaseManager.ProblemManager;
+import Judge.InfoManager.ProblemManager;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -25,16 +25,8 @@ public class SyncJudgeDataHandler extends EventHandler {
                 String timeLimit = content.getString("time_limit");
                 String memoryLimit = content.getString("memory_limit");
                 String testDataTimeStamp = content.getString("testdata_time_stamp");
-                Map<String, String> store = new HashMap<String, String>();
 
-                store.put("input", input);
-                store.put("output", output);
-                store.put("special_judge", judgeMethod);
-                store.put("time_limit", timeLimit);
-                store.put("memory_limit", memoryLimit);
-                store.put("time_stamp", testDataTimeStamp);
-
-                problemManager.updateEntry(store);
+                // TODO: update data
             }
             else doNext(msg);
         } catch (JSONException e) {

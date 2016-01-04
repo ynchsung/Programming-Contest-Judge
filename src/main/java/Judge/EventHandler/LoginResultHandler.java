@@ -1,12 +1,8 @@
 package Judge.EventHandler;
 
-import Judge.ControllerServer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by tenyoku on 2016/1/4.
- */
 public class LoginResultHandler extends EventHandler {
     public interface LoginResultListener {
         void callback(boolean success);

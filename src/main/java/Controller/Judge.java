@@ -7,7 +7,7 @@ import org.json.JSONObject;
  * Created by tenyoku on 2015/12/24.
  */
 public class Judge extends Client {
-    EventHandler<Judge> eventHandler;
+    private EventHandler<Judge> eventHandler;
 
     public Judge(String id, Connection connection) {
         super(id, connection);

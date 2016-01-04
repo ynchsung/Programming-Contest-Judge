@@ -1,19 +1,14 @@
 package Judge;
 
-import Controller.*;
 import Controller.DatabaseManager.ClarificationManager;
-import Controller.DatabaseManager.Observer;
-import Judge.DatabaseManager.SubmissionManager;
+import Judge.InfoManager.SubmissionManager;
 import Judge.EventHandler.LoginResultHandler;
-import Judge.EventHandler.SubmissionHandler;
 import Shared.ContestTimer;
 import SharedGuiElement.OpenCode;
 import SharedGuiElement.OpenCodeBuilder;
 import SharedGuiElement.RemainingTime;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
