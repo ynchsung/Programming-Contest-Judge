@@ -152,7 +152,7 @@ public class ClarificationManager extends DatabaseManager {
         return response;
     }
 
-    public static void register(Observer observer) {
+    public static synchronized void register(Observer observer) {
         observers.add(observer);
     }
 

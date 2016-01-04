@@ -5,7 +5,7 @@ import java.lang.String;
 
 public abstract class DatabaseManager {
     final int sleep_time = 200;
-    
+
     public abstract void createTable();
     public abstract List<Map<String, String>> queryAll();
     public abstract void flushTable();
