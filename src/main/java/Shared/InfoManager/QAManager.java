@@ -18,6 +18,7 @@ public class QAManager {
 
     public static void register(Observer observer) {
         synchronized (lock) {
+            System.out.println(observer);
             observers.add(observer);
         }
     }
@@ -44,6 +45,10 @@ public class QAManager {
                 notifyObservers();
             }
         }
+    }
+
+    public QuestionInfo getQuestionById(Integer id) {
+        return infos.get(id);
     }
 
     public Map<Integer, QuestionInfo> queryAll() {

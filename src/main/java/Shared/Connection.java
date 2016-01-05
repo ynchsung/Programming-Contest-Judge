@@ -27,6 +27,7 @@ public class Connection extends Thread {
             try {
                 while (true) {
                     JSONObject msg = sendQueue.take();
+                    System.out.println("[send] "+msg);
                     try {
                         output.writeUTF(msg.toString());
                     }
@@ -73,7 +74,9 @@ public class Connection extends Thread {
             while (true) {
                 String msg = this.input.readUTF();
                 try {
-                    this.controllerServer.handle(new JSONObject(msg));
+                    JSONObject mmsg = new JSONObject(msg);
+                    System.out.println("[recv] "+mmsg);
+                    this.controllerServer.handle(mmsg);
                 }
                 catch (JSONException e) {
                 }

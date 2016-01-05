@@ -26,7 +26,7 @@ public class ViewQuestionAndAnswerController {
         for (QuestionInfo info: questionAndAnswer.values()) {
             Map<String, String> entry = new HashMap<>();
             entry.put("type", "question");
-            entry.put("question_id", Integer.toString(info.getID()));
+            entry.put("id", Integer.toString(info.getID()));
             entry.put("problem_id", info.getProblemID());
             entry.put("content", info.getContent());
             entry.put("time_stamp", Integer.toString(info.getTimeStamp()));
@@ -34,7 +34,7 @@ public class ViewQuestionAndAnswerController {
             for (AnswerInfo answerInfo: info.getAnswers().values()) {
                 Map<String, String> answerEntry = new HashMap<>();
                 answerEntry.put("type", "answer");
-                answerEntry.put("question_id", Integer.toString(info.getID()));
+                answerEntry.put("id", Integer.toString(answerInfo.getID()));
                 answerEntry.put("problem_id", info.getProblemID());
                 answerEntry.put("content", answerInfo.getContent());
                 answerEntry.put("time_stamp", Integer.toString(answerInfo.getTimeStamp()));

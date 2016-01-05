@@ -26,7 +26,7 @@ import java.net.Socket;
  */
 public class Participant extends Application {
     private Stage stage;
-    PriticipantControllerServer server = null;
+    ParticipantControllerServer server = null;
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.stage = primaryStage;
@@ -53,7 +53,7 @@ public class Participant extends Application {
             try {
                 socket.connect(new InetSocketAddress(ip, port));
                 Connection connection = new Connection(socket);
-                server = new PriticipantControllerServer(connection, loginResultListener);
+                server = new ParticipantControllerServer(connection, loginResultListener);
                 connection.setControllerServer(server);
                 connection.start();
                 server.login(username, password);
@@ -103,7 +103,9 @@ public class Participant extends Application {
         QAManager.register(() -> viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll()));
         viewQuestionAndAnswerController.setConfirmNewQuestionAction(event -> {
             String problemID = (String)viewQuestionAndAnswerController.getSelectedProblem();
+            if (problemID == null) problemID = "0";
             String content = viewQuestionAndAnswerController.getAskQuestionTextArea();
+            core.sendQuestion(problemID, content);
         });
 
         ViewSubmissionController viewSubmissionController = controller.getViewSubmissionController();
@@ -121,6 +123,7 @@ public class Participant extends Application {
                 return null;
             }
         });
+        core.start();
 
         Scene scene = stage.getScene();
         if (scene == null) {

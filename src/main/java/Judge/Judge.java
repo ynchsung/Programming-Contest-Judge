@@ -20,6 +20,7 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Map;
 
 /**
  * Created by aalexx on 1/2/16.
@@ -106,6 +107,15 @@ public class Judge extends Application {
         ViewQuestionAndAnswerController viewQuestionAndAnswerController = controller.getViewQuestionAndAnswerController();
         viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll());
         QAManager.register(() -> viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll()));
+        viewQuestionAndAnswerController.setAnswerQuestionCallBack(new Callback<Map<String, String>, Void>() {
+            @Override
+            public Void call(Map<String, String> answer) {
+                String questionId = answer.get("questionId");
+                String content = answer.get("content");
+                core.sendAnswer(questionId, content);
+                return null;
+            }
+        });
 
         ViewSubmissionController viewSubmissionController = controller.getViewSubmissionController();
         viewSubmissionController.setSubmissions((new SubmissionManager()).queryAll());

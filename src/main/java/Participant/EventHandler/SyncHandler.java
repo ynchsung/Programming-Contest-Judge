@@ -1,5 +1,6 @@
 package Participant.EventHandler;
 
+import Shared.EventHandler.AnswerHandler;
 import Shared.EventHandler.EventHandler;
 import Shared.InfoManager.SubmissionManager;
 import Shared.InfoManager.QAManager;

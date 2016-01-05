@@ -2,6 +2,8 @@ package Judge;
 
 import Shared.AckQueue;
 import Shared.ContestTimer;
+import Shared.InfoManager.QAManager;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JudgeCore {
@@ -50,11 +52,25 @@ public class JudgeCore {
         sendClarificationQueue.add(msg);
     }
 
-    public void sendAnswer(JSONObject msg) {
-        sendAnswerQueue.add(msg);
+    public void sendAnswer(String questionId, String content) {
+        JSONObject msg = new JSONObject();
+        try {
+            String teamId = (new QAManager()).getQuestionById(Integer.valueOf(questionId)).getTeamID();
+            msg.put("msg_type", "answer");
+            msg.put("question_id", questionId);
+            msg.put("team_id", teamId);
+            msg.put("answer", content);
+            sendAnswerQueue.add(msg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public ContestTimer getTimer() {
         return timer;
+    }
+
+    public void ackAnswer() {
+        sendAnswerQueue.ackAndGetNowMsg();
     }
 }

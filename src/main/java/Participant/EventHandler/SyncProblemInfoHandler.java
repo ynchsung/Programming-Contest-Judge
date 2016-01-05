@@ -1,5 +1,6 @@
 package Participant.EventHandler;
 
+import Shared.EventHandler.EventHandler;
 import Shared.InfoManager.ProblemManager;
 
 import org.json.JSONArray;
