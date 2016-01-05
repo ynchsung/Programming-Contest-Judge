@@ -2,6 +2,7 @@ package Participant.EventHandler;
 
 import Participant.ParticipantCore;
 
+import Shared.EventHandler.EventHandler;
 import org.json.JSONObject;
 import org.json.JSONException;
 

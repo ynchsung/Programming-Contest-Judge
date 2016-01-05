@@ -2,6 +2,7 @@ package Judge.EventHandler;
 
 import Judge.JudgeCore;
 
+import Shared.EventHandler.EventHandler;
 import org.json.JSONObject;
 import org.json.JSONException;
 

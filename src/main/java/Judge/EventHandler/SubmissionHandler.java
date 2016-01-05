@@ -1,5 +1,6 @@
 package Judge.EventHandler;
 
+import Shared.EventHandler.EventHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 

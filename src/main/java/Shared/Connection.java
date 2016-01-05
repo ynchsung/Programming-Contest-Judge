@@ -1,15 +1,14 @@
-package Participant;
+package Shared;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Connection extends Thread {
     private Socket socket;
@@ -28,6 +27,7 @@ public class Connection extends Thread {
             try {
                 while (true) {
                     JSONObject msg = sendQueue.take();
+                    System.out.println("[send] "+msg);
                     try {
                         output.writeUTF(msg.toString());
                     }
@@ -74,7 +74,9 @@ public class Connection extends Thread {
             while (true) {
                 String msg = this.input.readUTF();
                 try {
-                    this.controllerServer.handle(new JSONObject(msg));
+                    JSONObject mmsg = new JSONObject(msg);
+                    System.out.println("[recv] "+mmsg);
+                    this.controllerServer.handle(mmsg);
                 }
                 catch (JSONException e) {
                 }

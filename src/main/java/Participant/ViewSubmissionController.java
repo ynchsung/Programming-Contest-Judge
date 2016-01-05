@@ -1,5 +1,6 @@
 package Participant;
 
+import Shared.SubmissionInfo;
 import SharedGuiElement.SubmissionTable;
 import javafx.fxml.FXML;
 import javafx.util.Callback;
@@ -19,5 +20,9 @@ public class ViewSubmissionController {
 
     public void setSubmissions (List<Map<String, String>> submissions) {
         submissionTable.setSubmissions(submissions);
+    }
+
+    public void setSubmissions(Map<Integer, SubmissionInfo> integerSubmissionInfoMap) {
+        submissionTable.setSubmissions(integerSubmissionInfoMap);
     }
 }

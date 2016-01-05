@@ -1,9 +1,6 @@
 package Shared;
 
-import Controller.Controller;
-import Judge.ControllerServer;
 import org.json.JSONObject;
-import sun.awt.Mutex;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -13,12 +10,19 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class AckQueue {
     class ProcessSendQueueThread extends Thread {
+        private final Object lock;
+
+        public ProcessSendQueueThread(Object lock) {
+            this.lock = lock;
+        }
         public void run() {
             while (true) {
                 try {
-                    JSONObject msg = queue.take();
-                    mutex.lock();
-                    server.send(msg);
+                    synchronized (lock) {
+                        nowMsg = queue.take();
+                        server.send(nowMsg);
+                        lock.wait();
+                    }
                 } catch (InterruptedException e) {
                 }
             }
@@ -26,14 +30,13 @@ public class AckQueue {
     }
     private ControllerServer server;
     private BlockingQueue<JSONObject> queue;
-    private Mutex mutex;
     private Thread thread;
+    private JSONObject nowMsg;
 
     public AckQueue(ControllerServer server) {
         this.server = server;
         this.queue = new LinkedBlockingQueue<>();
-        this.mutex = new Mutex();
-        this.thread = new ProcessSendQueueThread();
+        this.thread = new ProcessSendQueueThread(this);
     }
 
     public void start() {
@@ -44,7 +47,10 @@ public class AckQueue {
         queue.add(msg);
     }
 
-    public void unlock() {
-        mutex.unlock();
+    synchronized public JSONObject ackAndGetNowMsg() {
+        JSONObject msg = nowMsg;
+        nowMsg = null;
+        notify();
+        return msg;
     }
 }

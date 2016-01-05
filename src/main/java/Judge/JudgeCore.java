@@ -2,12 +2,14 @@ package Judge;
 
 import Shared.AckQueue;
 import Shared.ContestTimer;
+import Shared.InfoManager.QAManager;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JudgeCore {
     static private JudgeCore sharedInstance = null;
 
-    private ControllerServer controllerServer;
+    private JudgeControllerServer controllerServer;
     private AckQueue sendResultQueue;
     private AckQueue sendClarificationQueue;
     private AckQueue sendAnswerQueue;
@@ -17,7 +19,7 @@ public class JudgeCore {
         timer = new ContestTimer(300*60);
     }
 
-    public void setControllerServer(ControllerServer controllerServer) {
+    public void setControllerServer(JudgeControllerServer controllerServer) {
         this.controllerServer = controllerServer;
         this.sendResultQueue = new AckQueue(this.controllerServer);
         this.sendClarificationQueue = new AckQueue(this.controllerServer);
@@ -39,6 +41,7 @@ public class JudgeCore {
         this.sendResultQueue.start();
         this.sendClarificationQueue.start();
         this.sendAnswerQueue.start();
+        this.timer.start();
     }
 
     public void sendResult(JSONObject msg) {
@@ -49,11 +52,25 @@ public class JudgeCore {
         sendClarificationQueue.add(msg);
     }
 
-    public void sendAnswer(JSONObject msg) {
-        sendAnswerQueue.add(msg);
+    public void sendAnswer(String questionId, String content) {
+        JSONObject msg = new JSONObject();
+        try {
+            String teamId = (new QAManager()).getQuestionById(Integer.valueOf(questionId)).getTeamID();
+            msg.put("msg_type", "answer");
+            msg.put("question_id", questionId);
+            msg.put("team_id", teamId);
+            msg.put("answer", content);
+            sendAnswerQueue.add(msg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public ContestTimer getTimer() {
         return timer;
+    }
+
+    public void ackAnswer() {
+        sendAnswerQueue.ackAndGetNowMsg();
     }
 }

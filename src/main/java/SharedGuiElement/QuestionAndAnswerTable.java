@@ -114,6 +114,7 @@ public class QuestionAndAnswerTable extends HBox implements Initializable {
         //init column
         type.setCellValueFactory(new PropertyValueFactory("type"));
         answerButton.setCellValueFactory(new PropertyValueFactory("type"));
+        id.setCellValueFactory(new PropertyValueFactory("id"));
         problemId.setCellValueFactory(new PropertyValueFactory("problemId"));
         content.setCellValueFactory(new PropertyValueFactory("content"));
         timeStamp.setCellValueFactory(new PropertyValueFactory("timeStamp"));
@@ -157,6 +158,8 @@ public class QuestionAndAnswerTable extends HBox implements Initializable {
         protected  void updateItem (String type, boolean empty) {
             if (!empty && type.equals("question")){
                 setGraphic(button);
+            } else {
+                setGraphic(null);
             }
         }
     }

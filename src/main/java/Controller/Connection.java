@@ -61,6 +61,7 @@ public class Connection extends Thread {
     }
 
     public void send(JSONObject msg) throws InterruptedException {
+        System.out.println("[send] "+msg);
         this.sendQueue.put(msg);
     }
 
@@ -93,7 +94,9 @@ public class Connection extends Thread {
             while (true) {
                 String msg = this.input.readUTF();
                 try {
-                    this.client.handle(new JSONObject(msg));
+                    JSONObject mmsg = new JSONObject(msg);
+                    System.out.println("[recv] "+msg);
+                    this.client.handle(mmsg);
                 }
                 catch (JSONException e) {
                 }
