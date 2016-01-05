@@ -59,4 +59,43 @@ public class ParticipantCore {
     public JSONObject ackQuestion() {
         return questionQueue.ackAndGetNowMsg();
     }
+
+    public JSONObject ackSubmission() {
+        return submitQueue.ackAndGetNowMsg();
+    }
+
+    public void syncTime() {
+        try {
+            JSONObject msg = new JSONObject();
+            msg.put("msg_type", "sync_time");
+            this.controllerServer.send(msg);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void syncProblemInfo() {
+        try {
+            JSONObject msg = new JSONObject();
+            msg.put("msg_type", "sync_problem_info");
+            this.controllerServer.send(msg);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void syncEvent(int timeStamp) {
+        try {
+            JSONObject msg = new JSONObject();
+            msg.put("msg_type", "sync");
+            msg.put("time_stamp", String.valueOf(timeStamp));
+            this.controllerServer.send(msg);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

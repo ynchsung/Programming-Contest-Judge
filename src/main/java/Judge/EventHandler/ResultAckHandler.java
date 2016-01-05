@@ -5,11 +5,8 @@ import Shared.EventHandler.EventHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by tenyoku on 2016/1/5.
- */
-public class AnswerAckHandler extends EventHandler{
-    public AnswerAckHandler(EventHandler nextHandler) {
+public class ResultAckHandler extends EventHandler{
+    public ResultAckHandler(EventHandler nextHandler) {
         super(nextHandler);
     }
 
@@ -17,8 +14,8 @@ public class AnswerAckHandler extends EventHandler{
     public void handle(JSONObject msg) {
         try {
             System.out.println(msg);
-            if (msg.getString("msg_type").equals("answer") && msg.has("status")) {
-                JudgeCore.getInstance().ackAnswer();
+            if (msg.getString("msg_type").equals("result") && msg.has("status")) {
+                JudgeCore.getInstance().ackResult();
             } else {
                 doNext(msg);
             }

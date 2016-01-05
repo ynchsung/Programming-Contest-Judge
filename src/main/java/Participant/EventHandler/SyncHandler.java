@@ -60,7 +60,7 @@ public class SyncHandler extends EventHandler {
                 AnswerHandler answerHandler = new AnswerHandler(null);
                 ClarificationHandler clarificationHandler = new ClarificationHandler(null);
 
-                JSONObject content = new JSONObject(msg.getString("content"));
+                JSONObject content = msg.getJSONObject("content");
                 JSONArray submissions = content.getJSONArray("submission");
                 JSONArray results = content.getJSONArray("result");
                 JSONArray questions = content.getJSONArray("question");

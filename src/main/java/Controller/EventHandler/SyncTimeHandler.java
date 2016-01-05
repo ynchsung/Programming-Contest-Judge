@@ -29,7 +29,7 @@ public class SyncTimeHandler extends EventHandler<Client> {
     public void handle(Client client, JSONObject msg) {
         try {
             if (msg.getString("msg_type").equals("sync_time")) {
-                forward(client, Integer.toString(Core.getInstance().getTimer().getRemainTime()));
+                forward(client, Integer.toString(Core.getInstance().getTimer().getCountedTime()));
             }
             else doNext(client, msg);
         } catch (JSONException e) {

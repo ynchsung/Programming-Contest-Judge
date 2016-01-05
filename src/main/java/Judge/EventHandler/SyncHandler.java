@@ -19,7 +19,7 @@ public class SyncHandler extends EventHandler {
                 AnswerHandler answerHandler = new AnswerHandler(null);
                 ClarificationHandler clarificationHandler = new ClarificationHandler(null);
 
-                JSONObject content = new JSONObject(msg.getString("content"));
+                JSONObject content = msg.getJSONObject("content");
                 JSONArray questions = content.getJSONArray("question");
                 JSONArray answers = content.getJSONArray("answer");
                 JSONArray clarifications = content.getJSONArray("clarification");

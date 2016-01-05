@@ -182,7 +182,7 @@ public class QAManager extends DatabaseManager {
                     entry.put("team_id", tid);
                     entry.put("question_id", Integer.toString(qid));
                     entry.put("problem_id", pid);
-                    entry.put("answer", content);
+                    entry.put("content", content);
                     entry.put("time_stamp", Integer.toString(time));
                     response.add(entry);
                 }

@@ -26,8 +26,21 @@ public class SyncJudgeDataHandler extends EventHandler<Judge> {
             content.put("memory_limit", memoryLimit);
             content.put("testdata_time_stamp", testDataTimeStamp);
             msg.put("msg_type", "syncjudgedata");
+            msg.put("status", "OK");
             msg.put("problem_id", problemID);
             msg.put("content", content);
+            judge.send(msg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void forward(Judge judge, String problemID) {
+        try {
+            JSONObject msg = new JSONObject();
+            msg.put("msg_type", "syncjudgedata");
+            msg.put("status", "up-to-date");
+            msg.put("problem_id", problemID);
             judge.send(msg);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -40,9 +53,13 @@ public class SyncJudgeDataHandler extends EventHandler<Judge> {
             if (msg.getString("msg_type").equals("syncjudgedata")) {
                 ProblemManager problemManager = new ProblemManager();
                 String problemID = msg.getString("problem_id");
+                int oldTimeStamp = Integer.valueOf(msg.getString("old_time_stamp"));
                 Map<String, String> prob = problemManager.getProblemById(problemID);
 
-                forward(judge, problemID, prob.get("input"), prob.get("output"), prob.get("special_judge"), prob.get("time_limit"), prob.get("memory_limit"), prob.get("time_stamp"));
+                if (oldTimeStamp < Integer.valueOf(prob.get("time_stamp")))
+                    forward(judge, problemID, prob.get("input"), prob.get("output"), prob.get("special_judge"), prob.get("time_limit"), prob.get("memory_limit"), prob.get("time_stamp"));
+                else
+                    forward(judge, problemID);
             }
             else doNext(judge, msg);
         } catch (JSONException e) {

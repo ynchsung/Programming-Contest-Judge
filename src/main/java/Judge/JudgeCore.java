@@ -13,7 +13,10 @@ public class JudgeCore {
     private AckQueue sendResultQueue;
     private AckQueue sendClarificationQueue;
     private AckQueue sendAnswerQueue;
+    private JudgeQueue judgeQueue;
     private ContestTimer timer;
+
+    private String sandboxPath;
 
     private JudgeCore() {
         timer = new ContestTimer(300*60);
@@ -24,6 +27,7 @@ public class JudgeCore {
         this.sendResultQueue = new AckQueue(this.controllerServer);
         this.sendClarificationQueue = new AckQueue(this.controllerServer);
         this.sendAnswerQueue = new AckQueue(this.controllerServer);
+        this.judgeQueue = new JudgeQueue();
     }
 
     static public JudgeCore getInstance() {
@@ -42,6 +46,26 @@ public class JudgeCore {
         this.sendClarificationQueue.start();
         this.sendAnswerQueue.start();
         this.timer.start();
+        this.judgeQueue.start();
+        this.sandboxPath = "judgebox/box/0/box";
+        // TODO: init sandbox
+
+        this.syncTime();
+        this.syncProblemInfo();
+        try {
+            Thread.sleep(2000);
+        }
+        catch (InterruptedException e) {
+        }
+        this.syncEvent(0);
+    }
+
+    public JudgeControllerServer getControllerServer() {
+        return this.controllerServer;
+    }
+
+    public String getSandboxPath() {
+        return this.sandboxPath;
     }
 
     public void sendResult(JSONObject msg) {
@@ -66,11 +90,58 @@ public class JudgeCore {
         }
     }
 
+    public JudgeQueue getJudgeQueue() {
+        return this.judgeQueue;
+    }
+
     public ContestTimer getTimer() {
         return timer;
     }
 
     public void ackAnswer() {
         sendAnswerQueue.ackAndGetNowMsg();
+    }
+
+    public void ackResult() {
+        sendResultQueue.ackAndGetNowMsg();
+    }
+
+    public void ackClarification() {
+        sendClarificationQueue.ackAndGetNowMsg();
+    }
+
+    public void syncTime() {
+        try {
+            JSONObject msg = new JSONObject();
+            msg.put("msg_type", "sync_time");
+            this.controllerServer.send(msg);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void syncProblemInfo() {
+        try {
+            JSONObject msg = new JSONObject();
+            msg.put("msg_type", "sync_problem_info");
+            this.controllerServer.send(msg);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void syncEvent(int timeStamp) {
+        try {
+            JSONObject msg = new JSONObject();
+            msg.put("msg_type", "sync");
+            msg.put("time_stamp", String.valueOf(timeStamp));
+            this.controllerServer.send(msg);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 }

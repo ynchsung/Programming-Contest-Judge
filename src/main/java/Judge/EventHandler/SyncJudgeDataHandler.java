@@ -17,15 +17,20 @@ public class SyncJudgeDataHandler extends EventHandler {
             if (msg.getString("msg_type").equals("syncjudgedata")) {
                 ProblemManager problemManager = new ProblemManager();
                 String problemID = msg.getString("problem_id");
-                JSONObject content = new JSONObject(msg.get("content"));
-                String input = content.getString("input");
-                String output = content.getString("output");
-                String judgeMethod = content.getString("judge_method");
-                String timeLimit = content.getString("time_limit");
-                String memoryLimit = content.getString("memory_limit");
-                String testDataTimeStamp = content.getString("testdata_time_stamp");
+                String status = msg.getString("status");
+                if (status.equals("OK")) {
+                    JSONObject content = new JSONObject(msg.get("content"));
+                    String input = content.getString("input");
+                    String output = content.getString("output");
+                    String judgeMethod = content.getString("judge_method");
+                    int timeLimit = Integer.valueOf(content.getString("time_limit"));
+                    int memoryLimit = Integer.valueOf(content.getString("memory_limit"));
+                    int testDataTimeStamp = Integer.valueOf(content.getString("testdata_time_stamp"));
 
-                // TODO: update data
+                    // problemManager.updateTestData();
+
+                    // TODO: update data
+                }
             }
             else doNext(msg);
         } catch (JSONException e) {
