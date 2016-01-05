@@ -11,7 +11,7 @@ public class Judge extends Client {
 
     public Judge(String id, Connection connection) {
         super(id, connection);
-        this.eventHandler = new ResultHandler(new AnswerHandler(new SyncJudgeDataHandler(new ClarificationHandler(new SyncHandler(new SyncTimeHandler(null))))));
+        this.eventHandler = new ResultHandler(new AnswerHandler(new SyncJudgeDataHandler(new ClarificationHandler(new SyncHandler(new SyncProblemInfoHandler(new SyncTimeHandler(null)))))));
     }
 
     @Override

@@ -11,7 +11,7 @@ public class QAManager {
     private static final Object lock;
 
     static {
-        infos = Collections.synchronizedMap(new HashMap<Integer, QuestionInfo>());
+        infos = new HashMap<Integer, QuestionInfo>();
         observers = new ArrayList<Observer>();
         lock = new Object();
     }

@@ -9,7 +9,12 @@ public class ControllerServer {
 
     public ControllerServer(Connection connection) {
         this.connection = connection;
-        this.eventHandler = new ResultHandler(new AnswerHandler(new ClarificationHandler(new SyncHandler(new SyncTimeHandler(null)))));
+        this.eventHandler = new ResultHandler(
+                new AnswerHandler(
+                new ClarificationHandler(
+                new SyncHandler(
+                new SyncProblemInfoHandler(
+                new SyncTimeHandler(null))))));
     }
 
     public void handle(JSONObject msg) {

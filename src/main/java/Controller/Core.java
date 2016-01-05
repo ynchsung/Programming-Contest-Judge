@@ -2,6 +2,7 @@ package Controller;
 
 import Controller.DatabaseManager.*;
 import Shared.ContestTimer;
+import Shared.ProblemInfo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,7 +26,7 @@ public class Core {
 
     private Map<String, Team> teams;
     private Map<String, Judge> judges;
-    private Map<String, Problem> problems;
+    private Map<String, ProblemInfo> problems;
     private Scheduler scheduler;
     private InetAddress ip;
     private int port;
@@ -35,7 +36,7 @@ public class Core {
     private Core() {
         this.teams = new HashMap<String, Team>();
         this.judges = new HashMap<String, Judge>();
-        this.problems = new HashMap<String, Problem>();
+        this.problems = new HashMap<String, ProblemInfo>();
         this.scheduler = new Scheduler();
         try {
             this.ip = InetAddress.getLocalHost();
@@ -94,7 +95,7 @@ public class Core {
             String id = String.format("p%c", 'A' + i - 1);
             Map<String, String> pinfo = new HashMap<String, String>();
             int timeStamp = 0;
-            this.problems.put(id, new Problem(id, 6 - i, 65536, timeStamp));
+            this.problems.put(id, new ProblemInfo(id, 6 - i, 65536, timeStamp));
             pinfo.put("problem_id", id);
             pinfo.put("time_limit", Integer.toString(6 - i));
             pinfo.put("memory_limit", "65536");
@@ -196,7 +197,7 @@ public class Core {
 
     public void updateTestData(String problemID, File input, File output, File specialJudge) {
         try {
-            long timeStamp = System.currentTimeMillis() / 1000;
+            int timeStamp = this.getTimer().getCountedTime();
             Map<String, String> entry = new HashMap<>();
             entry.put("problem_id", problemID);
             entry.put("input", MyUtil.readFromFile(input));
@@ -207,6 +208,10 @@ public class Core {
             entry.put("time_stamp", Long.toString(timeStamp));
             ProblemManager problemManager = new ProblemManager();
             problemManager.updateEntry(entry);
+
+            ProblemInfo problemInfo = this.problems.get(problemID);
+            if (problemInfo != null)
+                problemInfo.updateInfo(problemInfo.getTimeLimit(), problemInfo.getMemoryLimit(), timeStamp, "", "", "");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -228,7 +233,11 @@ public class Core {
         return new ArrayList<Judge>(judges.values());
     }
 
-    public Problem getProblemByID(String id) {
+    public Map<String, ProblemInfo> getProblems() {
+        return this.problems;
+    }
+
+    public ProblemInfo getProblemByID(String id) {
         return this.problems.get(id);
     }
 

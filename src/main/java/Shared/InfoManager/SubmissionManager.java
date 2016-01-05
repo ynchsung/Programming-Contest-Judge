@@ -10,7 +10,7 @@ public class SubmissionManager {
     private static final Object lock;
 
     static {
-        infos = Collections.synchronizedMap(new HashMap<Integer, SubmissionInfo>());
+        infos = new HashMap<Integer, SubmissionInfo>();
         observers = new ArrayList<Observer>();
         lock = new Object();
     }

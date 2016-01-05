@@ -11,7 +11,7 @@ public class Team extends Client {
 
     public Team(String id, Connection connection) {
         super(id, connection);
-        this.eventHandler = new SubmissionHandler(new QuestionHandler(new SyncHandler(new SyncTimeHandler(null))));
+        this.eventHandler = new SubmissionHandler(new QuestionHandler(new SyncHandler(new SyncProblemInfoHandler(new SyncTimeHandler(null)))));
     }
 
     @Override

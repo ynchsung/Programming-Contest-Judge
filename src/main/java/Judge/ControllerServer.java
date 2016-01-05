@@ -16,8 +16,9 @@ public class ControllerServer {
                 new AnswerHandler(
                 new ClarificationHandler(
                 new SyncHandler(
+                new SyncProblemInfoHandler(
                 new SyncJudgeDataHandler(
-                new SyncTimeHandler(null))))))));
+                new SyncTimeHandler(null)))))))));
     }
 
     public void handle(JSONObject msg) {
