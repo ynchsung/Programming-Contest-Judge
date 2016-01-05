@@ -8,7 +8,7 @@ public class QuestionInfo {
     private final String team_id;
     private final String content;
     private final int timeStamp;
-    private List<AnswerInfo> answers;
+    private Map<Integer, AnswerInfo> answers;
 
     public QuestionInfo(int id, String problem_id, String team_id, String content, int timeStamp) {
         this.id = id;
@@ -16,7 +16,7 @@ public class QuestionInfo {
         this.team_id = team_id;
         this.content = content;
         this.timeStamp = timeStamp;
-        this.answers = new ArrayList<AnswerInfo>();
+        this.answers = new HashMap<Integer, AnswerInfo>();
     }
 
     public int getID() {
@@ -39,18 +39,23 @@ public class QuestionInfo {
         return this.timeStamp;
     }
 
-    public final List<AnswerInfo> getAnswers() {
+    public final Map<Integer, AnswerInfo> getAnswers() {
         return this.answers;
     }
 
-    public void addAnswer(AnswerInfo answerInfo) {
-        this.answers.add(answerInfo);
+    public boolean addAnswer(AnswerInfo answerInfo) {
+        if (!this.answers.containsKey(answerInfo.getID())) {
+            this.answers.put(answerInfo.getID(), answerInfo);
+            return true;
+        }
+        else
+            return false;
     }
 
     public QuestionInfo copy() {
         QuestionInfo ret = new QuestionInfo(this.id, this.problem_id, this.team_id, this.content, this.timeStamp);
-        for (AnswerInfo answerInfo : this.answers) {
-            ret.addAnswer(answerInfo.copy());
+        for (Map.Entry<Integer, AnswerInfo> entry : this.answers.entrySet()) {
+            ret.addAnswer(entry.getValue().copy());
         }
         return ret;
     }

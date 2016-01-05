@@ -80,7 +80,7 @@ public class SubmissionManager extends DatabaseManager {
         return id;
     }
 
-    public void updateEntry(Map<String, String> entry) {
+    public boolean updateEntry(Map<String, String> entry) {
         Connection c = null;
         PreparedStatement stmt = null;
         while (true) {
@@ -99,7 +99,7 @@ public class SubmissionManager extends DatabaseManager {
                     rs.close();
                     stmt.close();
                     c.close();
-                    break;
+                    return false;
                 }
                 rs.close();
                 stmt.close();
@@ -115,13 +115,13 @@ public class SubmissionManager extends DatabaseManager {
                 c.commit();
                 c.close();
                 notifyObservers();
-                break;
+                return true;
             }
             catch (Exception e) {
                 if (checkLock(e.getMessage(), c))
                     continue;
                 else
-                    break;
+                    return false;
             }
         }
     }

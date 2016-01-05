@@ -18,12 +18,13 @@ public class AnswerHandler extends EventHandler<Judge> {
         super(nextHandler);
     }
 
-    private void sendAck(Judge judge, String questionID, String timeStamp) {
+    private void sendAck(Judge judge, String questionID, String answerID, String timeStamp) {
         try {
             JSONObject msg = new JSONObject();
             msg.put("msg_type", "answer");
             msg.put("status", "received");
             msg.put("question_id", questionID);
+            msg.put("answer_id", answerID);
             msg.put("time_stamp", timeStamp);
             judge.send(msg);
         } catch (JSONException e) {
@@ -31,11 +32,12 @@ public class AnswerHandler extends EventHandler<Judge> {
         }
     }
 
-    private void forward(Client client, String questionID, String answer, String timeStamp) {
+    private void forward(Client client, String questionID, String answerID, String answer, String timeStamp) {
         try {
             JSONObject msg = new JSONObject();
             msg.put("msg_type", "answer");
             msg.put("question_id", questionID);
+            msg.put("answer_id", answerID);
             msg.put("answer", answer);
             msg.put("time_stamp", timeStamp);
             client.send(msg);
@@ -59,12 +61,12 @@ public class AnswerHandler extends EventHandler<Judge> {
                 store.put("question_id", questionID);
                 store.put("answer", answer);
                 store.put("time_stamp", timeStamp);
-                qaManager.addEntry(store);
+                String answerID = Integer.toString(qaManager.addEntry(store));
 
-                sendAck(judge, questionID, timeStamp);
-                forward(Core.getInstance().getTeamByID(teamID), questionID, answer, timeStamp);
+                sendAck(judge, questionID, answerID, timeStamp);
+                forward(Core.getInstance().getTeamByID(teamID), questionID, answerID, answer, timeStamp);
                 for (Judge judge1: Core.getInstance().getAllJudge()) {
-                    forward(judge1, questionID, answer, timeStamp);
+                    forward(judge1, questionID, answerID, answer, timeStamp);
                 }
             }
             else doNext(judge, msg);

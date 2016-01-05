@@ -29,8 +29,10 @@ public class ClarificationManager {
 
     public void addEntry(ClarificationInfo clarificationInfo) {
         synchronized (lock) {
-            infos.put(clarificationInfo.getID(), clarificationInfo);
-            notifyObservers();
+            if (!infos.containsKey(clarificationInfo.getID())) {
+                infos.put(clarificationInfo.getID(), clarificationInfo);
+                notifyObservers();
+            }
         }
     }
 

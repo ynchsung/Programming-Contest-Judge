@@ -16,11 +16,12 @@ public class AnswerHandler extends EventHandler {
         try {
             if (msg.getString("msg_type").equals("answer")) {
                 QAManager qaManager = new QAManager();
+                int answerID = Integer.valueOf(msg.getString("answer_id"));
                 int questionID = Integer.valueOf(msg.getString("question_id"));
                 String content = msg.getString("answer");
                 int timeStamp = Integer.valueOf(msg.getString("time_stamp"));
 
-                qaManager.addAnswer(questionID, new AnswerInfo(content, timeStamp));
+                qaManager.addAnswer(questionID, new AnswerInfo(answerID, content, timeStamp));
             }
             else doNext(msg);
         } catch (JSONException e) {

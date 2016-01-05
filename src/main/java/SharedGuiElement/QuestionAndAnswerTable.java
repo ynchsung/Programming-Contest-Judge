@@ -96,10 +96,10 @@ public class QuestionAndAnswerTable extends HBox implements Initializable {
                     "question", entry.getValue().getProblemID(), entry.getValue().getContent(),
                     String.valueOf(entry.getValue().getTimeStamp()));
             this.questionAndAnswer.add(questionItem);
-            for (AnswerInfo answerInfo : entry.getValue().getAnswers()) {
-                QuestionAndAnswerItem answerItem = new QuestionAndAnswerItem(String.valueOf(entry.getValue().getID()),
-                        "answer", entry.getValue().getProblemID(), answerInfo.getContent(),
-                        String.valueOf(answerInfo.getTimeStamp()));
+            for (Map.Entry<Integer, AnswerInfo> answerEntry : entry.getValue().getAnswers().entrySet()) {
+                QuestionAndAnswerItem answerItem = new QuestionAndAnswerItem(String.valueOf(answerEntry.getValue().getID()),
+                        "answer", entry.getValue().getProblemID(), answerEntry.getValue().getContent(),
+                        String.valueOf(answerEntry.getValue().getTimeStamp()));
                 this.questionAndAnswer.add(answerItem);
             }
         }

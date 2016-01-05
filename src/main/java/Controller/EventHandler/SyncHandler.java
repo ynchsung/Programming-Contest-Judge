@@ -90,6 +90,7 @@ public class SyncHandler extends EventHandler<Client> {
                     jsonA.put("msg_type", "answer");
                     jsonA.put("team_id", answer.get("team_id"));
                     jsonA.put("question_id", answer.get("question_id"));
+                    jsonA.put("answer_id", answer.get("answer_id"));
                     jsonA.put("answer", answer.get("answer"));
                     jsonA.put("time_stamp", answer.get("time_stamp"));
                     jsonAnswers.put(jsonA);

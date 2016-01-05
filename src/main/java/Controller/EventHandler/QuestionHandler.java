@@ -62,11 +62,11 @@ public class QuestionHandler extends EventHandler<Team> {
                 store.put("team_id", teamID);
                 store.put("content", content);
                 store.put("time_stamp", timeStamp);
-                String qid = Integer.toString(qaManager.addEntry(store));
+                String questionID = Integer.toString(qaManager.addEntry(store));
 
-                sendAck(team, qid, timeStamp);
+                sendAck(team, questionID, timeStamp);
                 for (Judge judge: Core.getInstance().getAllJudge()) {
-                    forward(judge, teamID, qid, problemID, content, timeStamp);
+                    forward(judge, teamID, questionID, problemID, content, timeStamp);
                 }
             }
             else doNext(team, msg);

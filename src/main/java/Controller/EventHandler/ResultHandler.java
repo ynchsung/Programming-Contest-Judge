@@ -66,14 +66,14 @@ public class ResultHandler extends EventHandler<Judge> {
                 String result = msg.getString("result");
                 String testdata_timeStamp = msg.getString("testdata_time_stamp");
                 String result_timeStamp = Integer.toString(Core.getInstance().getTimer().getCountedTime() / 60);
-                if (true /*not appeared*/) {
-                    Map<String, String> store = new HashMap<String, String>();
-                    store.put("submission_id", submissionID);
-                    store.put("result", result);
-                    store.put("time_stamp", result_timeStamp);
-                    store.put("testdata_time_stamp", testdata_timeStamp);
-                    submissionManager.updateEntry(store);
+                Map<String, String> store = new HashMap<String, String>();
+                store.put("submission_id", submissionID);
+                store.put("result", result);
+                store.put("time_stamp", result_timeStamp);
+                store.put("testdata_time_stamp", testdata_timeStamp);
+                boolean flag = submissionManager.updateEntry(store);
 
+                if (flag) {
                     sendAck(judge, submissionID, result_timeStamp);
 
                     Map<String, String> getSub = submissionManager.getSubmissionById(Integer.valueOf(submissionID));
@@ -82,9 +82,8 @@ public class ResultHandler extends EventHandler<Judge> {
                     Team team = Core.getInstance().getTeamByID(teamID);
                     forward(team, submissionID, result, submit_timeStamp, result_timeStamp);
                 }
-                else {
+                else
                     sendNak(judge, result_timeStamp);
-                }
             }
             else doNext(judge, msg);
         } catch (JSONException e) {

@@ -30,16 +30,17 @@ public class QAManager {
 
     public void addQuestion(QuestionInfo question) {
         synchronized (lock) {
-            infos.put(question.getID(), question);
-            notifyObservers();
+            if (!infos.containsKey(question.getID())) {
+                infos.put(question.getID(), question);
+                notifyObservers();
+            }
         }
     }
 
     public void addAnswer(int question_id, AnswerInfo answerInfo) {
         synchronized (lock) {
             QuestionInfo g = infos.get(question_id);
-            if (g != null) {
-                g.addAnswer(answerInfo);
+            if (g != null && g.addAnswer(answerInfo)) {
                 notifyObservers();
             }
         }
