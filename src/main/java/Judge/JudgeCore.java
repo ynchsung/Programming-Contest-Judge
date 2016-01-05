@@ -13,7 +13,7 @@ public class JudgeCore {
     private AckQueue sendAnswerQueue;
     private ContestTimer timer;
 
-    public JudgeCore() {
+    private JudgeCore() {
         timer = new ContestTimer(300*60);
     }
 
@@ -45,7 +45,7 @@ public class JudgeCore {
         sendResultQueue.add(msg);
     }
 
-    public void sendClrification(JSONObject msg) {
+    public void sendClarification(JSONObject msg) {
         sendClarificationQueue.add(msg);
     }
 

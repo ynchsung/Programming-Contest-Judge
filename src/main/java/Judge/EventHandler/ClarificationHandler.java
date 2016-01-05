@@ -1,6 +1,6 @@
 package Judge.EventHandler;
 
-import Judge.InfoManager.ClarificationManager;
+import Shared.InfoManager.ClarificationManager;
 import Shared.ClarificationInfo;
 
 import org.json.JSONException;

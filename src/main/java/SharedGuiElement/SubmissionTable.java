@@ -124,9 +124,9 @@ public class SubmissionTable extends HBox implements Initializable {
         this.submissions = FXCollections.observableArrayList();
         for (Map.Entry<Integer, SubmissionInfo> entry : infos.entrySet()) {
             SubmissionItem item = new SubmissionItem(String.valueOf(entry.getValue().getID()),
-                    entry.getValue().getProblemID(), entry.getValue().getTeamID(),
-                    entry.getValue().getSourceCode(), String.valueOf(entry.getValue().getSubmitTimeStamp()),
-                    entry.getValue().getResult(), String.valueOf(entry.getValue().getResultTimeStamp()));
+                    entry.getValue().getProblemID(), "", entry.getValue().getSourceCode(),
+                    String.valueOf(entry.getValue().getSubmitTimeStamp()), entry.getValue().getResult(),
+                    String.valueOf(entry.getValue().getResultTimeStamp()));
             this.submissions.add(item);
         }
         submissionTable.setItems(this.submissions);

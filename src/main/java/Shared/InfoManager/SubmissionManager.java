@@ -1,4 +1,4 @@
-package Participant.InfoManager;
+package Shared.InfoManager;
 
 import Shared.SubmissionInfo;
 
@@ -31,6 +31,17 @@ public class SubmissionManager {
         synchronized (lock) {
             infos.put(submission.getID(), submission);
             notifyObservers();
+        }
+    }
+
+    public void updateResult(int submission_id, String result, int resultTimeStamp) {
+        synchronized (lock) {
+            SubmissionInfo submissionInfo = infos.get(submission_id);
+            if (submissionInfo != null) {
+                submissionInfo.setResult(result);
+                submissionInfo.setResultTimeStamp(resultTimeStamp);
+                notifyObservers();
+            }
         }
     }
 

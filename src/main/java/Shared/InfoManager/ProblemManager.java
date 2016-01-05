@@ -1,4 +1,4 @@
-package Participant.InfoManager;
+package Shared.InfoManager;
 
 public class ProblemManager {
 }

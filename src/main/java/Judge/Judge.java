@@ -1,7 +1,7 @@
 package Judge;
 
 import Controller.DatabaseManager.ClarificationManager;
-import Judge.InfoManager.SubmissionManager;
+import Shared.InfoManager.SubmissionManager;
 import Judge.EventHandler.LoginResultHandler;
 import Shared.ContestTimer;
 import SharedGuiElement.OpenCode;

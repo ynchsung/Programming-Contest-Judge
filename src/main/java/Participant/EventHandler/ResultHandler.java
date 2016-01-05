@@ -1,6 +1,6 @@
 package Participant.EventHandler;
 
-import Participant.InfoManager.SubmissionManager;
+import Shared.InfoManager.SubmissionManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,11 +15,11 @@ public class ResultHandler extends EventHandler {
         try {
             if (msg.getString("msg_type").equals("result")) {
                 SubmissionManager submissionManager = new SubmissionManager();
-                String submissionID = msg.getString("submission_id");
+                int submissionID = Integer.valueOf(msg.getString("submission_id"));
                 String result = msg.getString("result");
-                String result_timeStamp = msg.getString("time_stamp");
+                int result_timeStamp = Integer.valueOf(msg.getString("time_stamp"));
 
-                // TODO
+                submissionManager.updateResult(submissionID, result, result_timeStamp);
             }
             else doNext(msg);
         } catch (JSONException e) {
