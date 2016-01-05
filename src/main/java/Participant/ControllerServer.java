@@ -1,20 +1,22 @@
 package Participant;
 
 import Participant.EventHandler.*;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ControllerServer {
     private Connection connection;
     private EventHandler eventHandler;
 
-    public ControllerServer(Connection connection) {
+    public ControllerServer(Connection connection, LoginResultHandler.LoginResultListener loginResultListener) {
         this.connection = connection;
-        this.eventHandler = new ResultHandler(
+        this.eventHandler = new LoginResultHandler(loginResultListener,
+                new ResultHandler(
                 new AnswerHandler(
                 new ClarificationHandler(
                 new SyncHandler(
                 new SyncProblemInfoHandler(
-                new SyncTimeHandler(null))))));
+                new SyncTimeHandler(null)))))));
     }
 
     public void handle(JSONObject msg) {
@@ -33,6 +35,19 @@ public class ControllerServer {
         }
         else
             return false;
+    }
+
+    public void login(String username, String password) {
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("msg_type", "login");
+            msg.put("user_type", "participant");
+            msg.put("username", username);
+            msg.put("password", password);
+            send(msg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void logout() {

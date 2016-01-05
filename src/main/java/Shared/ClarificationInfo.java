@@ -1,5 +1,8 @@
 package Shared;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ClarificationInfo {
     private final int id;
     private final String problem_id;

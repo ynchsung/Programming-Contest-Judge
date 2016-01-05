@@ -39,6 +39,7 @@ public class JudgeCore {
         this.sendResultQueue.start();
         this.sendClarificationQueue.start();
         this.sendAnswerQueue.start();
+        this.timer.start();
     }
 
     public void sendResult(JSONObject msg) {

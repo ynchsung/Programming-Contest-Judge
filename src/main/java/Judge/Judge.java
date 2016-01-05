@@ -1,6 +1,7 @@
 package Judge;
 
-import Controller.DatabaseManager.ClarificationManager;
+import Shared.InfoManager.ClarificationManager;
+import Shared.InfoManager.QAManager;
 import Shared.InfoManager.SubmissionManager;
 import Judge.EventHandler.LoginResultHandler;
 import Shared.ContestTimer;
@@ -102,6 +103,8 @@ public class Judge extends Application {
         });
 
         ViewQuestionAndAnswerController viewQuestionAndAnswerController = controller.getViewQuestionAndAnswerController();
+        viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll());
+        QAManager.register(() -> viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll()));
 
         ViewSubmissionController viewSubmissionController = controller.getViewSubmissionController();
         viewSubmissionController.setSubmissions((new SubmissionManager()).queryAll());

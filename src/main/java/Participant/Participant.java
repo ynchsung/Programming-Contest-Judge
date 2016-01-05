@@ -1,27 +1,57 @@
 package Participant;
 
+import Participant.EventHandler.LoginResultHandler;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 
 /**
  * Created by aalexx on 1/3/16.
  */
 public class Participant extends Application {
     private Stage stage;
+    ControllerServer server = null;
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.stage = primaryStage;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ParticipantLoginPage.fxml"));
         Parent root = loader.load();
-        // use loader.getController() to get login page's controller
-        /*
-            do login stuff here
-         */
+        ParticipantLoginPageController controller = loader.getController();
+        LoginResultHandler.LoginResultListener loginResultListener = success -> Platform.runLater(() -> {
+            if (success) {
+                loginSuccess();
+            } else {
+                if (server != null) {
+                    server.logout();
+                }
+                System.err.println("login failed");
+                //TODO Login fail msg
+            }
+        });
+        controller.setLoginButtonOnAction(event -> {
+            String ip = controller.getIp();
+            int port = Integer.valueOf(controller.getPort());
+            String username = controller.getAccount();
+            String password = controller.getPassword();
+            Socket socket = new Socket();
+            try {
+                socket.connect(new InetSocketAddress(ip, port));
+                Connection connection = new Connection(socket);
+                server = new ControllerServer(connection, loginResultListener);
+                connection.setControllerServer(server);
+                connection.start();
+                server.login(username, password);
+            } catch (IOException e) {
+                loginResultListener.callback(false);
+            }
+        });
         primaryStage.setTitle("Participant");
         primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.show();
