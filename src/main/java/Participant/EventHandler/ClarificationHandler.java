@@ -1,5 +1,6 @@
 package Participant.EventHandler;
 
+import Shared.EventHandler.EventHandler;
 import Shared.InfoManager.ClarificationManager;
 import Shared.ClarificationInfo;
 

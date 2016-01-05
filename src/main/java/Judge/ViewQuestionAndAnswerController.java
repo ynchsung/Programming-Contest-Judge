@@ -31,7 +31,7 @@ public class ViewQuestionAndAnswerController {
             entry.put("content", info.getContent());
             entry.put("time_stamp", Integer.toString(info.getTimeStamp()));
             res.add(entry);
-            for (AnswerInfo answerInfo: info.getAnswers()) {
+            for (AnswerInfo answerInfo: info.getAnswers().values()) {
                 Map<String, String> answerEntry = new HashMap<>();
                 answerEntry.put("type", "answer");
                 answerEntry.put("question_id", Integer.toString(info.getID()));

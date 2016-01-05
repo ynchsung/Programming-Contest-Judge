@@ -1,12 +1,21 @@
 package Participant;
 
-import Participant.EventHandler.LoginResultHandler;
+import Shared.Connection;
+import Shared.ContestTimer;
+import Shared.EventHandler.LoginResultHandler;
+import Shared.InfoManager.ClarificationManager;
+import Shared.InfoManager.QAManager;
+import Shared.InfoManager.SubmissionManager;
+import SharedGuiElement.OpenCode;
+import SharedGuiElement.OpenCodeBuilder;
+import SharedGuiElement.RemainingTime;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -17,7 +26,7 @@ import java.net.Socket;
  */
 public class Participant extends Application {
     private Stage stage;
-    ControllerServer server = null;
+    PriticipantControllerServer server = null;
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.stage = primaryStage;
@@ -44,7 +53,7 @@ public class Participant extends Application {
             try {
                 socket.connect(new InetSocketAddress(ip, port));
                 Connection connection = new Connection(socket);
-                server = new ControllerServer(connection, loginResultListener);
+                server = new PriticipantControllerServer(connection, loginResultListener);
                 connection.setControllerServer(server);
                 connection.start();
                 server.login(username, password);
@@ -69,10 +78,50 @@ public class Participant extends Application {
             e.printStackTrace();
             return;
         }
-        // use loader.getController to get main controller
-        /*
-            real judge core
-         */
+        MainController controller = loader.getController();
+        ParticipantCore core = ParticipantCore.getInstance();
+        RemainingTime remainingTime = controller.getRemainingTimeController();
+        core.setControllerServer(server);
+        core.getTimer().setListener(new ContestTimer.ContestTimerListener() {
+            @Override
+            public void onUpdate(int totalSecond, int secondCounted) {
+                remainingTime.setRemainingTime(totalSecond - secondCounted);
+            }
+
+            @Override
+            public void onOver(int totalSecond) {
+                //TODO: contest over
+            }
+        });
+
+        ViewClarificationController viewClarificationController = controller.getViewClarificationController();
+        viewClarificationController.setClarification((new ClarificationManager()).queryAll());
+        ClarificationManager.register(() -> viewClarificationController.setClarification((new ClarificationManager()).queryAll()));
+
+        ViewQuestionAndAnswerController viewQuestionAndAnswerController = controller.getViewQuestionAndAnswerController();
+        viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll());
+        QAManager.register(() -> viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll()));
+        viewQuestionAndAnswerController.setConfirmNewQuestionAction(event -> {
+            String problemID = (String)viewQuestionAndAnswerController.getSelectedProblem();
+            String content = viewQuestionAndAnswerController.getAskQuestionTextArea();
+        });
+
+        ViewSubmissionController viewSubmissionController = controller.getViewSubmissionController();
+        viewSubmissionController.setSubmissions((new SubmissionManager()).queryAll());
+        SubmissionManager.register(() -> viewSubmissionController.setSubmissions((new SubmissionManager()).queryAll()));
+        viewSubmissionController.setOpenCodeCallBack(new Callback<String, Void>() {
+            @Override
+            public Void call(String submissionId) {
+                SubmissionManager submissionManager = new SubmissionManager();
+                String code = submissionManager.queryCode(Integer.valueOf(submissionId));
+                OpenCode o = OpenCodeBuilder.create()
+                        .setCode(code)
+                        .build();
+                o.show();
+                return null;
+            }
+        });
+
         Scene scene = stage.getScene();
         if (scene == null) {
             scene = new Scene(root, 800, 600);

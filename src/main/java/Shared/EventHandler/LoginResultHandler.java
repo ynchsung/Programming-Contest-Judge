@@ -1,4 +1,4 @@
-package Judge.EventHandler;
+package Shared.EventHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;

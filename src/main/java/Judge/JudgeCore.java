@@ -7,7 +7,7 @@ import org.json.JSONObject;
 public class JudgeCore {
     static private JudgeCore sharedInstance = null;
 
-    private ControllerServer controllerServer;
+    private JudgeControllerServer controllerServer;
     private AckQueue sendResultQueue;
     private AckQueue sendClarificationQueue;
     private AckQueue sendAnswerQueue;
@@ -17,7 +17,7 @@ public class JudgeCore {
         timer = new ContestTimer(300*60);
     }
 
-    public void setControllerServer(ControllerServer controllerServer) {
+    public void setControllerServer(JudgeControllerServer controllerServer) {
         this.controllerServer = controllerServer;
         this.sendResultQueue = new AckQueue(this.controllerServer);
         this.sendClarificationQueue = new AckQueue(this.controllerServer);

@@ -1,30 +1,37 @@
 package Participant;
 
+import Shared.AckQueue;
 import Shared.ContestTimer;
 
 public class ParticipantCore {
     static private ParticipantCore sharedInstance = null;
 
-    private ControllerServer controllerServer;
+    private PriticipantControllerServer controllerServer;
     private ContestTimer timer;
+    private AckQueue submitQueue;
+    private AckQueue questionQueue;
 
-    private ParticipantCore(ControllerServer controllerServer) {
-        this.controllerServer = controllerServer;
+    private ParticipantCore() {
         timer = new ContestTimer(300*60);
     }
 
+    public void setControllerServer(PriticipantControllerServer controllerServer) {
+        this.controllerServer = controllerServer;
+        submitQueue = new AckQueue(controllerServer);
+    }
+
     static public ParticipantCore getInstance() {
+        if (sharedInstance == null) {
+            synchronized (ParticipantCore.class) {
+                if (sharedInstance == null) {
+                    sharedInstance = new ParticipantCore();
+                }
+            }
+        }
         return sharedInstance;
     }
 
-    static public void run(ControllerServer controllerServer) {
-        if (sharedInstance != null)
-            return;
-        sharedInstance = new ParticipantCore(controllerServer);
-        sharedInstance.start();
-    }
-
-    private void start() {
+    public void start() {
     }
 
     public ContestTimer getTimer() {

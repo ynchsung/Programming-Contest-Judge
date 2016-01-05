@@ -1,5 +1,6 @@
 package Judge.EventHandler;
 
+import Shared.EventHandler.EventHandler;
 import Shared.InfoManager.QAManager;
 import Shared.AnswerInfo;
 

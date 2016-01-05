@@ -1,22 +1,20 @@
-package Participant;
+package Shared;
 
 import Participant.EventHandler.*;
+import Shared.EventHandler.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ControllerServer {
+abstract public class ControllerServer {
     private Connection connection;
     private EventHandler eventHandler;
 
-    public ControllerServer(Connection connection, LoginResultHandler.LoginResultListener loginResultListener) {
+    public ControllerServer(Connection connection) {
         this.connection = connection;
-        this.eventHandler = new LoginResultHandler(loginResultListener,
-                new ResultHandler(
-                new AnswerHandler(
-                new ClarificationHandler(
-                new SyncHandler(
-                new SyncProblemInfoHandler(
-                new SyncTimeHandler(null)))))));
+    }
+
+    protected void setEventHandler(EventHandler handler) {
+        this.eventHandler = handler;
     }
 
     public void handle(JSONObject msg) {
@@ -41,7 +39,7 @@ public class ControllerServer {
         JSONObject msg = new JSONObject();
         try {
             msg.put("msg_type", "login");
-            msg.put("user_type", "participant");
+            msg.put("user_type", getUserType());
             msg.put("username", username);
             msg.put("password", password);
             send(msg);
@@ -49,6 +47,8 @@ public class ControllerServer {
             e.printStackTrace();
         }
     }
+
+    abstract protected String getUserType();
 
     public void logout() {
         if (this.connection != null) {

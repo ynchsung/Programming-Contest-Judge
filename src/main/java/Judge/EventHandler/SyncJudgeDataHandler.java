@@ -1,5 +1,6 @@
 package Judge.EventHandler;
 
+import Shared.EventHandler.EventHandler;
 import Shared.InfoManager.ProblemManager;
 
 import org.json.JSONObject;

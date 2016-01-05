@@ -1,9 +1,10 @@
 package Judge;
 
+import Shared.Connection;
 import Shared.InfoManager.ClarificationManager;
 import Shared.InfoManager.QAManager;
 import Shared.InfoManager.SubmissionManager;
-import Judge.EventHandler.LoginResultHandler;
+import Shared.EventHandler.LoginResultHandler;
 import Shared.ContestTimer;
 import SharedGuiElement.OpenCode;
 import SharedGuiElement.OpenCodeBuilder;
@@ -25,7 +26,7 @@ import java.net.Socket;
  */
 public class Judge extends Application {
     private Stage stage;
-    ControllerServer server = null;
+    JudgeControllerServer server = null;
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.stage = primaryStage;
@@ -53,7 +54,7 @@ public class Judge extends Application {
             try {
                 socket.connect(new InetSocketAddress(ip, port));
                 Connection connection = new Connection(socket);
-                server = new ControllerServer(connection, loginResultListener);
+                server = new JudgeControllerServer(connection, loginResultListener);
                 connection.setControllerServer(server);
                 connection.start();
                 server.login(username, password);
