@@ -41,7 +41,7 @@ public class Participant extends Application {
         primaryStage.setOnCloseRequest(event -> {
             GuiCloseEventHandler handle = new GuiCloseEventHandler(primaryStage, event);
             handle.setOncloseAction(windowEvent -> {
-                //do close stuff here
+                System.exit(0);
             });
             handle.onClose();
         });

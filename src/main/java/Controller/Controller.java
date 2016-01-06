@@ -27,15 +27,6 @@ public class Controller extends Application{
         Parent root = loader.load();
         MainController controller = loader.getController();
 
-        /* on close event */
-        primaryStage.setOnCloseRequest(event -> {
-            GuiCloseEventHandler handle = new GuiCloseEventHandler(primaryStage, event);
-            handle.setOncloseAction(windowEvent -> {
-                //do close stuff here
-            });
-            handle.onClose();
-        });
-
         /* bind UI */
         Core core = Core.getInstance();
         // GeneralController
@@ -43,6 +34,18 @@ public class Controller extends Application{
         generalController.setIp(core.getIP().getHostAddress());
         generalController.setPort(core.getPort());
         generalController.setScoreBoardPort(core.getScoreboardPort());
+
+        /* on close event */
+        primaryStage.setOnCloseRequest(event -> {
+            GuiCloseEventHandler handle = new GuiCloseEventHandler(primaryStage, event);
+            handle.setOncloseAction(windowEvent -> {
+                Core.getInstance().halt();
+                Core.getInstance().haltScoreBoardServer();
+                System.exit(0);
+            });
+            handle.onClose();
+        });
+
 
         // RemainingTimeController
         core.getTimer().setListener(new ContestTimer.ContestTimerListener() {

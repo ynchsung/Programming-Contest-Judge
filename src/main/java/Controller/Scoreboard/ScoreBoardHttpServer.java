@@ -31,7 +31,6 @@ public class ScoreBoardHttpServer extends Thread{
     private ServerSocket serverSocket;
     private Scoreboard scoreboardGenerator;
     private String result;
-    private boolean stopped;
 
     public ScoreBoardHttpServer(int port) {
         try {
@@ -46,27 +45,24 @@ public class ScoreBoardHttpServer extends Thread{
     public void start() {
         updateTimer = new Timer();
         updateTimer.schedule(new CountDownTask(), 0, UPDATE_PERIOD);
-        stopped = false;
         super.start();
     }
 
     @Override
     public void run() {
-        while (!stopped) {
-            synchronized (this) {
-                try {
-                    Socket socket = serverSocket.accept();
-                    socket.getOutputStream().write(result.getBytes());
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        while (true) {
+            try {
+                Socket socket = serverSocket.accept();
+                socket.getOutputStream().write(result.getBytes());
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
 
     synchronized public void halt() {
-        stopped = true;
         updateTimer.cancel();
+        interrupt();
     }
 }

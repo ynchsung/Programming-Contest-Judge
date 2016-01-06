@@ -300,6 +300,7 @@ public class Core {
         scheduler.interrupt();
         listenThread.interrupt();
         Client.killAllClient();
+        timer.pause();
     }
 
     public void haltScoreBoardServer() {
