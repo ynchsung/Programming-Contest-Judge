@@ -7,6 +7,7 @@ import Shared.InfoManager.QAManager;
 import Shared.InfoManager.SubmissionManager;
 import Shared.EventHandler.LoginResultHandler;
 import Shared.ContestTimer;
+import Shared.SubmissionInfo;
 import SharedGuiElement.OpenCode;
 import SharedGuiElement.OpenCodeBuilder;
 import SharedGuiElement.RemainingTime;
@@ -17,6 +18,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -45,7 +48,6 @@ public class Judge extends Application {
                 }
                 System.err.println("login failed");
                 controller.setMessage("Login failed");
-                //TODO Login fail msg
             }
         });
         controller.setLoginButtonOnAction(event -> {
@@ -142,15 +144,38 @@ public class Judge extends Application {
         });
         viewSubmissionController.setAutojudgeCallBack(new Callback<String, Void>() {
             @Override
-            public Void call(String param) {
-                //judge_submission
+            public Void call(String submissionID) {
+                JudgeCore.getInstance().rejudgeSubmission(Integer.valueOf(submissionID));
                 return null;
             }
         });
         viewSubmissionController.setManualJudgeCallBack(new Callback<String, Void>() {
             @Override
-            public Void call(String param) {
-                //judge_submission
+            public Void call(String submissionID) {
+                SubmissionManager submissionManager = new SubmissionManager();
+                SubmissionInfo submissionInfo = submissionManager.getSubmissionByID(Integer.valueOf(submissionID));
+                ManualJudgePage manualJudgePage = new ManualJudgePage(submissionID, submissionInfo.getSourceCode());
+                manualJudgePage.setOnConfirm(new Callback<Map<String, String>, Void>() {
+                    @Override
+                    public Void call(Map<String, String> param) {
+                        try {
+                            JSONObject msg = new JSONObject();
+                            ProblemManager problemManager = new ProblemManager();
+                            msg.put("msg_type", "result");
+                            msg.put("submission_id", String.valueOf(submissionID));
+                            msg.put("problem_id", submissionInfo.getProblemID());
+                            msg.put("result", param.get("result"));
+                            msg.put("submit_time_stamp", String.valueOf(submissionInfo.getSubmitTimeStamp()));
+                            msg.put("testdata_time_stamp", String.valueOf(problemManager.getProblemById(submissionInfo.getProblemID()).getTestDataTimeStamp()));
+                            JudgeCore.getInstance().sendResult(msg);
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+                });
+                manualJudgePage.show();
                 return null;
             }
         });

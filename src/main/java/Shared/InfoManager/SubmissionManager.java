@@ -1,5 +1,6 @@
 package Shared.InfoManager;
 
+import Controller.Scoreboard.Submission;
 import Shared.SubmissionInfo;
 
 import java.util.*;
@@ -31,6 +32,16 @@ public class SubmissionManager {
         synchronized (lock) {
             infos.put(submission.getID(), submission);
             notifyObservers();
+        }
+    }
+
+    public SubmissionInfo getSubmissionByID(int submission_id) {
+        synchronized (lock) {
+            SubmissionInfo ret = infos.get(submission_id);
+            if (ret != null)
+                return ret.copy();
+            else
+                return null;
         }
     }
 

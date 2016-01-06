@@ -2,7 +2,10 @@ package Judge;
 
 import Shared.AckQueue;
 import Shared.ContestTimer;
+import Shared.InfoManager.ProblemManager;
 import Shared.InfoManager.QAManager;
+import Shared.InfoManager.SubmissionManager;
+import Shared.SubmissionInfo;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -91,6 +94,16 @@ public class JudgeCore {
         }
     }
 
+    public void rejudgeSubmission(int submissionID) {
+        SubmissionManager submissionManager = new SubmissionManager();
+        SubmissionInfo submissionInfo = submissionManager.getSubmissionByID(submissionID);
+        if (submissionInfo != null) {
+            ProblemManager problemManager = new ProblemManager();
+            this.judgeTaskProcessor.judge(new JudgeSubmissionTask(submissionInfo,
+                        problemManager.getProblemById(submissionInfo.getProblemID()).getTestDataTimeStamp()));
+        }
+    }
+
     public JudgeTaskProcessor getJudgeTaskProcessor() {
         return this.judgeTaskProcessor;
     }
@@ -147,6 +160,5 @@ public class JudgeCore {
         catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 }

@@ -5,6 +5,8 @@ import Controller.Scoreboard.ScoreBoardHttpServer;
 import Shared.ContestTimer;
 import Shared.MyUtil;
 import Shared.ProblemInfo;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -220,6 +222,29 @@ public class Core {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public void rejudgeProblem(String problemID) {
+        SubmissionManager submissionManager = new SubmissionManager();
+
+        for (Map<String, String> ent : submissionManager.rejudge(problemID)) {
+            try {
+                ProblemManager problemManager = new ProblemManager();
+                Map<String, String> pb = problemManager.getProblemById(problemID);
+                JSONObject msg = new JSONObject();
+                msg.put("msg_type", "submit");
+                msg.put("submission_id", ent.get("submission_id"));
+                msg.put("problem_id", ent.get("problem_id"));
+                msg.put("language", ent.get("language"));
+                msg.put("source_code", ent.get("source_code"));
+                msg.put("time_stamp", ent.get("submission_time_stamp"));
+                msg.put("testdata_time_stamp", pb.get("time_stamp"));
+                Core.getInstance().getScheduler().add(msg);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public Team getTeamByID(String id) {

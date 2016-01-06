@@ -35,8 +35,8 @@ public class ViewSubmissionController {
         submissionTable.setSubmissions(submissions);
     }
 
-    public Object getRejudgeProblemChoice () {
-        return rejudgeProblemChoiceBox.getChoice();
+    public String getRejudgeProblemChoice () {
+        return (String)rejudgeProblemChoiceBox.getChoice();
     }
 
     public int getRejudgeProblemChoiceNumber () {

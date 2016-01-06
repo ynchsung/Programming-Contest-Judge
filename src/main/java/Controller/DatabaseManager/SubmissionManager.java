@@ -347,7 +347,7 @@ public class SubmissionManager extends DatabaseManager {
         return response;
     }
 
-    public void rejudge(String problem_id) {
+    public List<Map<String, String>> rejudge(String problem_id) {
         Connection c = null;
         PreparedStatement stmt = null;
         List<Map<String, String>> response = new ArrayList<Map<String, String>>();
@@ -402,6 +402,7 @@ public class SubmissionManager extends DatabaseManager {
                     break;
             }
         }
+        return response;
     }
 
     public static void register(Observer observer) {

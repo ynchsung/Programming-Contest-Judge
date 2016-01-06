@@ -1,5 +1,7 @@
 package Judge;
 
+import Shared.SubmissionInfo;
+
 public class JudgeSubmissionTask {
     private final int submission_id;
     private final String problem_id;
@@ -15,6 +17,15 @@ public class JudgeSubmissionTask {
         this.language = language;
         this.sourceCode = sourceCode;
         this.submission_time_stamp = submission_time_stamp;
+        this.testdata_time_stamp = testdata_time_stamp;
+    }
+
+    public JudgeSubmissionTask(SubmissionInfo submissionInfo, int testdata_time_stamp) {
+        this.submission_id = submissionInfo.getID();
+        this.problem_id = submissionInfo.getProblemID();
+        this.language = submissionInfo.getLanguage();
+        this.sourceCode = submissionInfo.getSourceCode();
+        this.submission_time_stamp = submissionInfo.getSubmitTimeStamp();
         this.testdata_time_stamp = testdata_time_stamp;
     }
 

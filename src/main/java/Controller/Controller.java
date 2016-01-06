@@ -71,7 +71,7 @@ public class Controller extends Application{
         ViewSubmissionController viewSubmissionController = controller.getViewSubmissionController();
         viewSubmissionController.setRejudgeProblemChoice(problems);
         viewSubmissionController.setRejudgeButtonOnAction(event -> {
-            // TODO: rejudge
+            Core.getInstance().rejudgeProblem(viewSubmissionController.getRejudgeProblemChoice());
             System.out.println("selected=" + viewSubmissionController.getRejudgeProblemChoiceNumber());
         });
         viewSubmissionController.setOpenCodeCallBack(new Callback<String, Void>() {
