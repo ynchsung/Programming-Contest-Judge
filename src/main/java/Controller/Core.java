@@ -37,6 +37,7 @@ public class Core {
     private int scoreBoardPort;
     private ContestTimer timer;
     private ScoreBoardHttpServer scoreBoardHttpServer;
+    private Thread listenThread;
 
     private Core() {
         try {
@@ -161,7 +162,7 @@ public class Core {
         this.scheduler.setStrategy(new RoundRobinStrategy(this.judges));
         this.scheduler.start();
         this.scoreBoardHttpServer.start();
-        Thread listenThread = new Thread(new Runnable() {
+        listenThread = new Thread(new Runnable() {
             private int port;
             public Runnable setPort(int port) {
                 this.port = port;
@@ -293,5 +294,15 @@ public class Core {
 
     public ArrayList<String> getProblemIDList() {
         return new ArrayList<>(problems.keySet());
+    }
+
+    public void halt() {
+        scheduler.interrupt();
+        listenThread.interrupt();
+        Client.killAllClient();
+    }
+
+    public void haltScoreBoardServer() {
+        scoreBoardHttpServer.halt();
     }
 }
