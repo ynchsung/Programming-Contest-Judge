@@ -20,6 +20,7 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Map;
 
 /**
  * Created by aalexx on 1/3/16.
@@ -105,7 +106,7 @@ public class Participant extends Application {
         viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll());
         QAManager.register(() -> viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll()));
         viewQuestionAndAnswerController.setConfirmNewQuestionAction(event -> {
-            String problemID = (String)viewQuestionAndAnswerController.getSelectedProblem();
+            String problemID = (String) viewQuestionAndAnswerController.getSelectedProblem();
             if (problemID == null) problemID = "0";
             String content = viewQuestionAndAnswerController.getAskQuestionTextArea();
             core.sendQuestion(problemID, content);
@@ -125,6 +126,16 @@ public class Participant extends Application {
                 o.show();
                 return null;
             }
+        });
+
+        SubmitController submitController = controller.getSubmitController();
+        submitController.setOnConfirmAction(param -> {
+            String problemId = param.get("problem_id");
+            if (problemId == null)
+                problemId = "pA";
+            String sourceCode = param.get("source_code");
+            core.sendSubmission(problemId, sourceCode);
+            return null;
         });
         core.start();
 

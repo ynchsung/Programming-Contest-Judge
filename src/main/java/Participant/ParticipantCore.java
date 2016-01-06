@@ -35,6 +35,7 @@ public class ParticipantCore {
     }
 
     public void start() {
+        timer.start();
         questionQueue.start();
         submitQueue.start();
     }
@@ -50,6 +51,20 @@ public class ParticipantCore {
             msg.put("problem_id", problemID);
             msg.put("content", content);
             questionQueue.add(msg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void sendSubmission(String problemID, String content) {
+        try {
+            JSONObject msg = new JSONObject();
+            msg.put("msg_type", "submit");
+            msg.put("problem_id", problemID);
+            msg.put("language", "C++");
+            msg.put("source_code", content);
+            submitQueue.add(msg);
         } catch (JSONException e) {
             e.printStackTrace();
         }
