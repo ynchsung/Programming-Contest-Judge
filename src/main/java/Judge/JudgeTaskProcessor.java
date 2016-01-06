@@ -7,12 +7,56 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class JudgeQueue {
+public class JudgeTaskProcessor {
     private Thread judgeQueueThread;
+    private HandleWaitingQueue handleWaitingQueue;
     private BlockingQueue<JudgeSubmissionTask> judgeQueue;
+
+    class HandleWaitingQueue {
+        private Map<String, List<JudgeSubmissionTask>> waitingQueue;
+        private final Object lock;
+
+        public HandleWaitingQueue () {
+            this.waitingQueue = new HashMap<String, List<JudgeSubmissionTask>>();
+            this.lock = new Object();
+        }
+
+        public void add(JudgeSubmissionTask task, int testDataTimeStamp) {
+            synchronized (lock) {
+                if (!this.waitingQueue.containsKey(task.getProblemID())) {
+                    try {
+                        JSONObject syncDataMsg = new JSONObject();
+                        syncDataMsg.put("msg_type", "syncjudgedata");
+                        syncDataMsg.put("problem_id", task.getProblemID());
+                        syncDataMsg.put("old_time_stamp", String.valueOf(testDataTimeStamp));
+                        JudgeCore.getInstance().getControllerServer().send(syncDataMsg);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    this.waitingQueue.put(task.getProblemID(), new ArrayList<JudgeSubmissionTask>());
+                }
+                this.waitingQueue.get(task.getProblemID()).add(task);
+            }
+        }
+
+        public void pull(String problemID) {
+            while (true) {
+                synchronized (lock) {
+                    if (this.waitingQueue.containsKey(problemID)) {
+                        for (JudgeSubmissionTask task : this.waitingQueue.get(problemID)) {
+                            judge(task);
+                        }
+                    }
+                    this.waitingQueue.remove(problemID);
+                }
+            }
+        }
+    }
 
     class ProcessJudgeQueueThread extends Thread {
         public ProcessJudgeQueueThread() {
@@ -57,16 +101,7 @@ public class JudgeQueue {
                         handleResult(task.getSubmissionID(), result, task.getProblemID(),
                                     task.getSubmissionTimeStamp(), pb.getTestDataTimeStamp());
                     } else if (pb != null) {
-                       try {
-                           JSONObject syncDataMsg = new JSONObject();
-                           syncDataMsg.put("msg_type", "syncjudgedata");
-                           syncDataMsg.put("problem_id", task.getProblemID());
-                           syncDataMsg.put("old_time_stamp", String.valueOf(pb.getTestDataTimeStamp()));
-                           JudgeCore.getInstance().getControllerServer().send(syncDataMsg);
-                           judgeQueue.put(task);
-                       } catch (JSONException e) {
-                           e.printStackTrace();
-                       }
+                        handleWaitingQueue.add(task, pb.getTestDataTimeStamp());
                     }
                 }
             }
@@ -75,7 +110,7 @@ public class JudgeQueue {
         }
     }
 
-    public JudgeQueue() {
+    public JudgeTaskProcessor() {
         this.judgeQueue = new LinkedBlockingQueue<JudgeSubmissionTask>();
     }
 

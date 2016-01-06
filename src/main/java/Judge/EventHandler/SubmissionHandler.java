@@ -23,7 +23,7 @@ public class SubmissionHandler extends EventHandler {
                 int submissioniTimeStamp = Integer.valueOf(msg.getString("time_stamp"));
                 int testDataTimeStamp = Integer.valueOf(msg.getString("testdata_time_stamp"));
 
-                JudgeCore.getInstance().getJudgeQueue().judge(new JudgeSubmissionTask(submissionID,
+                JudgeCore.getInstance().getJudgeTaskProcessor().judge(new JudgeSubmissionTask(submissionID,
                         problemID, language, sourceCode, submissioniTimeStamp, testDataTimeStamp));
             }
             else doNext(msg);

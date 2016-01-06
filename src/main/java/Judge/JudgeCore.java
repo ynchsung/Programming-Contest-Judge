@@ -13,7 +13,7 @@ public class JudgeCore {
     private AckQueue sendResultQueue;
     private AckQueue sendClarificationQueue;
     private AckQueue sendAnswerQueue;
-    private JudgeQueue judgeQueue;
+    private JudgeTaskProcessor judgeTaskProcessor;
     private ContestTimer timer;
 
     private String sandboxPath;
@@ -27,7 +27,7 @@ public class JudgeCore {
         this.sendResultQueue = new AckQueue(this.controllerServer);
         this.sendClarificationQueue = new AckQueue(this.controllerServer);
         this.sendAnswerQueue = new AckQueue(this.controllerServer);
-        this.judgeQueue = new JudgeQueue();
+        this.judgeTaskProcessor = new JudgeTaskProcessor();
     }
 
     static public JudgeCore getInstance() {
@@ -46,7 +46,7 @@ public class JudgeCore {
         this.sendClarificationQueue.start();
         this.sendAnswerQueue.start();
         this.timer.start();
-        this.judgeQueue.start();
+        this.judgeTaskProcessor.start();
         this.sandboxPath = "judgebox/box/0/box";
         // TODO: init sandbox
 
@@ -90,8 +90,8 @@ public class JudgeCore {
         }
     }
 
-    public JudgeQueue getJudgeQueue() {
-        return this.judgeQueue;
+    public JudgeTaskProcessor getJudgeTaskProcessor() {
+        return this.judgeTaskProcessor;
     }
 
     public ContestTimer getTimer() {
