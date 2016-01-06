@@ -1,0 +1,22 @@
+(0) Init Gradle:
+Please run
+	$ ./gradlew init
+to init gradle.
+
+(1) How To Build:
+To build all three jar (Controller, Judge and Participant):
+	$ ./gradlew buildAll
+
+To build Controller:
+	$ ./gradlew buildController
+
+To build Judge:
+	$ ./gradlew buildJudge
+
+To build Participant:
+	$ ./gradlew buildParticipant
+
+The output directory of the Jars is './build/libs/'
+
+(2) How To Run:
+	$ java -jar [name of jar]
