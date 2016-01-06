@@ -67,7 +67,12 @@ public class ProblemManager {
 
                 writeDataFile(inputPathName, input);
                 writeDataFile(outputPathName, output);
-                writeDataFile(specialJudgePathName, specialJudge);
+
+                if (specialJudge.equals("")) {
+                    specialJudgePathName = "";
+                }
+                else
+                    writeDataFile(specialJudgePathName, specialJudge);
 
                 pb.updateInfo(pb.getTimeLimit(), pb.getMemoryLimit(), testDataTimeStamp, inputPathName, outputPathName, specialJudgePathName);
                 flag = true;

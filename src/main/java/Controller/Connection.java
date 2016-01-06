@@ -33,13 +33,17 @@ public class Connection extends Thread {
                     JSONObject msg = sendQueue.take();
                     try {
                         output.writeUTF(msg.toString());
+                        System.out.println("[send] "+msg);
+                        System.out.println(client.getID());
                     }
-                    catch (IOException e) {
+                    catch (IOException e1) {
+                        e1.printStackTrace();
                         sendQueue.put(msg);
                     }
                 }
             }
-            catch (InterruptedException e) {
+            catch (InterruptedException e2) {
+                e2.printStackTrace();
             }
         }
     }
@@ -61,7 +65,6 @@ public class Connection extends Thread {
     }
 
     public void send(JSONObject msg) throws InterruptedException {
-        System.out.println("[send] "+msg);
         this.sendQueue.put(msg);
     }
 

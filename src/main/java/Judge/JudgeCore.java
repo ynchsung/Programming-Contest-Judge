@@ -46,7 +46,7 @@ public class JudgeCore {
         this.sendAnswerQueue.start();
         this.timer.start();
         this.judgeTaskProcessor.start();
-        this.sandboxPath = "judgebox/box/0/box";
+        this.sandboxPath = "judgebox/0/box";
 
         this.syncTime();
         this.syncProblemInfo();
@@ -108,16 +108,16 @@ public class JudgeCore {
         this.judgeTaskProcessor.reschedule(problemID);
     }
 
-    public void ackAnswer() {
-        sendAnswerQueue.ackAndGetNowMsg();
+    public JSONObject ackAnswer() {
+        return sendAnswerQueue.ackAndGetNowMsg();
     }
 
-    public void ackResult() {
-        sendResultQueue.ackAndGetNowMsg();
+    public JSONObject ackResult() {
+        return sendResultQueue.ackAndGetNowMsg();
     }
 
-    public void ackClarification() {
-        sendClarificationQueue.ackAndGetNowMsg();
+    public JSONObject ackClarification() {
+        return sendClarificationQueue.ackAndGetNowMsg();
     }
 
     public void syncTime() {

@@ -314,7 +314,7 @@ public class SubmissionManager extends DatabaseManager {
                 if (rs.next()) {
                     int sid = rs.getInt("SubmissionID");
                     String pid = rs.getString("ProblemID");
-                    int tid = rs.getInt("TeamID");
+                    String tid = rs.getString("TeamID");
                     int stime = rs.getInt("SubmissionTimestamp");
                     String lang = rs.getString("Language");
                     String result = rs.getString("Result");
@@ -322,7 +322,7 @@ public class SubmissionManager extends DatabaseManager {
                     int dtime = rs.getInt("DataTimestamp");
                     response.put("submission_id", Integer.toString(sid));
                     response.put("problem_id", pid);
-                    response.put("team_id", Integer.toString(tid));
+                    response.put("team_id", tid);
                     response.put("submission_time_stamp", Integer.toString(stime));
                     response.put("language", lang);
                     response.put("result", result);

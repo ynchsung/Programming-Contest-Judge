@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
@@ -12,7 +13,7 @@ import javafx.scene.text.Text;
  */
 public class LoginPageController {
     @FXML private TextField account;
-    @FXML private TextField password;
+    @FXML private PasswordField password;
     @FXML private TextField ip;
     @FXML private TextField port;
     @FXML private Button confirm;

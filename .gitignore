@@ -29,6 +29,9 @@
 # .idea/mongoSettings.xml
 
 ## File-based project format:
+Testdata/
+judgebox/
+
 *.ipr
 *.iws
 

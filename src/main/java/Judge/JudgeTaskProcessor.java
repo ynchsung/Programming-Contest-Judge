@@ -1,8 +1,10 @@
 package Judge;
 
 import Shared.InfoManager.ProblemManager;
+import Shared.InfoManager.SubmissionManager;
 import Shared.ProblemInfo;
 
+import Shared.SubmissionInfo;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.List;
@@ -45,15 +47,13 @@ public class JudgeTaskProcessor {
         }
 
         public void pull(String problemID) {
-            while (true) {
-                synchronized (lock) {
-                    if (this.waitingQueue.containsKey(problemID)) {
-                        for (JudgeSubmissionTask task : this.waitingQueue.get(problemID)) {
-                            judge(task);
-                        }
+            synchronized (lock) {
+                if (this.waitingQueue.containsKey(problemID)) {
+                    for (JudgeSubmissionTask task : this.waitingQueue.get(problemID)) {
+                        judge(task);
                     }
-                    this.waitingQueue.remove(problemID);
                 }
+                this.waitingQueue.remove(problemID);
             }
         }
     }
@@ -98,7 +98,7 @@ public class JudgeTaskProcessor {
                                 pb.getInputPathName(), pb.getOutputPathName(), pb.getSpecialJudgePathName());
 
                         System.err.println(result);
-                        handleResult(task.getSubmissionID(), result, task.getProblemID(),
+                        handleResult(task.getSubmissionID(), task.getProblemID(), result,
                                     task.getSubmissionTimeStamp(), pb.getTestDataTimeStamp());
                     } else if (pb != null) {
                         handleWaitingQueue.add(task, pb.getTestDataTimeStamp());

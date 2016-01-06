@@ -54,6 +54,9 @@ public class JudgeUnit {
     private boolean writeCode(String sourceCode) {
         try {
             File file = new File(String.format("%s/%s", this.sandboxPath, this.copiedSourceCodeFileName));
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(sourceCode);
             fileWriter.close();
@@ -90,7 +93,7 @@ public class JudgeUnit {
     }
 
     private boolean runCode(String inputPathName, int timeLimit, int memoryLimit) {
-        ProcessBuilder pb = new ProcessBuilder("./isolate", "--run", "--meta=sandbox_meta", String.format("--stdin=%s", inputPathName), String.format("--stdout=./%s", this.participantOutputFileName), String.format("--time=%d", timeLimit), String.format("--mem=%d", memoryLimit), "--", String.format("./%s", this.untrustedExecFileName));
+        ProcessBuilder pb = new ProcessBuilder("./isolate/isolate", "--run", "--meta=sandbox_meta", String.format("--stdin=%s", inputPathName), String.format("--stdout=./%s", this.participantOutputFileName), String.format("--time=%d", timeLimit), String.format("--mem=%d", memoryLimit), "--", String.format("./%s", this.untrustedExecFileName));
         try {
             Process p = pb.start();
             try {
@@ -192,3 +195,4 @@ public class JudgeUnit {
         return result;
     }
 }
+

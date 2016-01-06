@@ -73,16 +73,18 @@ public class Connection extends Thread {
         try {
             while (true) {
                 String msg = this.input.readUTF();
+                System.err.println("[recv] "+msg);
                 try {
                     JSONObject mmsg = new JSONObject(msg);
-                    System.out.println("[recv] "+mmsg);
                     this.controllerServer.handle(mmsg);
                 }
                 catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         }
         catch (IOException e) {
+            System.err.println("logout");
             this.controllerServer.logout();
         }
     }
