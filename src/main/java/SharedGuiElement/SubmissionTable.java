@@ -180,7 +180,8 @@ public class SubmissionTable extends HBox implements Initializable {
                 else
                     button.setDisable(true);
                 setGraphic(button);
-            }
+            } else
+                setGraphic(null);
         }
     }
 
@@ -204,7 +205,8 @@ public class SubmissionTable extends HBox implements Initializable {
                 else
                     button.setDisable(true);
                 setGraphic(button);
-            }
+            } else
+                setGraphic(null);
         }
     }
 }

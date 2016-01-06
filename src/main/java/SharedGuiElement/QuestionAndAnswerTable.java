@@ -141,7 +141,8 @@ public class QuestionAndAnswerTable extends HBox implements Initializable {
                     setGraphic(labelQ);
                 else if (type.equals("answer"))
                     setGraphic(labelA);
-            }
+            } else
+                setGraphic(null);
         }
     }
 
