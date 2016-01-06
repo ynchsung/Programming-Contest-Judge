@@ -53,6 +53,7 @@ public class Controller extends Application{
 
             @Override
             public void onOver(int totalSecond) {
+                core.halt();
                 // TODO: end the game
             }
         });

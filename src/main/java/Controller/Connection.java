@@ -3,6 +3,8 @@ package Controller;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -23,9 +25,6 @@ public class Connection extends Thread {
     private Thread sendThread;
 
     class ProcessSendQueueThread extends Thread {
-        public ProcessSendQueueThread() {
-        }
-
         public void run() {
             sendQueue.clear();
             try {
