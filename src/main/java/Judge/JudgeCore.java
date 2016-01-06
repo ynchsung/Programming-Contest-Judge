@@ -50,11 +50,6 @@ public class JudgeCore {
 
         this.syncTime();
         this.syncProblemInfo();
-        try {
-            Thread.sleep(2000);
-        }
-        catch (InterruptedException e) {
-        }
         this.syncEvent(0);
     }
 

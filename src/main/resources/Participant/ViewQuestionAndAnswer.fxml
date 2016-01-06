@@ -22,7 +22,7 @@
                                   defaultButton="true"
                                   text="Confirm"
                                   title="Confirm"
-                                  headerText="New Clarification"
+                                  headerText="New Question"
                                   contentText="Confirm to make new clarification." />
         </VBox>
     </HBox>

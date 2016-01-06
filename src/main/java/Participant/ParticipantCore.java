@@ -38,6 +38,10 @@ public class ParticipantCore {
         timer.start();
         questionQueue.start();
         submitQueue.start();
+
+        this.syncTime();
+        this.syncProblemInfo();
+        this.syncEvent(0);
     }
 
     public ContestTimer getTimer() {

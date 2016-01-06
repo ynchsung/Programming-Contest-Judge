@@ -55,6 +55,7 @@ public class SyncHandler extends EventHandler<Client> {
                         jsonSub.put("submission_id", submit.get("submission_id"));
                         jsonSub.put("problem_id", submit.get("problem_id"));
                         jsonSub.put("language", submit.get("language"));
+                        jsonSub.put("source_code", "NULL");
                         jsonSub.put("time_stamp", submit.get("submission_time_stamp"));
                         jsonSubmissions.put(jsonSub);
                     }
