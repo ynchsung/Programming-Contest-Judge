@@ -42,3 +42,4 @@ judgebox/
 .*.swp
 build/*
 *.db
+**/.DS_Store
