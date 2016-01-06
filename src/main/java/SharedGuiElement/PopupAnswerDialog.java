@@ -13,6 +13,21 @@ public class PopupAnswerDialog {
     private Boolean clickYes = false;
     private PopupAnswerDialogController controller;
 
+    public PopupAnswerDialog(String question, Stage owner) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("PopupAnswerDialog.fxml"));
+            Parent root = loader.load();
+            controller = loader.getController();
+            controller.setQuestionTextArea(question);
+            controller.registTarget(this);
+            stage = new Stage();
+            stage.setScene(new Scene(root, 400, 450));
+            stage.initOwner(owner);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public PopupAnswerDialog(String question) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("PopupAnswerDialog.fxml"));
@@ -26,6 +41,7 @@ public class PopupAnswerDialog {
             e.printStackTrace();
         }
     }
+
     public String showAndWait () {
         stage.showAndWait();
         if (clickYes)

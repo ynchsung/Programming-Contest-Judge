@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 
 import java.util.Optional;
 
@@ -15,6 +16,15 @@ public class ConfirmJudgeResultAlert {
     private Alert alert;
     private EventHandler<ActionEvent> confirmHandler = event -> {};
     private EventHandler<ActionEvent> cancelHandler = event -> {};
+    public ConfirmJudgeResultAlert(String submissionId, String result, Stage owner) {
+        ConfirmationAlertBuilder builder = ConfirmationAlertBuilder.create();
+        alert = builder.setTitle("Confirm Judge Result")
+                .setHeaderText(submissionId + " / " + result)
+                .setContentText("Confirm to send result.")
+                .build();
+        ((Stage) alert.getDialogPane().getChildren().get(0).getScene().getWindow()).initOwner(owner);
+    }
+
     public ConfirmJudgeResultAlert(String submissionId, String result) {
         ConfirmationAlertBuilder builder = ConfirmationAlertBuilder.create();
         alert = builder.setTitle("Confirm Judge Result")
