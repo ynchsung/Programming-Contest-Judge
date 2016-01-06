@@ -45,6 +45,10 @@ public class ViewQuestionAndAnswerController implements Initializable {
         confirmAskQuestionButton.setOkAction(handler);
     }
 
+    public void setProblemId (List<String> choice) {
+        questionProblemChoice.setChoice(choice);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         askQuestionTextArea.clear();

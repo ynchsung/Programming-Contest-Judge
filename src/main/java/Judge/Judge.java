@@ -2,6 +2,7 @@ package Judge;
 
 import Shared.Connection;
 import Shared.InfoManager.ClarificationManager;
+import Shared.InfoManager.ProblemManager;
 import Shared.InfoManager.QAManager;
 import Shared.InfoManager.SubmissionManager;
 import Shared.EventHandler.LoginResultHandler;
@@ -43,6 +44,7 @@ public class Judge extends Application {
                     server.logout();
                 }
                 System.err.println("login failed");
+                controller.setMessage("Login failed");
                 //TODO Login fail msg
             }
         });
@@ -101,12 +103,14 @@ public class Judge extends Application {
         viewClarificationController.setClarification((new ClarificationManager()).queryAll());
         ClarificationManager.register(() -> viewClarificationController.setClarification((new ClarificationManager()).queryAll()));
         viewClarificationController.setConfirmNewClarificationAction(event -> {
-            String problemId = (String)viewClarificationController.getProblemChoice();
+            String problemId = (String) viewClarificationController.getProblemChoice();
             if (problemId == null)
                 problemId = "0";
             String content = viewClarificationController.getNewClarificationText();
             core.sendClarification(problemId, content);
         });
+        viewClarificationController.setProblemChoice((new ProblemManager()).queryAllId());
+        ProblemManager.register(() -> viewClarificationController.setProblemChoice((new ProblemManager()).queryAllId()));
 
         ViewQuestionAndAnswerController viewQuestionAndAnswerController = controller.getViewQuestionAndAnswerController();
         viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll());

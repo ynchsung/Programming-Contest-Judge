@@ -4,6 +4,7 @@ import Shared.Connection;
 import Shared.ContestTimer;
 import Shared.EventHandler.LoginResultHandler;
 import Shared.InfoManager.ClarificationManager;
+import Shared.InfoManager.ProblemManager;
 import Shared.InfoManager.QAManager;
 import Shared.InfoManager.SubmissionManager;
 import SharedGuiElement.OpenCode;
@@ -42,6 +43,7 @@ public class Participant extends Application {
                     server.logout();
                 }
                 System.err.println("login failed");
+                controller.setMessage("Login failed");
                 //TODO Login fail msg
             }
         });
@@ -120,6 +122,8 @@ public class Participant extends Application {
             String content = viewQuestionAndAnswerController.getAskQuestionTextArea();
             core.sendQuestion(problemID, content);
         });
+        viewQuestionAndAnswerController.setProblemId((new ProblemManager()).queryAllId());
+        ProblemManager.register(() -> viewQuestionAndAnswerController.setProblemId((new ProblemManager()).queryAllId()));
 
         ViewSubmissionController viewSubmissionController = controller.getViewSubmissionController();
         viewSubmissionController.setSubmissions((new SubmissionManager()).queryAll());
@@ -152,6 +156,8 @@ public class Participant extends Application {
             core.sendSubmission(problemId, sourceCode);
             return null;
         });
+        submitController.setProblemId((new ProblemManager()).queryAllId());
+        ProblemManager.register(() -> submitController.setProblemId((new ProblemManager()).queryAllId()));
         core.start();
 
         Scene scene = stage.getScene();

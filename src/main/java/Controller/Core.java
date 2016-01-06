@@ -1,6 +1,7 @@
 package Controller;
 
 import Controller.DatabaseManager.*;
+import Controller.Scoreboard.ScoreBoardHttpServer;
 import Shared.ContestTimer;
 import Shared.MyUtil;
 import Shared.ProblemInfo;
@@ -33,12 +34,9 @@ public class Core {
     private int port;
     private int scoreBoardPort;
     private ContestTimer timer;
+    private ScoreBoardHttpServer scoreBoardHttpServer;
 
     private Core() {
-        this.teams = new HashMap<String, Team>();
-        this.judges = new HashMap<String, Judge>();
-        this.problems = new HashMap<String, ProblemInfo>();
-        this.scheduler = new Scheduler();
         try {
             this.ip = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
@@ -46,6 +44,11 @@ public class Core {
         }
         this.port = 7122;
         this.scoreBoardPort = 7123;
+        this.teams = new HashMap<String, Team>();
+        this.judges = new HashMap<String, Judge>();
+        this.problems = new HashMap<String, ProblemInfo>();
+        this.scheduler = new Scheduler();
+        this.scoreBoardHttpServer = new ScoreBoardHttpServer(this.scoreBoardPort);
         this.timer = new ContestTimer(300*60);
 
         // TODO: read config, build teams, judges, problems(Map)
@@ -155,6 +158,7 @@ public class Core {
         this.timer.start();
         this.scheduler.setStrategy(new RoundRobinStrategy(this.judges));
         this.scheduler.start();
+        this.scoreBoardHttpServer.start();
         Thread listenThread = new Thread(new Runnable() {
             private int port;
             public Runnable setPort(int port) {
