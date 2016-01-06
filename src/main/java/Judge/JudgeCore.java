@@ -15,7 +15,6 @@ public class JudgeCore {
     private AckQueue sendAnswerQueue;
     private JudgeTaskProcessor judgeTaskProcessor;
     private ContestTimer timer;
-
     private String sandboxPath;
 
     private JudgeCore() {
@@ -48,7 +47,6 @@ public class JudgeCore {
         this.timer.start();
         this.judgeTaskProcessor.start();
         this.sandboxPath = "judgebox/box/0/box";
-        // TODO: init sandbox
 
         this.syncTime();
         this.syncProblemInfo();
@@ -96,6 +94,10 @@ public class JudgeCore {
 
     public ContestTimer getTimer() {
         return timer;
+    }
+
+    public void rescheduleSubmission(String problemID) {
+        this.judgeTaskProcessor.reschedule(problemID);
     }
 
     public void ackAnswer() {

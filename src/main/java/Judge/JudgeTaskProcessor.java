@@ -127,6 +127,10 @@ public class JudgeTaskProcessor {
         }
     }
 
+    public void reschedule(String problemID) {
+        this.handleWaitingQueue.pull(problemID);
+    }
+
     public void start() {
         this.judgeQueueThread = new ProcessJudgeQueueThread();
         this.judgeQueueThread.start();

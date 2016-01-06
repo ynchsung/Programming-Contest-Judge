@@ -1,5 +1,6 @@
 package Shared.InfoManager;
 
+import Judge.JudgeCore;
 import Shared.ProblemInfo;
 
 import java.io.IOException;
@@ -56,6 +57,7 @@ public class ProblemManager {
     }
 
     public void updateTestData(String problemID, int testDataTimeStamp, String input, String output, String specialJudge) {
+        boolean flag = false;
         synchronized (lock) {
             if (infos.containsKey(problemID)) {
                 ProblemInfo pb = infos.get(problemID);
@@ -68,7 +70,11 @@ public class ProblemManager {
                 writeDataFile(specialJudgePathName, specialJudge);
 
                 pb.updateInfo(pb.getTimeLimit(), pb.getMemoryLimit(), testDataTimeStamp, inputPathName, outputPathName, specialJudgePathName);
+                flag = true;
             }
+        }
+        if (flag) {
+            JudgeCore.getInstance().rescheduleSubmission(problemID);
         }
     }
 
