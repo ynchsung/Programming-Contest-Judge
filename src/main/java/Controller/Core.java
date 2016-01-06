@@ -112,37 +112,6 @@ public class Core {
             pinfo.put("time_stamp", Long.toString(timeStamp));
             problemManager.addEntry(pinfo);
         }
-
-        Map<String, String> submission = new HashMap<>();
-        submission.put("problem_id", "pA");
-        submission.put("team_id", "7122");
-        submission.put("source_code", "#include \"jizz\"");
-        submission.put("time_stamp", "9900");
-        submission.put("result", "TLE");
-        submission.put("result_time_stamp", "33333");
-        submissionManager.addEntry(submission);
-
-        Map<String, String> qa = new HashMap<>();
-        qa.put("type", "question");
-        qa.put("team_id", "1");
-        qa.put("problem_id", "1");
-        qa.put("content", "Is iron equal to wisdom?");
-        qa.put("time_stamp", "7122");
-        int qaID = qaManager.addEntry(qa);
-
-        qa = new HashMap<>();
-        qa.put("type", "answer");
-        qa.put("question_id", Integer.toString(qaID));
-        qa.put("answer", "Yes");
-        qa.put("time_stamp", "7123");
-        qaManager.addEntry(qa);
-
-        Map<String, String> cr = new HashMap<>();
-        cr.put("clarification_id", "1");
-        cr.put("problem_id", "0");
-        cr.put("content", "This is a test.");
-        cr.put("time_stamp", "712222");
-        clarificationManager.addEntry(cr);
         /* ==== DUMMY TEST CONFIG ==== */
     }
 

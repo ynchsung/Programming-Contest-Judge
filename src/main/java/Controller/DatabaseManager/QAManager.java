@@ -111,7 +111,7 @@ public class QAManager extends DatabaseManager {
                     String content = rs.getString("Content");
                     int time = rs.getInt("Timestamp");
                     entry.put("type", "question");
-                    entry.put("question_id", Integer.toString(qid));
+                    entry.put("id", Integer.toString(qid));
                     entry.put("problem_id", pid);
                     entry.put("content", content);
                     entry.put("time_stamp", Integer.toString(time));
@@ -130,7 +130,7 @@ public class QAManager extends DatabaseManager {
                     String answer = rs.getString("Content");
                     int time = rs.getInt("Timestamp");
                     entry.put("type", "answer");
-                    entry.put("answer_id", Integer.toString(aid));
+                    entry.put("id", Integer.toString(aid));
                     entry.put("question_id", Integer.toString(qid));
                     entry.put("content", answer);
                     entry.put("time_stamp", Integer.toString(time));
