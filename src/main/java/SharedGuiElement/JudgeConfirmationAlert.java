@@ -4,6 +4,7 @@ import SharedGuiElement.ConfirmationAlertBuilder;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 
 import java.util.Optional;
 
@@ -15,6 +16,18 @@ public class JudgeConfirmationAlert {
     public static ButtonType autoJudge = new ButtonType("Auto");
     public static ButtonType manualJudge = new ButtonType("Manual");
     public static ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+    public JudgeConfirmationAlert(Stage owner) {
+        ConfirmationAlertBuilder builder = ConfirmationAlertBuilder.create();
+        builder.setTitle("Rejudge")
+                .setHeaderText("Confirmation")
+                .setContentText("Choose a way to judge the submission.");
+        alert = builder.build();
+
+        alert.getButtonTypes().setAll(autoJudge, manualJudge, cancel);
+
+        ((Stage) alert.getDialogPane().getChildren().get(0).getScene().getWindow()).initOwner(owner);
+    }
 
     public JudgeConfirmationAlert() {
         ConfirmationAlertBuilder builder = ConfirmationAlertBuilder.create();
