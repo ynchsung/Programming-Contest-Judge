@@ -112,6 +112,7 @@ public class JudgeTaskProcessor {
 
     public JudgeTaskProcessor() {
         this.judgeQueue = new LinkedBlockingQueue<JudgeSubmissionTask>();
+        this.handleWaitingQueue = new HandleWaitingQueue();
     }
 
     public void judge(JudgeSubmissionTask task) {

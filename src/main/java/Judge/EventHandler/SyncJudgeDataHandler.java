@@ -27,9 +27,7 @@ public class SyncJudgeDataHandler extends EventHandler {
                     int memoryLimit = Integer.valueOf(content.getString("memory_limit"));
                     int testDataTimeStamp = Integer.valueOf(content.getString("testdata_time_stamp"));
 
-                    // problemManager.updateTestData();
-
-                    // TODO: update data
+                    problemManager.updateTestData(problemID, testDataTimeStamp, input, output, judgeMethod);
                 }
             }
             else doNext(msg);
