@@ -99,12 +99,21 @@ public class Participant extends Application {
         viewClarificationController.setClarification((new ClarificationManager()).queryAll());
         ClarificationManager.register(() -> {
             viewClarificationController.setClarification((new ClarificationManager()).queryAll());
-            // TODO: show alert
+            Platform.runLater(() -> {
+                NewClarificationAlert alert = new NewClarificationAlert(stage);
+                alert.show();
+            });
         });
 
         ViewQuestionAndAnswerController viewQuestionAndAnswerController = controller.getViewQuestionAndAnswerController();
         viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll());
-        QAManager.register(() -> viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll()));
+        QAManager.register(() -> {
+            viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll());
+            Platform.runLater(() -> {
+                NewAnswerAlert alert = new NewAnswerAlert(stage);
+                alert.show();
+            });
+        });
         viewQuestionAndAnswerController.setConfirmNewQuestionAction(event -> {
             String problemID = (String) viewQuestionAndAnswerController.getSelectedProblem();
             if (problemID == null) problemID = "0";
@@ -114,7 +123,13 @@ public class Participant extends Application {
 
         ViewSubmissionController viewSubmissionController = controller.getViewSubmissionController();
         viewSubmissionController.setSubmissions((new SubmissionManager()).queryAll());
-        SubmissionManager.register(() -> viewSubmissionController.setSubmissions((new SubmissionManager()).queryAll()));
+        SubmissionManager.register(() -> {
+            viewSubmissionController.setSubmissions((new SubmissionManager()).queryAll());
+            Platform.runLater(() -> {
+                NewResultAlert alert = new NewResultAlert(stage);
+                alert.show();
+            });
+        });
         viewSubmissionController.setOpenCodeCallBack(new Callback<String, Void>() {
             @Override
             public Void call(String submissionId) {
