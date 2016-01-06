@@ -3,7 +3,7 @@ package Controller.Scoreboard;
 import java.util.Map;
 import java.util.HashMap;
 
-public class TeamScore {
+public class TeamScore implements Comparable<TeamScore> {
     private final String team_id;
     private int totalProblem;
     private int penalty;
@@ -50,6 +50,16 @@ public class TeamScore {
             if (temp_problemscore.getAc()) {
                 this.penalty += temp_problemscore.getSubmitNum() * 20 + temp_problemscore.getAcTime();
             }
+        }
+    }
+
+    @Override
+    public int compareTo(TeamScore o) {
+        if (this.getTotalProblem() != o.getTotalProblem()) {
+            return o.getTotalProblem() - this.getTotalProblem();
+        }
+        else {
+            return this.getPenalty() - o.getPenalty();
         }
     }
 }

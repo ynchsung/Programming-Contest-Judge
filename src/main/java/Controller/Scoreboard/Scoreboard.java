@@ -79,13 +79,7 @@ public class Scoreboard {
             entry.ac_count();
             counted_team_list.add(entry);
         }
-        Collections.sort(counted_team_list, (t1, t2) -> {
-                    if (t1.getTotalProblem() != t2.getTotalProblem())
-                        return t1.getTotalProblem() - t2.getTotalProblem();
-                    else
-                        return t1.getPenalty() - t2.getPenalty();
-                }
-        );
+        Collections.sort(counted_team_list);
 
         StringBuilder builder = new StringBuilder();
         builder.append("<!DOCTYPE html>");
