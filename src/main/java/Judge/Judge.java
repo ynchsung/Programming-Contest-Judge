@@ -8,6 +8,7 @@ import Shared.InfoManager.SubmissionManager;
 import Shared.EventHandler.LoginResultHandler;
 import Shared.ContestTimer;
 import Shared.SubmissionInfo;
+import SharedGuiElement.GuiCloseEventHandler;
 import SharedGuiElement.OpenCode;
 import SharedGuiElement.OpenCodeBuilder;
 import SharedGuiElement.RemainingTime;
@@ -38,6 +39,16 @@ public class Judge extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("JudgeLoginPage.fxml"));
         Parent root = loader.load();
         JudgeLoginPageController controller = loader.getController();
+
+        /* on close event */
+        primaryStage.setOnCloseRequest(event -> {
+            GuiCloseEventHandler handle = new GuiCloseEventHandler(primaryStage, event);
+            handle.setOncloseAction(windowEvent -> {
+                //do close stuff here
+            });
+            handle.onClose();
+        });
+
         LoginResultHandler.LoginResultListener loginResultListener = success -> Platform.runLater(() -> {
             if (success) {
                 loginSuccess();

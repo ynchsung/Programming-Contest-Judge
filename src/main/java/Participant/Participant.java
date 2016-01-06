@@ -7,6 +7,7 @@ import Shared.InfoManager.ClarificationManager;
 import Shared.InfoManager.ProblemManager;
 import Shared.InfoManager.QAManager;
 import Shared.InfoManager.SubmissionManager;
+import SharedGuiElement.GuiCloseEventHandler;
 import SharedGuiElement.OpenCode;
 import SharedGuiElement.OpenCodeBuilder;
 import SharedGuiElement.RemainingTime;
@@ -35,6 +36,16 @@ public class Participant extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ParticipantLoginPage.fxml"));
         Parent root = loader.load();
         ParticipantLoginPageController controller = loader.getController();
+
+        /* on close event */
+        primaryStage.setOnCloseRequest(event -> {
+            GuiCloseEventHandler handle = new GuiCloseEventHandler(primaryStage, event);
+            handle.setOncloseAction(windowEvent -> {
+                //do close stuff here
+            });
+            handle.onClose();
+        });
+
         LoginResultHandler.LoginResultListener loginResultListener = success -> Platform.runLater(() -> {
             if (success) {
                 loginSuccess();
