@@ -2,13 +2,16 @@ package Controller;
 
 import Controller.DatabaseManager.*;
 import Shared.ContestTimer;
+import SharedGuiElement.GuiCloseEventHandler;
 import SharedGuiElement.OpenCode;
 import SharedGuiElement.OpenCodeBuilder;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 import java.io.File;
@@ -23,6 +26,15 @@ public class Controller extends Application{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Controller.fxml"));
         Parent root = loader.load();
         MainController controller = loader.getController();
+
+        /* on close event */
+        primaryStage.setOnCloseRequest(event -> {
+            GuiCloseEventHandler handle = new GuiCloseEventHandler(primaryStage, event);
+            handle.setOncloseAction(windowEvent -> {
+                //do close stuff here
+            });
+            handle.onClose();
+        });
 
         /* bind UI */
         Core core = Core.getInstance();
