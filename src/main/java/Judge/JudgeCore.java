@@ -70,8 +70,16 @@ public class JudgeCore {
         sendResultQueue.add(msg);
     }
 
-    public void sendClarification(JSONObject msg) {
-        sendClarificationQueue.add(msg);
+    public void sendClarification(String problemId, String content) {
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("msg_type", "clarification");
+            msg.put("problem_id", problemId);
+            msg.put("content", content);
+            sendClarificationQueue.add(msg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendAnswer(String questionId, String content) {

@@ -11,11 +11,11 @@ public class ParticipantControllerServer extends ControllerServer {
     public ParticipantControllerServer(Connection connection, LoginResultHandler.LoginResultListener loginResultListener) {
         super(connection);
         EventHandler handler = new LoginResultHandler(loginResultListener,
-                new QuestionAckHandler(
+                new QuestionAckHandler(new SubmissionAckHandler(
                 new ResultHandler(new AnswerHandler(
                 new ClarificationHandler(new SyncHandler(
                 new SyncProblemInfoHandler(
-                new SyncTimeHandler(null))))))));
+                new SyncTimeHandler(null)))))))));
         setEventHandler(handler);
     }
 

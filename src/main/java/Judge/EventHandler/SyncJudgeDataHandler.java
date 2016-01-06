@@ -19,7 +19,7 @@ public class SyncJudgeDataHandler extends EventHandler {
                 String problemID = msg.getString("problem_id");
                 String status = msg.getString("status");
                 if (status.equals("OK")) {
-                    JSONObject content = new JSONObject(msg.get("content"));
+                    JSONObject content = msg.getJSONObject("content");
                     String input = content.getString("input");
                     String output = content.getString("output");
                     String judgeMethod = content.getString("judge_method");
