@@ -43,6 +43,7 @@ public class Judge extends Application {
                     server.logout();
                 }
                 System.err.println("login failed");
+                controller.setMessage("Login failed");
                 //TODO Login fail msg
             }
         });
