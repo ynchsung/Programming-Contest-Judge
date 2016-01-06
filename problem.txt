@@ -1,0 +1,4 @@
+ppA,Data/pA/pA.in,Data/pA/pA.out,1,65536
+ppB,Data/pB/pB.in,Data/pB/pB.out,1,65536
+ppC,Data/pC/pC.in,Data/pC/pC.out,1,65536
+ppD,Data/pD/pD.in,Data/pD/pD.out,1,65536,Data/pD/pD_special_judge.cpp

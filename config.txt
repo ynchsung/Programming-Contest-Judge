@@ -1,0 +1,5 @@
+port:8888
+scoreboardport:8889
+team:Accountdata/team.txt
+judge:Accountdata/judge.txt
+problem:problem.txt

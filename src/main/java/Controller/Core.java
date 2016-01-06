@@ -8,9 +8,7 @@ import Shared.ProblemInfo;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -45,8 +43,6 @@ public class Core {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        this.port = 7122;
-        this.scoreBoardPort = 7123;
         this.teams = new HashMap<String, Team>();
         this.judges = new HashMap<String, Judge>();
         this.problems = new HashMap<String, ProblemInfo>();
@@ -54,8 +50,88 @@ public class Core {
         this.scoreBoardHttpServer = new ScoreBoardHttpServer(this.scoreBoardPort);
         this.timer = new ContestTimer(300*60);
 
-        // TODO: read config, build teams, judges, problems(Map)
-        /* ==== DUMMY TEST CONFIG ==== */
+        try {
+            readConfigure();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private void readTeamAccount(String pathName) {
+        AccountManager accountManager = new AccountManager();
+        File file = new File(pathName);
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String [] sp = line.split(",");
+                Map<String, String> team_account = new HashMap<String, String>();
+                this.teams.put(sp[0], new Team(sp[0], null));
+                team_account.put("account", sp[0]);
+                team_account.put("password", sp[1]);
+                team_account.put("type", "team");
+                accountManager.addEntry(team_account);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private void readJudgeAccount(String pathName) {
+        AccountManager accountManager = new AccountManager();
+        File file = new File(pathName);
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String [] sp = line.split(",");
+                this.judges.put(sp[0], new Judge(sp[0], null));
+                Map<String, String> judge_account = new HashMap<String, String>();
+                judge_account.put("account", sp[0]);
+                judge_account.put("password", sp[1]);
+                judge_account.put("type", "judge");
+                accountManager.addEntry(judge_account);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private void readProblemInfo(String pathName) {
+        ProblemManager problemManager = new ProblemManager();
+        File file = new File(pathName);
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String [] sp = line.split(",");
+                String input = MyUtil.readFromFile(new File(sp[1]));
+                String output = MyUtil.readFromFile(new File(sp[2]));
+                int timeLimit = Integer.valueOf(sp[3]);
+                int memoryLimit = Integer.valueOf(sp[4]);
+                String judgeMethod = "";
+                if (sp.length == 6)
+                    judgeMethod = MyUtil.readFromFile(new File(sp[5]));
+
+                Map<String, String> pinfo = new HashMap<String, String>();
+                this.problems.put(sp[0], new ProblemInfo(sp[0], timeLimit, memoryLimit, 0));
+                pinfo.put("problem_id", sp[0]);
+                pinfo.put("time_limit", String.valueOf(timeLimit));
+                pinfo.put("memory_limit", String.valueOf(memoryLimit));
+                pinfo.put("special_judge", judgeMethod);
+                pinfo.put("input", input);
+                pinfo.put("output", output);
+                pinfo.put("time_stamp", "0");
+                problemManager.addEntry(pinfo);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private void readConfigure() throws FileNotFoundException {
         ConfigureManager configureManager = new ConfigureManager();
         AccountManager accountManager = new AccountManager();
         ProblemManager problemManager = new ProblemManager();
@@ -70,49 +146,41 @@ public class Core {
         submissionManager.createTable();
         qaManager.createTable();
         clarificationManager.createTable();
+        this.port = 8888;
+        this.scoreBoardPort = 8889;
+        // default port
+
+        File file = new File("config.txt");
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String [] sp = line.split(":");
+                if (sp[0].equals("port"))
+                    this.port = Integer.valueOf(sp[1]);
+                else if (sp[0].equals("scoreboardport"))
+                    this.scoreBoardPort = Integer.valueOf(sp[1]);
+                else if (sp[0].equals("team")) {
+                    readTeamAccount(sp[1]);
+                }
+                else if (sp[0].equals("judge")) {
+                    readJudgeAccount(sp[1]);
+                }
+                else if (sp[0].equals("problem")) {
+                    readProblemInfo(sp[1]);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
 
         config.put("ip", this.ip.getHostAddress());
         config.put("port", Integer.toString(this.port));
         config.put("scoreboard_port", Integer.toString(this.scoreBoardPort));
-        config.put("judge_password", "judge7122");
         config.put("start_time", "0");
         config.put("duration", "300");
         config.put("time_stamp", "0");
         configureManager.addEntry(config);
-
-        for (int i = 1; i <= 10; i++) {
-            String id = String.format("team%02d", i);
-            this.teams.put(id, new Team(id, null));
-            Map<String, String> team_account = new HashMap<String, String>();
-            team_account.put("account", id);
-            team_account.put("password", id);
-            team_account.put("type", "team");
-            accountManager.addEntry(team_account);
-        }
-        for (int i = 1; i <= 3; i++) {
-            String id = String.format("judge%02d", i);
-            this.judges.put(id, new Judge(id, null));
-            Map<String, String> judge_account = new HashMap<String, String>();
-            judge_account.put("account", id);
-            judge_account.put("password", "judge7122");
-            judge_account.put("type", "judge");
-            accountManager.addEntry(judge_account);
-        }
-        for (int i = 1; i <= 5; i++) {
-            String id = String.format("p%c", 'A' + i - 1);
-            Map<String, String> pinfo = new HashMap<String, String>();
-            int timeStamp = 0;
-            this.problems.put(id, new ProblemInfo(id, 6 - i, 65536, timeStamp));
-            pinfo.put("problem_id", id);
-            pinfo.put("time_limit", Integer.toString(6 - i));
-            pinfo.put("memory_limit", "65536");
-            pinfo.put("special_judge", "");
-            pinfo.put("input", String.format("1\n%d %d\n", i * 2 + 7122, i + 7122));
-            pinfo.put("output", String.format("%d\n", i * 2 + 7122 + i + 7122));
-            pinfo.put("time_stamp", Long.toString(timeStamp));
-            problemManager.addEntry(pinfo);
-        }
-        /* ==== DUMMY TEST CONFIG ==== */
     }
 
     static public Core getInstance() {
