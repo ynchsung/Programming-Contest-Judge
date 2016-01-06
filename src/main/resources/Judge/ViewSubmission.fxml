@@ -4,5 +4,5 @@
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="Judge.ViewSubmissionController" >
     <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
-    <SubmissionTable fx:id="submissionTable" />
+    <SubmissionTable fx:id="submissionTable" teamIdDisable="true"/>
 </VBox>

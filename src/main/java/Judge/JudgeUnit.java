@@ -2,7 +2,6 @@ package Judge;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.rmi.server.ExportException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -34,6 +33,8 @@ public class JudgeUnit {
         file = new File("sandbox_meta");
         file.delete();
         file = new File(String.format("%s/%s", this.sandboxPath, this.copiedSourceCodeFileName));
+        file.delete();
+        file = new File(String.format("%s/%s", this.sandboxPath, this.copiedInputFileName));
         file.delete();
         file = new File(String.format("%s/%s", this.sandboxPath, this.untrustedExecFileName));
         file.delete();

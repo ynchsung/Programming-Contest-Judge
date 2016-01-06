@@ -3,11 +3,8 @@ package Shared.InfoManager;
 import Judge.JudgeCore;
 import Shared.ProblemInfo;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.*;
-import java.io.File;
-import java.io.PrintWriter;
 
 public class ProblemManager {
     private static Map<String, ProblemInfo> infos;
@@ -48,10 +45,15 @@ public class ProblemManager {
 
     private void writeDataFile(String destPathName, String content) {
         try {
-            PrintWriter writer = new PrintWriter(destPathName, "ascii");
-            writer.print(content);
+            File file = new File(destPathName);
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(content);
+            fileWriter.close();
         }
-        catch (Exception e) {
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
