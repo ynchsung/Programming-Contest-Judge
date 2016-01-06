@@ -57,7 +57,7 @@ public class SyncJudgeDataHandler extends EventHandler<Judge> {
                 Map<String, String> prob = problemManager.getProblemById(problemID);
 
                 if (oldTimeStamp < Integer.valueOf(prob.get("time_stamp")))
-                    forward(judge, problemID, prob.get("input"), prob.get("output"), prob.get("special_judge"), prob.get("time_limit"), prob.get("memory_limit"), prob.get("time_stamp"));
+                    forward(judge, problemID, prob.get("input"), prob.get("output"), prob.get("special_judge"), Integer.valueOf(Float.valueOf(prob.get("time_limit")).intValue()).toString(), prob.get("memory_limit"), prob.get("time_stamp"));
                 else
                     forward(judge, problemID);
             }
