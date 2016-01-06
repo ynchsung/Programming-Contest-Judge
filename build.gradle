@@ -13,3 +13,54 @@ dependencies {
     compile 'org.json:json:20090211'
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
+
+sourceSets {
+	main {
+		java {
+			srcDir 'src'
+		}
+		resources {
+			srcDir 'resources'
+		}
+		output.resourcesDir = 'build/classes/main'
+	}
+}
+
+task buildAll {
+	dependsOn 'buildController'
+	dependsOn 'buildJudge'
+	dependsOn 'buildParticipant'
+}
+
+task buildController (type: Jar) {
+	manifest {
+		attributes 'Main-Class':'Controller.Controller'
+	}
+	baseName = project.name + '-Controller'
+	from {
+		configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}
+	}
+	with jar
+}
+
+task buildJudge (type: Jar) {
+	manifest {
+		attributes 'Main-Class':'Judge.Judge'
+	}
+	baseName = project.name + '-Judge'
+	from {
+		configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}
+	}
+	with jar
+}
+
+task buildParticipant (type: Jar) {
+	manifest {
+		attributes 'Main-Class':'Participant.Participant'
+	}
+	baseName = project.name + '-Participant'
+	from {
+		configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}
+	}
+	with jar
+}
