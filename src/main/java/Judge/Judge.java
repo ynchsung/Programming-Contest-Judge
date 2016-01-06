@@ -101,7 +101,11 @@ public class Judge extends Application {
         viewClarificationController.setClarification((new ClarificationManager()).queryAll());
         ClarificationManager.register(() -> viewClarificationController.setClarification((new ClarificationManager()).queryAll()));
         viewClarificationController.setConfirmNewClarificationAction(event -> {
-            //TODO: send Clarification
+            String problemId = (String)viewClarificationController.getProblemChoice();
+            if (problemId == null)
+                problemId = "0";
+            String content = viewClarificationController.getNewClarificationText();
+            core.sendClarification(problemId, content);
         });
 
         ViewQuestionAndAnswerController viewQuestionAndAnswerController = controller.getViewQuestionAndAnswerController();

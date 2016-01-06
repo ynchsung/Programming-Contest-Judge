@@ -96,7 +96,10 @@ public class Participant extends Application {
 
         ViewClarificationController viewClarificationController = controller.getViewClarificationController();
         viewClarificationController.setClarification((new ClarificationManager()).queryAll());
-        ClarificationManager.register(() -> viewClarificationController.setClarification((new ClarificationManager()).queryAll()));
+        ClarificationManager.register(() -> {
+            viewClarificationController.setClarification((new ClarificationManager()).queryAll());
+            // TODO: show alert
+        });
 
         ViewQuestionAndAnswerController viewQuestionAndAnswerController = controller.getViewQuestionAndAnswerController();
         viewQuestionAndAnswerController.setQuestionAndAnswer((new QAManager()).queryAll());
