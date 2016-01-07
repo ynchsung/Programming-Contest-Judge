@@ -16,6 +16,12 @@ To build Judge:
 To build Participant:
 	$ ./gradlew buildParticipant
 
+To build Judge sandbox:
+    $ cd isolote/
+    $ make
+    $ sudo ./fix_mod.sh
+    $ ./isolate --init
+
 The output directory of the Jars is './build/libs/'
 
 (2) Configure file:
