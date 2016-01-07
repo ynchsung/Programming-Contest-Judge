@@ -18,5 +18,53 @@ To build Participant:
 
 The output directory of the Jars is './build/libs/'
 
-(2) How To Run:
+(2) Configure file:
+    You have to create a file, "config.txt", in the same working directory when running controller.
+    Format: an information contains key and values, using ":" separated key and value, in one line.
+
+    Keys: (Without quotation marks)
+    "team" [Required]: Account data PATH for teams.
+    "judge" [Required]: Account data PATH for judges.
+    "problem" [Required]: Problem info data PATH.
+    "port" [Optional]: controller port, default 8888
+    "scoreboard" [Optional]: scoreboard http server port, default 8889
+
+    Example:
+    port:8888
+    scoreboardport:8889
+    team:Accountdata/team.txt
+    judge:Accountdata/judge.txt
+    problem:problem.txt
+
+(3) Team account data format: 2-column csv format. The first column is account, and the second is password.
+    Example:
+    team01,team01
+    team02,team02
+    team03,team03
+    team04,team04
+    
+
+(4) Judge account data format: 2-column csv format. The first column is account, and the second is password.
+    Example:
+    judge01,judge7122
+    judge02,judge7122
+
+(5) Problem info data format: 5-column or 6-column, column separated. Each column represents: (orderly)
+    (a) Problem ID
+    (b) Input data PATH
+    (c) Output data PATH
+    (d) Time limit (INT, second)
+    (e) Memory limit (INT, KiloBytes)
+    *(f) Special judge code PATH
+
+    *f is optional.
+
+    Example:
+    ppA,Data/pA/pA.in,Data/pA/pA.out,1,65536
+    ppB,Data/pB/pB.in,Data/pB/pB.out,1,65536
+    ppC,Data/pC/pC.in,Data/pC/pC.out,1,65536
+    ppD,Data/pD/pD.in,Data/pD/pD.out,1,65536,Data/pD/pD_special_judge.cpp
+
+(6) How To Run:
 	$ java -jar [name of jar]
+    If there is any missing required configure file of controller, controller will terminate with exit code 1.
