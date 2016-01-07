@@ -9,14 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.*;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,16 +32,30 @@ public class Core {
     private Thread listenThread;
 
     private Core() {
+        boolean f = false;
         try {
-            this.ip = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+            for (Enumeration en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = (NetworkInterface) en.nextElement();
+                for (Enumeration enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = (InetAddress) enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()&&inetAddress instanceof Inet4Address) {
+                        String ipAddress = inetAddress.getHostAddress().toString();
+                        this.ip = inetAddress;
+                        f = true;
+                        break;
+                    }
+                }
+                if (f)
+                    break;
+            }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+            System.exit(1);
         }
         this.teams = new HashMap<String, Team>();
         this.judges = new HashMap<String, Judge>();
         this.problems = new HashMap<String, ProblemInfo>();
         this.scheduler = new Scheduler();
-        this.scoreBoardHttpServer = new ScoreBoardHttpServer(this.scoreBoardPort);
         this.timer = new ContestTimer(300*60);
 
         try {
@@ -57,6 +65,7 @@ public class Core {
             e.printStackTrace();
             System.exit(1);
         }
+        this.scoreBoardHttpServer = new ScoreBoardHttpServer(this.scoreBoardPort);
     }
 
     private void readTeamAccount(String pathName) {

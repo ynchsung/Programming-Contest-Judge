@@ -18,7 +18,7 @@ public class ConfigureManager extends DatabaseManager {
                 "(IP STRING PRIMARY KEY NOT NULL," +
                 " Port  INT NOT NULL," +
                 " ScoreboardPort INT    NOT NULL," +
-                " JudgePassword  STRING NOT NULL," +
+                " JudgePassword  STRING," +
                 " StartTime INT NOT NULL," +
                 " Duration   INT NOT NULL," +
                 " Timestamp INT NOT NULL" + ")";
